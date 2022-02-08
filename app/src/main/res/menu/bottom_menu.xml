@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title=""
+        android:id="@+id/fragmentNews"
+        android:icon="@drawable/ic_news"/>
+    <item android:title=""
+        android:id="@+id/fragmentTournaments"
+        android:icon="@drawable/ic_tournaments"/>
+    <item android:title=""
+        android:id="@+id/fragmentBroadcasts"
+        android:icon="@drawable/ic_video"/>
+    <item android:title=""
+        android:id="@+id/fragmentContent"
+        android:icon="@drawable/ic_content"/>
+    <item android:title=""
+        android:id="@+id/fragmentMenu"
+        android:icon="@drawable/ic_profile"/>
+</menu>

@@ -1,0 +1,134 @@
+<resources>
+    <string name="app_name">ProPUBG</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="welcome_info">Введите номер телефона, чтобы продолжить использование приложения</string>
+    <string name="btn_login">Войти</string>
+    <string name="btn_register">Зарегистрироваться</string>
+    <string name="auth">Авторизация</string>
+    <string name="phone">Номер телефона</string>
+    <string name="code_hint" translatable="false">+380</string>
+    <string name="phone_hint" translatable="false">50 123 4567</string>
+    <string name="email">Email</string>
+    <string name="phone_wrong">Введен неверный номер телефона.\nПопробуйте еще раз.</string>
+    <string name="phone_empty">Номер телефона не может быть пустым</string>
+    <string name="email_empty">Email не может быть пустым</string>
+    <string name="email_wrong">Некорректный Email</string>
+    <string name="password">Пароль</string>
+    <string name="password_empty">Пароль не может быть пустым</string>
+    <string name="password_not_confirmed">Пароль слишком короткий или введенные пароли не совпадают</string>
+    <string name="forgot_password_">Забыли пароль?</string>
+    <string name="registration">Регистрация</string>
+    <string name="input_sms">Введите код из СМС</string>
+    <string name="wrong_sms">Код некорректный</string>
+    <string name="btn_next">Далее</string>
+    <string name="password_create">Придумайте пароль</string>
+    <string name="password_confirm">Повторите пароль</string>
+    <string name="password_not_match">Пароли не совпадают</string>
+    <string name="nick_create">Придумайте Никнейм</string>
+    <string name="nick_buzy">Никнейм уже занят</string>
+    <string name="password_reset">Восстановление пароля</string>
+    <string name="password_new">Введите новый пароль</string>
+    <string name="wrong_code">Неверный код</string>
+    <string name="repeat_code">Повторное СМС будет выслано через </string>
+    <string name="btn_continue">Продолжить</string>
+    <string name="btn_confirm">Подтвердить</string>
+    <string name="get_code">Получить код</string>
+    <string name="code_sent">Код подтверждения был отправлен на следующий номер телефона:</string>
+    <string name="code_repeat">Повторное СМС можно будет отправить через:</string>
+    <string name="code_not_received">Не получили СМС? Отправить заново</string>
+
+    <string name="news">Новости</string>
+    <string name="global">Прочие</string>
+    <string name="reshuffles">Решафлы</string>
+    <string name="less_hour">менее часа назад</string>
+    <string name="yesterday">вчера</string>
+    <string name="today_header">СЕГОДНЯ</string>
+    <string name="yesterday_header">ВЧЕРА</string>
+    <string name="week_header">НА ЭТОЙ НЕДЕЛЕ</string>
+    <string name="earlier_header">РАНЕЕ</string>
+    <string name="no_news">Нет новых новостей</string>
+    <string name="no_reshuffles">Нет новых решафлов</string>
+
+    <string name="tournaments">Турниры</string>
+    <string name="tournaments_open">Открытые</string>
+    <string name="tournaments_closed">Закрытые</string>
+    <string name="tournaments_upcoming">Предстоят</string>
+    <string name="tournament_text">Примечание редакции:</string>
+    <string name="copy_link">Скопировать ссылку</string>
+    <string name="no_tournaments">Сейчас нет подходящих турниров</string>
+    <string name="btn_tournament_register">Зарегистрироваться</string>
+    <string name="btn_tournament_more">Детальная информация</string>
+    <string name="btn_tournament_know">Ознакомиться с турниром</string>
+    <string name="registration_closed">Регистрация закрыта</string>
+    
+    <string name="search_text">Введите текст</string>
+    <string name="search_cancel">Отменить</string>
+
+    <string name="link_copied">Ссылка скопирована в буфер обмена</string>
+
+    <string name="broadcasts">Трансляции</string>
+    <string name="no_live_broadcasts">Все прямые эфиры закончены</string>
+    <string name="broadcasts_live">В эфире</string>
+    <string name="broadcasts_past">Завершенные</string>
+    <string name="broadcasts_upcoming">Предстоящие</string>
+    <string name="watch">Смотреть</string>
+    <string name="teams_list">Список команд</string>
+    <string name="teams_list_na">Список команд недоступен</string>
+    <string name="tournament_more">Подробнее о турнире</string>
+    <string name="tournament_more_na">Подробная информация о данном турнире недоступна</string>
+    <string name="day">День</string>
+    
+    <string name="content">Контент</string>
+    <string name="content_learn">Обучающий</string>
+    <string name="content_interview">Интервью и Подкасты</string>
+    <string name="no_content">Сейчас нет подходящего контента</string>
+
+    <string name="menu">Меню</string>
+    <string name="password_change">Изменить пароль</string>
+    <string name="notifications">Уведомления</string>
+    <string name="language">Язык</string>
+    <string name="results_tournaments">Результаты турниров</string>
+    <string name="partners">Discord партнеры</string>
+    <string name="profile">Профиль</string>
+    <string name="cancel">Отменить</string>
+    <string name="save">Сохранить</string>
+    <string name="upload_foto">Загрузить фото</string>
+    <string name="nick">Никнейм</string>
+    <string name="nick_empty">Здесь может быть твой никнейм :)</string>
+    <string name="nick_new">Введите новый никнейм</string>
+    <string name="nick_short">Никнейм не может быть короче 3ех символов</string>
+    <string name="nick_long">Никнейм не может быть длинеее 13ти символов</string>
+    <string name="nick_error">Функция смены никнейма временно не работает\n\nИзвините за неудобства :(</string>
+    <string name="nick_next">Следующее изменение никнейма будет доступно</string>
+    <string name="nick_change_will">Изменить никнейм можно будет:</string>
+    <string name="logout">Удалить мой аккаунт</string>
+    <string name="password_changing">Смена пароля</string>
+    <string name="password_old">Введите старый пароль</string>
+    <string name="password_wrong">Неверный пароль</string>
+
+    <string name="close">Закрыть</string>
+    <string name="edit">Изменить</string>
+
+    <string name="global_">Global</string>
+    <string name="cis">CIS</string>
+    <string name="eu">EU</string>
+    <string name="na">NA</string>
+    <string name="mena">MENA</string>
+
+    <string name="en">Английский</string>
+    <string name="ru">Русский</string>
+
+    <string name="results_text">Подробная информация в приложении по ссылке</string>
+    <string name="open_server">Перейти на сервер</string>
+
+    <string name="checking">Выполняется проверка</string>
+    <string name="sync_error">Ошибка синхронизации данных</string>
+    <string name="server_error">Произошла ошибка при обновлении данных c сервера\n\nПожалуйста, попробуйте перезапустить приложение</string>
+    <string name="contact_support">Связаться с поддержкой</string>
+    <string name="app_close">Закрыть приложение</string>
+
+    <string name="we_are_better">Мы стали лучше, чем когда - либо</string>
+    <string name="update_app">Пожалуйста, обновите приложение, чтобы продолжить им пользоваться</string>
+    <string name="update">Обновить</string>
+    <string name="error">Ошибка</string>
+</resources>

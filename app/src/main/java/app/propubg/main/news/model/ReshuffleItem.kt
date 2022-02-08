@@ -1,0 +1,42 @@
+package app.propubg.main.news.model
+
+import io.realm.RealmList
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
+import io.realm.annotations.Required
+import org.bson.types.ObjectId
+import java.io.Serializable
+import java.util.*
+
+class ReshuffleItem {
+    var reshuffle: reshuffle? = null
+}
+
+open class reshuffle(
+    @PrimaryKey var _id: ObjectId? = null,
+    var author: String? = null,
+    var countViews: Long? = null,
+    var date: Date? = null,
+    var dynamicLink_en: String? = null,
+    var dynamicLink_ru: String? = null,
+    @Required
+    var imageSrc_en: RealmList<String> = RealmList(),
+    @Required
+    var imageSrc_ru: RealmList<String> = RealmList(),
+    var key: String? = null,
+    @Required
+    var listViewers: RealmList<String> = RealmList(),
+    @Required
+    var regions: RealmList<String> = RealmList(),
+    var text_en: String? = null,
+    var text_ru: String? = null,
+    var title_en: String? = null,
+    var title_ru: String? = null,
+    var uniqueness: Boolean? = null
+): RealmObject(), Serializable {
+    fun getRegionList(): String{
+        val list = ArrayList<String>()
+        list.addAll(regions)
+        return list.toString().substring(1, list.toString().length-1)
+    }
+}

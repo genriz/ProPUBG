@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">ProPUBG</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_info">Enter your phone number to continue using application</string>
+    <string name="btn_login">Войти</string>
+    <string name="btn_register">Зарегистрироваться</string>
+    <string name="auth">Авторизация</string>
+    <string name="phone">Phone number</string>
+    <string name="email">Email</string>
+    <string name="phone_wrong">Phone number is incorrect.\nTry again.</string>
+    <string name="phone_empty">Номер телефона не может быть пустым</string>
+    <string name="email_empty">Email не может быть пустым</string>
+    <string name="email_wrong">Некорректный Email</string>
+    <string name="password">Пароль</string>
+    <string name="password_empty">Пароль не может быть пустым</string>
+    <string name="password_not_confirmed">Пароль слишком короткий или введенные пароли не совпадают</string>
+    <string name="forgot_password_">Забыли пароль?</string>
+    <string name="registration">Регистрация</string>
+    <string name="input_sms">Введите код из СМС</string>
+    <string name="btn_next">Далее</string>
+    <string name="password_create">Придумайте пароль</string>
+    <string name="password_confirm">Повторите пароль</string>
+    <string name="password_not_match">Пароли не совпадают</string>
+    <string name="nick_create">Придумайте Никнейм</string>
+    <string name="nick_buzy">Nickname has already taken</string>
+    <string name="password_reset">Восстановление пароля</string>
+    <string name="password_new">Введите новый пароль</string>
+    <string name="wrong_code">Неверный код</string>
+    <string name="repeat_code">Повторное СМС будет выслано через </string>
+    <string name="btn_continue">Continue</string>
+    <string name="btn_confirm">Confirm</string>
+
+    <string name="news">News</string>
+    <string name="global">Other</string>
+    <string name="reshuffles">Reshuffles</string>
+    <string name="less_hour">less than hour ago</string>
+    <string name="yesterday">yesterday</string>
+    <string name="today_header">TODAY</string>
+    <string name="yesterday_header">YESTERDAY</string>
+    <string name="week_header">THIS WEEK</string>
+    <string name="earlier_header">EARLIER</string>
+    <string name="no_news">No available news</string>
+    <string name="no_reshuffles">No available reshuffles</string>
+
+    <string name="tournaments">Tournaments</string>
+    <string name="tournaments_open">Opened</string>
+    <string name="tournaments_closed">Closed</string>
+    <string name="tournaments_upcoming">Upcoming</string>
+    <string name="tournament_text">Editorial note:</string>
+    <string name="copy_link">Copy link</string>
+    <string name="no_tournaments">No available tournaments at the moment</string>
+    <string name="btn_tournament_register">Register</string>
+    <string name="btn_tournament_more">More information</string>
+    <string name="btn_tournament_know">Check out the tournament</string>
+    <string name="registration_closed">Registration closed</string>
+
+    <string name="search_text">Enter text</string>
+    <string name="search_cancel">Cancel</string>
+
+    <string name="link_copied">Link copied to clipboard</string>
+
+    <string name="broadcasts">Streams</string>
+    <string name="no_live_broadcasts">Все прямые эфиры закончены</string>
+    <string name="broadcasts_live">Live</string>
+    <string name="broadcasts_past">Past</string>
+    <string name="broadcasts_upcoming">Upcoming</string>
+    <string name="watch">Watch</string>
+    <string name="teams_list">Teams list</string>
+    <string name="teams_list_na">Team list isn\'t available</string>
+    <string name="tournament_more">More info about the tournament</string>
+    <string name="tournament_more_na">More info about the tournament isn\'t available</string>
+    <string name="day">Day</string>
+
+    <string name="content">Content</string>
+    <string name="content_learn">Educational</string>
+    <string name="content_interview">Interview and podcasts</string>
+    <string name="no_content">No available content at the moment</string>
+
+    <string name="menu">Menu</string>
+    <string name="password_change">Change password</string>
+    <string name="notifications">Notification</string>
+    <string name="language">Language</string>
+    <string name="results_tournaments">Results of tournaments</string>
+    <string name="partners">Discord partners</string>
+    <string name="profile">Profile</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="upload_foto">Загрузить фото</string>
+    <string name="nick">Nickname</string>
+    <string name="logout">Delete my account</string>
+    <string name="password_changing">Смена пароля</string>
+    <string name="password_old">Введите старый пароль</string>
+    <string name="password_wrong">Неверный пароль</string>
+
+    <string name="close">Close</string>
+    <string name="edit">Change</string>
+
+    <string name="global_">Global</string>
+    <string name="cis">CIS</string>
+    <string name="eu">EU</string>
+    <string name="na">NA</string>
+    <string name="mena">MENA</string>
+
+    <string name="en">English</string>
+    <string name="ru">Russian</string>
+
+    <string name="results_text">Подробная информация в приложении по ссылке</string>
+    <string name="open_server">Перейти на сервер</string>
+    <string name="get_code">Get code</string>
+    <string name="wrong_sms">Wrong code</string>
+    <string name="code_sent">Verification SMS has been sent to the following phone number:</string>
+    <string name="code_repeat">You will be able to resend SMS in:</string>
+    <string name="code_not_received">Didn\'t receive SMS? Send again</string>
+    <string name="nick_empty">Here can be your nickname :)</string>
+    <string name="nick_new">Enter a new nickname</string>
+    <string name="nick_short">Nickname cannot be shorter than 3 characters</string>
+    <string name="nick_long">Nickname cannot be longer than 13 characters</string>
+    <string name="nick_error">Nickname changer is temporarily unavailable\n\nSorry for the inconvenience :(</string>
+    <string name="nick_next">The next nickname change will be available:</string>
+    <string name="nick_change_will">You can change your nickname:</string>
+    <string name="checking">Checking in progress</string>
+    <string name="sync_error">Data sync error</string>
+    <string name="server_error">An error occurred while updating data from the server\n\nPlease try restarting the application</string>
+    <string name="contact_support">Write to support</string>
+    <string name="app_close">Close application</string>
+    <string name="we_are_better">We are better\nthan ever</string>
+    <string name="update_app">Please update the app\nto continue using it.</string>
+    <string name="update">Update</string>
+    <string name="error">Error</string>
+</resources>

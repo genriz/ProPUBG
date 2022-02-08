@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false">
+            <androidx.fragment.app.FragmentContainerView
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:id="@+id/nav_host_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_main"/>
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/bottomNavigation"
+                app:menu="@menu/bottom_menu"
+                app:itemRippleColor="@null"
+                app:labelVisibilityMode="unlabeled"
+                android:paddingBottom="20dp"
+                app:itemIconTint="@color/bottom_item"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black60"
+            android:id="@+id/dimBack"
+            android:alpha="0"/>
+
+        <include layout="@layout/bottom_sheet_teams"
+            android:id="@+id/bottom_sheet_teams"/>
+
+        <include layout="@layout/bottom_sheet_tournament"
+            android:id="@+id/bottom_sheet_tournament"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

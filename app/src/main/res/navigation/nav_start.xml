@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_start"
+    app:startDestination="@id/fragmentStart">
+
+    <fragment
+        android:id="@+id/fragmentStart"
+        android:name="app.propubg.login.ui.FragmentStart"
+        android:label="FragmentStart"
+        tools:layout="@layout/fragment_start"/>
+    <fragment
+        android:id="@+id/fragmentSms"
+        android:name="app.propubg.login.ui.FragmentSmsCode"
+        android:label="FragmentSms"
+        tools:layout="@layout/fragment_sms_code"/>
+
+</navigation>

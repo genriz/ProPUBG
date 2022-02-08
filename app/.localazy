@@ -1,0 +1,7 @@
+[packages]
+app.propubg = raa
+
+[localazy]
+allStringsUploaded = true
+showWelcomeMessage = false
+

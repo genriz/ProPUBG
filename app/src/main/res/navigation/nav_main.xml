@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_start"
+    app:startDestination="@id/fragmentNews">
+
+    <fragment
+        android:id="@+id/fragmentNews"
+        android:name="app.propubg.main.news.ui.FragmentNews"
+        android:label="FragmentNews" >
+        <action
+            android:id="@+id/action_fragmentNews_to_fragmentNewsDetails"
+            app:destination="@id/fragmentNewsDetails"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_fragmentNews_to_fragmentReshufflesDetails"
+            app:destination="@id/fragmentReshufflesDetails"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentNewsDetails"
+        android:name="app.propubg.main.news.ui.FragmentNewsDetails"
+        android:label="FragmentNewsDetails" />
+    <fragment
+        android:id="@+id/fragmentReshufflesDetails"
+        android:name="app.propubg.main.news.ui.FragmentReshufflesDetails"
+        android:label="FragmentReshufflesDetails" />
+    <fragment
+        android:id="@+id/fragmentTournaments"
+        android:name="app.propubg.main.tournaments.ui.FragmentTournaments"
+        android:label="FragmentTournaments">
+        <action
+            android:id="@+id/action_fragmentTournaments_to_fragmentTournamentDetails"
+            app:destination="@id/fragmentTournamentDetails"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentTournamentDetails"
+        android:name="app.propubg.main.tournaments.ui.FragmentTournamentDetails"
+        android:label="FragmentTournamentDetails"/>
+    <fragment
+        android:id="@+id/fragmentBroadcasts"
+        android:name="app.propubg.main.broadcasts.ui.FragmentBroadcasts"
+        android:label="FragmentBroadcasts" />
+    <fragment
+        android:id="@+id/fragmentContent"
+        android:name="app.propubg.main.content.ui.FragmentContent"
+        android:label="FragmentContent" />
+    <fragment
+        android:id="@+id/fragmentMenu"
+        android:name="app.propubg.main.menu.ui.FragmentMenu"
+        android:label="FragmentMenu" >
+        <action
+            android:id="@+id/action_fragmentMenu_to_fragmentMenuPasswordChange"
+            app:destination="@id/fragmentMenuPasswordChange"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+        <action
+            android:id="@+id/action_fragmentMenu_to_fragmentMenuNotifications"
+            app:destination="@id/fragmentMenuNotifications"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+        <action
+            android:id="@+id/action_fragmentMenu_to_fragmentMenuLanguage"
+            app:destination="@id/fragmentMenuLanguage"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+        <action
+            android:id="@+id/action_fragmentMenu_to_fragmentMenuResults"
+            app:destination="@id/fragmentMenuResults"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+        <action
+            android:id="@+id/action_fragmentMenu_to_fragmentMenuPartners"
+            app:destination="@id/fragmentMenuPartners"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentProfileEdit"
+        android:name="app.propubg.main.menu.ui.FragmentMenuProfileEdit"
+        android:label="FragmentProfileEdit" />
+    <fragment
+        android:id="@+id/fragmentMenuPasswordChange"
+        android:name="app.propubg.main.menu.ui.FragmentMenuPasswordChange"
+        android:label="FragmentMenuPasswordChange" />
+    <fragment
+        android:id="@+id/fragmentMenuNotifications"
+        android:name="app.propubg.main.menu.ui.FragmentMenuNotifications"
+        android:label="FragmentMenuNotifications" />
+    <fragment
+        android:id="@+id/fragmentMenuLanguage"
+        android:name="app.propubg.main.menu.ui.FragmentMenuLanguage"
+        android:label="FragmentMenuLanguage" />
+    <fragment
+        android:id="@+id/fragmentMenuResults"
+        android:name="app.propubg.main.menu.ui.FragmentMenuResults"
+        android:label="FragmentMenuResults" >
+        <action
+            android:id="@+id/action_fragmentMenuResults_to_fragmentMenuResultsDetails"
+            app:destination="@id/fragmentMenuResultsDetails"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMenuResultsDetails"
+        android:name="app.propubg.main.menu.ui.FragmentMenuResultsDetails"
+        android:label="FragmentMenuResultsDetails" />
+    <fragment
+        android:id="@+id/fragmentMenuPartners"
+        android:name="app.propubg.main.menu.ui.FragmentMenuPartners"
+        android:label="FragmentMenuPartners" >
+        <action
+            android:id="@+id/action_fragmentMenuPartners_to_fragmentMenuPartnerDetails"
+            app:destination="@id/fragmentMenuPartnerDetails"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMenuPartnerDetails"
+        android:name="app.propubg.main.menu.ui.FragmentMenuPartnersDetails"
+        android:label="FragmentMenuPartnerDetails" />
+</navigation>
