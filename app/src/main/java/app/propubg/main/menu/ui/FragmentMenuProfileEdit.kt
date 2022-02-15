@@ -1,11 +1,16 @@
 package app.propubg.main.menu.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import app.propubg.R
@@ -36,6 +41,7 @@ class FragmentMenuProfileEdit: Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -62,6 +68,25 @@ class FragmentMenuProfileEdit: Fragment() {
                 checkNick(binding.inputNickname.text.toString())
             }
             false
+        }
+
+        binding.inputNickname.setOnFocusChangeListener { _, hasFocus ->
+            binding.nickDelete.isVisible =
+                hasFocus&&binding.inputNickname.text.isNotEmpty()
+        }
+        binding.inputNickname.doOnTextChanged { text, _, _, _ ->
+            text?.let{
+                binding.nickDelete.isVisible =
+                    it.isNotEmpty()&&binding.inputNickname.hasFocus()
+            }
+        }
+        binding.nickDelete.setOnClickListener {
+            binding.inputNickname.setText("")
+        }
+
+        binding.header.btnSave.setOnClickListener {
+            binding.inputNickname.clearFocus()
+            checkNick(binding.inputNickname.text.toString())
         }
     }
 
@@ -117,5 +142,7 @@ class FragmentMenuProfileEdit: Fragment() {
                 SimpleDateFormat("dd-MM-yyyy HH:mm",
                     Locale.getDefault()).format(cal.timeInMillis)
         binding.errorNickname.text = messageTime
+        binding.inputNickname.isEnabled = false
+        binding.nickDelete.isVisible = false
     }
 }

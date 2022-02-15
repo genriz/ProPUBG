@@ -17,7 +17,9 @@ open class user(
     var key: String? = null,
     var nickname: String? = null,
     var password: String? = null,
-    var phone_number: String? = null,
+    @Ignore
+    var phoneNumber: String? = null,
+    @Ignore
     var avatarUrl: String? = null,
     var role: String? = null,
     var userId: String? = null

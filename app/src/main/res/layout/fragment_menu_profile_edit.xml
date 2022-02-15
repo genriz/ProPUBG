@@ -45,7 +45,7 @@
                 android:includeFontPadding="false"
                 android:textSize="16sp"
                 android:layout_marginTop="2dp"
-                android:text="@{user.user.phone_number}"/>
+                android:text="@{user.user.phoneNumber}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -66,20 +66,33 @@
                 android:layout_marginTop="6dp"
                 android:text="@string/nick"
                 android:layout_marginStart="17dp"/>
-            <EditText
-                android:layout_marginTop="3dp"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/inputNickname"
-                android:inputType="text"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="12dp"
-                android:imeOptions="actionDone"
-                android:text="@{user.user.nickname}"
-                android:background="@drawable/edittext_menu_back"
-                tools:ignore="Autofill,LabelFor,TextFields" />
+                android:layout_height="wrap_content">
+                <EditText
+                    android:layout_marginTop="3dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/inputNickname"
+                    android:inputType="text"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp"
+                    android:hint="@string/nick_new"
+                    android:imeOptions="actionDone"
+                    android:text="@{user.user.nickname}"
+                    android:background="@drawable/edittext_menu_back"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+                <ImageView
+                    android:id="@+id/nickDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_advert"
+                    android:layout_gravity="end|center_vertical"
+                    android:padding="12dp"
+                    tools:ignore="ContentDescription" />
+            </FrameLayout>
             <TextView
                 android:id="@+id/errorNickname"
                 android:layout_width="match_parent"
@@ -111,7 +124,7 @@
                 android:paddingBottom="8dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="12dp"
-                android:text="@{user.user.phone_number}"
+                android:text="@{user.user.phoneNumber}"
                 android:background="@drawable/edittext_menu_back"
                 tools:ignore="Autofill,LabelFor,TextFields" />
         </LinearLayout>

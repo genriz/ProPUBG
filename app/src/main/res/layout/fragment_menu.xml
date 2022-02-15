@@ -45,7 +45,7 @@
                 android:includeFontPadding="false"
                 android:textSize="16sp"
                 android:layout_marginTop="2dp"
-                android:text="@{user.user.phone_number}"/>
+                android:text="@{user.user.phoneNumber}"/>
         </LinearLayout>
 
         <LinearLayout

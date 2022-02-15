@@ -3,28 +3,21 @@ package app.propubg.login.ui
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import app.propubg.R
 import app.propubg.databinding.FragmentSmsCodeBinding
 import app.propubg.login.model.StartViewModel
 import com.google.firebase.auth.PhoneAuthProvider
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -306,19 +299,18 @@ class FragmentSmsCode: Fragment() {
 
 
         binding.btnConfirmCode.setOnClickListener {
-            val sb = StringBuilder()
-            binding.inputPhone.children.forEach {
-                sb.append((it as EditText).text.toString())
-            }
-            viewModel.code.value = sb.toString()
-            viewModel.error.value = ""
             checkCode()
+        }
+
+        binding.btnBack.setOnClickListener {
+            (activity as StartActivity).onBackPressed()
         }
     }
 
     private fun clearCode(){
         binding.inputPhone.children.forEach {
             (it as EditText).setText("")
+            it.isSelected = false
         }
     }
 
@@ -329,6 +321,12 @@ class FragmentSmsCode: Fragment() {
     }
 
     private fun checkCode(){
+        val sb = StringBuilder()
+        binding.inputPhone.children.forEach {
+            sb.append((it as EditText).text.toString())
+        }
+        viewModel.code.value = sb.toString()
+        viewModel.error.value = ""
         val credential = PhoneAuthProvider
             .getCredential(viewModel.verificationId, viewModel.code.value?:"")
         (activity as StartActivity).signInWithPhoneAuthCredential(credential)

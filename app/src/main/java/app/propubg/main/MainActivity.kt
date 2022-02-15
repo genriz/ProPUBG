@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("needAuth", true)
             requestForAuth.launch(intent)
         } else {
+            currentUserRealm = realmApp.currentUser()
             initUI()
         }
     }
@@ -319,108 +320,114 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showBottomSheetTournament(id: ObjectId?){
-        id?.let{
-            val tournament = tournamentsViewModel.getTournamentById(id)
-            tournament?.let {
-                binding.bottomSheetTournament.headerDetails
-                    .headerTitle.text = tournament.title
+        tournamentsViewModel.realmReady.observe(this,{ ready ->
+            if (ready){
+                id?.let{
+                    val tournament = tournamentsViewModel.getTournamentById(id)
+                    tournament?.let {
+                        binding.bottomSheetTournament.headerDetails
+                            .headerTitle.text = tournament.title
 
-                binding.bottomSheetTournament.itemWait.postDelayed({
-                    Glide.with(binding.bottomSheetTournament.itemWait)
-                        .asGif().load(R.drawable.wait)
-                        .into(binding.bottomSheetTournament.itemWait)
-                }, 200)
-
-                Glide.with(binding.bottomSheetTournament.tournamentImage)
-                    .load(tournament.imageSrc[0])
-                    .addListener(object: RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean): Boolean {
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean): Boolean {
+                        binding.bottomSheetTournament.itemWait.postDelayed({
                             binding.bottomSheetTournament.itemWait
-                                .visibility= View.GONE
-                            return false
+                                .visibility= View.VISIBLE
+                            Glide.with(binding.bottomSheetTournament.itemWait)
+                                .asGif().load(R.drawable.wait)
+                                .into(binding.bottomSheetTournament.itemWait)
+                        }, 200)
+
+                        Glide.with(binding.bottomSheetTournament.tournamentImage)
+                            .load(tournament.imageSrc[0])
+                            .addListener(object: RequestListener<Drawable> {
+                                override fun onLoadFailed(
+                                    e: GlideException?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    isFirstResource: Boolean): Boolean {
+                                    return false
+                                }
+
+                                override fun onResourceReady(
+                                    resource: Drawable?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    dataSource: DataSource?,
+                                    isFirstResource: Boolean): Boolean {
+                                    binding.bottomSheetTournament.itemWait
+                                        .visibility= View.GONE
+                                    return false
+                                }
+                            })
+                            .into(binding.bottomSheetTournament.tournamentImage)
+
+                        val tournamentItem = TournamentItem()
+                        tournamentItem.tournament = tournament
+                        binding.bottomSheetTournament.tournamentItem = tournamentItem
+                        binding.bottomSheetTournament.executePendingBindings()
+                        sheetTournamentBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+                        binding.bottomSheetTournament.headerDetails.btnClose.setOnClickListener {
+                            onBackPressed()
                         }
-                    })
-                    .into(binding.bottomSheetTournament.tournamentImage)
 
-                val tournamentItem = TournamentItem()
-                tournamentItem.tournament = tournament
-                binding.bottomSheetTournament.tournamentItem = tournamentItem
-                binding.bottomSheetTournament.executePendingBindings()
-                sheetTournamentBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-                binding.bottomSheetTournament.headerDetails.btnClose.setOnClickListener {
-                    onBackPressed()
-                }
-
-                binding.bottomSheetTournament.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
-                binding.bottomSheetTournament.headerDetails.btnOption.setOnClickListener {
-                    Firebase.dynamicLinks.createDynamicLink()
-                        .setDomainUriPrefix("https://link.propubg.app")
-                        .setLink(Uri.parse("https://link.propubg.app/Tournament/${tournament._id}"))
-                        .setSocialMetaTagParameters(
-                            DynamicLink.SocialMetaTagParameters.Builder()
-                                .setImageUrl(Uri.parse(tournament.imageSrc[0]!!))
-                                .setTitle(tournament.title!!)
-                                .build())
-                        .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-                        .setIosParameters(
-                            DynamicLink.IosParameters
-                                .Builder("ProPUBG").build())
-                        .buildShortDynamicLink()
-                        .addOnSuccessListener {
-                            shareLink(it.shortLink.toString())
+                        binding.bottomSheetTournament.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
+                        binding.bottomSheetTournament.headerDetails.btnOption.setOnClickListener {
+                            Firebase.dynamicLinks.createDynamicLink()
+                                .setDomainUriPrefix("https://link.propubg.app")
+                                .setLink(Uri.parse("https://link.propubg.app/Tournament/${tournament._id}"))
+                                .setSocialMetaTagParameters(
+                                    DynamicLink.SocialMetaTagParameters.Builder()
+                                        .setImageUrl(Uri.parse(tournament.imageSrc[0]!!))
+                                        .setTitle(tournament.title!!)
+                                        .build())
+                                .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
+                                .setIosParameters(
+                                    DynamicLink.IosParameters
+                                        .Builder("ProPUBG").build())
+                                .buildShortDynamicLink()
+                                .addOnSuccessListener {
+                                    shareLink(it.shortLink.toString())
+                                }
+                                .addOnFailureListener {
+                                    Log.v("DASD", it.toString())
+                                }
                         }
-                        .addOnFailureListener {
-                            Log.v("DASD", it.toString())
+
+                        binding.bottomSheetTournament.btnRegister.setOnClickListener {
+                            tournament.link?.let{
+                                val intent = Intent()
+                                intent.action = Intent.ACTION_VIEW
+                                intent.data = Uri.parse(it)
+                                startActivity(intent)
+                            }
                         }
-                }
 
-                binding.bottomSheetTournament.btnRegister.setOnClickListener {
-                    tournament.link?.let{
-                        val intent = Intent()
-                        intent.action = Intent.ACTION_VIEW
-                        intent.data = Uri.parse(it)
-                        startActivity(intent)
-                    }
-                }
+                        binding.bottomSheetTournament.btnInstagram.setOnClickListener {
+                            val intent = Intent()
+                            intent.action = Intent.ACTION_VIEW
+                            intent.data = Uri.parse("https://www.instagram.com/propubg.app")
+                            startActivity(intent)
+                        }
 
-                binding.bottomSheetTournament.btnInstagram.setOnClickListener {
-                    val intent = Intent()
-                    intent.action = Intent.ACTION_VIEW
-                    intent.data = Uri.parse("https://www.instagram.com/propubg.app")
-                    startActivity(intent)
-                }
+                        binding.bottomSheetTournament.btnTelegram.setOnClickListener {
+                            val intent = Intent()
+                            intent.action = Intent.ACTION_VIEW
+                            intent.data = Uri.parse("https://t.me/propubg_app")
+                            startActivity(intent)
+                        }
 
-                binding.bottomSheetTournament.btnTelegram.setOnClickListener {
-                    val intent = Intent()
-                    intent.action = Intent.ACTION_VIEW
-                    intent.data = Uri.parse("https://t.me/propubg_app")
-                    startActivity(intent)
-                }
-
-                binding.bottomSheetTournament.txtCopyLink.setOnClickListener {
-                    (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).apply {
-                        setPrimaryClip(ClipData.newPlainText("", tournament.link?:""))
-                        Toast.makeText(this@MainActivity,
-                            getString(R.string.link_copied), Toast.LENGTH_SHORT)
-                            .show()
+                        binding.bottomSheetTournament.txtCopyLink.setOnClickListener {
+                            (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).apply {
+                                setPrimaryClip(ClipData.newPlainText("", tournament.link?:""))
+                                Toast.makeText(this@MainActivity,
+                                    getString(R.string.link_copied), Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
                     }
                 }
             }
-        }
+        })
     }
 
     override fun onBackPressed() {

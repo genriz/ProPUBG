@@ -19,6 +19,7 @@ var currentLanguage = ""
 var currentUser: UserRealm? = null
 var currentUserRealm: User? = null
 var prevPhone: String? = null
+var verificationId: String? = null
 var timerSaved = -1
 var timeExit = -1L
 var currentTimer = 60

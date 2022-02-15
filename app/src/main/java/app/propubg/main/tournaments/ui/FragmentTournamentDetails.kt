@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
-import android.content.Intent.ACTION_VIEW
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -18,9 +17,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import app.propubg.R
 import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentTournamentDetailsBinding
@@ -61,6 +58,8 @@ class FragmentTournamentDetails: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.advertMain.isVisible = false
 
         viewModel.realmReady.observe(viewLifecycleOwner,{
             if (it==true){
@@ -135,7 +134,7 @@ class FragmentTournamentDetails: Fragment() {
             tournament?.link?.let{
                 if (URLUtil.isValidUrl(it)) {
                     val intent = Intent()
-                    intent.action = ACTION_VIEW
+                    intent.action = Intent.ACTION_VIEW
                     intent.data = Uri.parse(it)
                     startActivity(intent)
                 }
@@ -144,14 +143,14 @@ class FragmentTournamentDetails: Fragment() {
 
         binding.btnInstagram.setOnClickListener {
             val intent = Intent()
-            intent.action = ACTION_VIEW
+            intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://www.instagram.com/propubg.app")
             startActivity(intent)
         }
 
         binding.btnTelegram.setOnClickListener {
             val intent = Intent()
-            intent.action = ACTION_VIEW
+            intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://t.me/propubg_app")
             startActivity(intent)
         }

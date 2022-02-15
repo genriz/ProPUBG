@@ -27,7 +27,8 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/imagesLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="1:0.56"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="19dp"
                     app:cardElevation="0dp"
@@ -46,6 +47,7 @@
                         android:background="@color/item_image_back"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:scaleType="centerInside"
                         tools:ignore="ContentDescription"/>
                 </androidx.cardview.widget.CardView>
 

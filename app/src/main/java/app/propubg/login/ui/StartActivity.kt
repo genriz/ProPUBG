@@ -44,6 +44,9 @@ class StartActivity : AppCompatActivity() {
             .getString("user", null), UserRealm::class.java)
         prevPhone = getSharedPreferences("prefs", Context.MODE_PRIVATE)
             .getString("phone", null)
+        verificationId = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getString("verificationId", null)
+        verificationId?.let{viewModel.verificationId = it}
         timerSaved = getSharedPreferences("prefs", Context.MODE_PRIVATE)
             .getInt("timer", -1)
         timeExit = getSharedPreferences("prefs", Context.MODE_PRIVATE)
@@ -123,10 +126,10 @@ class StartActivity : AppCompatActivity() {
         override fun onVerificationFailed(e: FirebaseException) {
             dialogLoading.hide()
             when {
-                e.toString().lowercase(Locale.getDefault()).contains("invalid format") -> {
+                e.message.toString().lowercase(Locale.getDefault()).contains("invalid format") -> {
                     viewModel.error.postValue(getString(R.string.phone_wrong))
                 }
-                e.toString().lowercase(Locale.getDefault()).contains("invalid code") -> {
+                e.message.toString().lowercase(Locale.getDefault()).contains("sms verification code") -> {
                     viewModel.error.postValue(getString(R.string.wrong_sms))
                 }
                 else -> viewModel.error.postValue(e.message?:"Server error")
@@ -148,6 +151,8 @@ class StartActivity : AppCompatActivity() {
             } else {
                 viewModel.startTimer(currentTimer)
             }
+            getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .edit().putString("verificationId", verificationId).apply()
             openSmsFragment()
         }
     }
@@ -182,13 +187,22 @@ class StartActivity : AppCompatActivity() {
                     user?.let{
                         loginRealm(it.uid, it.phoneNumber!!)
                     }
+                    resetValues()
                 } else {
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                        dialogLoading.hide()
                         viewModel.error.postValue(task.exception!!.message)
                     }
                 }
             }
-        resetValues()
+            .addOnFailureListener {
+                dialogLoading.hide()
+                if (it.message.toString().lowercase(Locale.getDefault())
+                        .contains("sms verification code"))
+                    viewModel.error.postValue(getString(R.string.wrong_sms))
+                else viewModel.error.postValue(it.message)
+                viewModel.code.value = ""
+            }
     }
 
     private fun resetValues() {
@@ -198,9 +212,9 @@ class StartActivity : AppCompatActivity() {
             .putLong("timeExit", 0).apply()
         getSharedPreferences("prefs", MODE_PRIVATE).edit()
             .putInt("currentTimer", 60).apply()
-        viewModel.code.value = ""
-        viewModel.verificationId = ""
-        viewModel.phone = ""
+        //viewModel.code.value = ""
+        //viewModel.verificationId = ""
+        //viewModel.phone = ""
         viewModel.error.value = ""
     }
 

@@ -17,6 +17,7 @@ open class resultsOfTournament(
     var author: String? = null,
     var countViews: Long? = null,
     var date: Date? = null,
+    var dayOfTournament: String? = null,
     var deepLink: String? = null,
     @Required
     var imageSrc_en: RealmList<String> = RealmList(),

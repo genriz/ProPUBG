@@ -39,6 +39,7 @@ class MenuViewModel: ViewModel() {
                 realmReady.postValue(true)
             }
         })
+
     }
 
     fun setRussian(){
