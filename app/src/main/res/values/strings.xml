@@ -109,11 +109,11 @@
     <string name="close">Закрыть</string>
     <string name="edit">Изменить</string>
 
-    <string name="global_">Global</string>
+    <string name="global_">Другие регионы</string>
     <string name="cis">CIS</string>
     <string name="eu">EU</string>
     <string name="na">NA</string>
-    <string name="mena">MENA</string>
+    <string name="game">Игровые</string>
 
     <string name="en">Английский</string>
     <string name="ru">Русский</string>

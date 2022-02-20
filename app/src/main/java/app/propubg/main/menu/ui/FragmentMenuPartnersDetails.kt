@@ -76,40 +76,6 @@ class FragmentMenuPartnersDetails: Fragment() {
 
                 binding.headerDetails.headerTitle.text = partner?.title
 
-                if (partner!!.imageSrc!="") {
-                    binding.itemWait.postDelayed({
-                        Glide.with(binding.itemWait).asGif().load(R.drawable.wait)
-                            .into(binding.itemWait)
-                    }, 200)
-
-                    Glide.with(binding.partnerImage).load(partner!!.imageSrc)
-                        .addListener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                binding.itemWait.visibility = View.GONE
-                                return false
-                            }
-                        }).signature(ObjectKey(partner!!.imageSrc!!))
-                        .into(binding.partnerImage)
-                } else {
-                    Glide.with(binding.partnerImage).load(R.drawable.app_logo)
-                        .into(binding.partnerImage)
-                }
-
                 Linkify.addLinks(binding.partnerText, Linkify.ALL)
             }
         })
@@ -141,13 +107,17 @@ class FragmentMenuPartnersDetails: Fragment() {
         binding.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
         binding.headerDetails.btnOption.setOnClickListener {
             partner?.let { partner_ ->
+                val img = if (currentLanguage=="ru") partner_.imageSrc_ru
+                else partner_.imageSrc_en
+                val desc = if (currentLanguage=="ru") partner_.descriptionOfPartner_ru
+                else partner_.descriptionOfPartner_en
                 Firebase.dynamicLinks.createDynamicLink()
                     .setDomainUriPrefix("https://link.propubg.app")
                     .setLink(Uri.parse("https://link.propubg.app/?Partner=${partner_._id}"))
                     .setSocialMetaTagParameters(DynamicLink.SocialMetaTagParameters.Builder()
-                        .setImageUrl(Uri.parse(partner_.imageSrc?:""))
+                        .setImageUrl(Uri.parse(img?:""))
                         .setTitle(partner_.title?:"")
-                        .setDescription(partner_.descriptionOfPartner?:"").build())
+                        .setDescription(desc?:"").build())
                     .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
                     .setIosParameters(DynamicLink.IosParameters
                         .Builder("ProPUBG").build())

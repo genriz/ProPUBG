@@ -31,7 +31,8 @@
                     app:cardElevation="0dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="10dp"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    setImagePartners="@{partnerItem.partner}">
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
@@ -121,11 +122,11 @@
                     android:textColor="@color/text_gray3"
                     android:fontFamily="@font/sfpro_regular"
                     android:includeFontPadding="false"
-                    android:text="@{partnerItem.partner.descriptionOfPartner}"/>
+                    setPartnerDescription="@{partnerItem.partner}"/>
 
 
                 <LinearLayout
-                    android:visibility="@{partnerItem.partner.text==null?View.GONE:View.VISIBLE}"
+                    setPartnerText="@{partnerItem.partner}"
                     android:id="@+id/textLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -144,8 +145,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:fontFamily="@font/sfpro_light"
-                        android:includeFontPadding="false"
-                        android:text="@{partnerItem.partner.text}"/>
+                        android:includeFontPadding="false"/>
                 </LinearLayout>
 
                 <androidx.constraintlayout.widget.Barrier

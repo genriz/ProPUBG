@@ -59,6 +59,11 @@ class FragmentContent: Fragment() {
             }
         }.attach()
 
+        arguments?.let{
+            currentPage = it.get("page") as Int
+        }
+        binding.pagerContent.setCurrentItem(currentPage,false)
+
         binding.pagerContent.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)

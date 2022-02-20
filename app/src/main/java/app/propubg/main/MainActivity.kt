@@ -21,6 +21,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import app.propubg.*
 import app.propubg.databinding.ActivityMainBinding
+import app.propubg.login.model.UserRealm
 import app.propubg.login.ui.StartActivity
 import app.propubg.main.broadcasts.adapters.TeamListAdapter
 import app.propubg.main.broadcasts.model.broadcast
@@ -33,6 +34,7 @@ import app.propubg.main.news.ui.FragmentNews
 import app.propubg.main.tournaments.model.TournamentItem
 import app.propubg.main.tournaments.model.TournamentsViewModel
 import app.propubg.main.tournaments.model.tournament
+import app.propubg.utils.LocalData
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -44,8 +46,9 @@ import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.mixpanel.android.mpmetrics.MixpanelAPI
-import io.realm.Realm
 import org.bson.types.ObjectId
 import java.util.*
 import kotlin.collections.ArrayList
@@ -64,6 +67,7 @@ class MainActivity : AppCompatActivity() {
     private val requestForAuth = registerForActivityResult(ActivityResultContracts
         .StartActivityForResult()){
         if (it.resultCode==Activity.RESULT_OK){
+            currentUserRealm = realmApp.currentUser()
             initUI()
         } else {
             finish()
@@ -73,6 +77,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        currentUser = Gson().fromJson(getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getString("user", null), UserRealm::class.java)
+        getSharedPreferences("prefs", Activity.MODE_PRIVATE)
+            .getString("language", null)?.let{
+                currentLanguage = it
+            }
+
         if (currentUser==null) {
             val intent = Intent(this, StartActivity::class.java)
             intent.putExtra("needAuth", true)
@@ -80,12 +91,17 @@ class MainActivity : AppCompatActivity() {
         } else {
             currentUserRealm = realmApp.currentUser()
             initUI()
+            intent.extras?.let{extras ->
+                if (extras.containsKey("screen"))
+                    processScreen(extras["screen"].toString())
+            }
         }
     }
 
     private fun initUI() {
 
         setMixPanel()
+        setFCM()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
@@ -99,6 +115,32 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomSheetTeams()
         setupBottomSheetTournament()
+    }
+
+    private fun setFCM() {
+        val fcm = FirebaseMessaging.getInstance()
+        if (getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .getBoolean("firstStart", true)){
+            getSharedPreferences("prefs", MODE_PRIVATE).edit()
+                .putBoolean("firstStart", false).apply()
+            fcm.unsubscribeFromTopic("news")
+            fcm.unsubscribeFromTopic("reshuffle")
+            fcm.unsubscribeFromTopic("results")
+            fcm.unsubscribeFromTopic("tournaments")
+            fcm.unsubscribeFromTopic("broadcasts")
+            fcm.unsubscribeFromTopic("informativeContent")
+            fcm.unsubscribeFromTopic("newsContent")
+            fcm.unsubscribeFromTopic("interviewContent")
+        }
+        subscribeToTopics(currentLanguage, fcm)
+    }
+
+    private fun subscribeToTopics(lang: String, fcm: FirebaseMessaging){
+        LocalData.topics.forEach { topic ->
+            fcm.subscribeToTopic("$topic$lang")
+            getSharedPreferences("prefs", MODE_PRIVATE).edit()
+                .putBoolean(topic, true).apply()
+        }
     }
 
     private fun setMixPanel() {
@@ -172,42 +214,66 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun openNewsDeepLink(id: ObjectId?){
-        ((supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
-            .childFragmentManager.fragments[0] as FragmentNews).setPage(1)
-        val news = newsViewModel.getNewsById(id!!)
-        news?.let {
-            openNewsDetails(news)
-        }
+    private fun openNewsScreen(id: ObjectId?){
+        newsViewModel.realmReady.observe(this,{
+            if (it) {
+                val news = newsViewModel.getNewsById(id!!)
+                news?.let {
+                    ((supportFragmentManager
+                        .findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+                        .childFragmentManager.fragments[0] as FragmentNews).setPage(1)
+                    openNewsDetails(news)
+                }
+                if (news==null) Toast.makeText(this, "wrong ID",
+                    Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
-    private fun openReshufflesDeepLink(id: ObjectId?){
-        val reshuffle = newsViewModel.getReshuffleById(id!!)
-        reshuffle?.let {
-            openReshufflesDetails(reshuffle)
-        }
+    private fun openReshufflesScreen(id: ObjectId?){
+        newsViewModel.realmReady.observe(this, {
+            if (it) {
+                val reshuffle = newsViewModel.getReshuffleById(id!!)
+                reshuffle?.let {
+                    openReshufflesDetails(reshuffle)
+                }
+                if (reshuffle==null) Toast.makeText(this, "wrong ID",
+                    Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
-    private fun openTournamentDeepLink(id: ObjectId?, page: Int){
+    private fun openTournamentScreen(id: ObjectId?, page: Int){
         val bundle = Bundle()
         bundle.putSerializable("tournamentId", id)
         bundle.putInt("page", page)
         navController.navigate(R.id.fragmentTournaments, bundle)
     }
 
-    private fun openResultsDeepLink(id: ObjectId?){
+    private fun openResultsScreen(id: ObjectId?){
         val bundle = Bundle()
         bundle.putSerializable("resultsId", id)
         bundle.putInt("menu", 0)
         navController.navigate(R.id.fragmentMenu, bundle)
     }
 
-    private fun openPartnerDeepLink(id: ObjectId?){
+    private fun openPartnerScreen(id: ObjectId?){
         val bundle = Bundle()
         bundle.putSerializable("partnerId", id)
         bundle.putInt("menu", 1)
         navController.navigate(R.id.fragmentMenu, bundle)
+    }
+
+    private fun openContentScreen(page: Int){
+        val bundle = Bundle()
+        bundle.putInt("page", page)
+        navController.navigate(R.id.fragmentContent, bundle)
+    }
+
+    private fun openBroadcastScreen(page: Int){
+        val bundle = Bundle()
+        bundle.putInt("page", page)
+        navController.navigate(R.id.fragmentBroadcasts, bundle)
     }
 
     fun shareLink(link: String){
@@ -257,6 +323,23 @@ class MainActivity : AppCompatActivity() {
             bundle)
     }
 
+    private fun processScreen(screen: String) {
+        when (screen){
+            "newsOthers" -> ((supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+                .childFragmentManager.fragments[0] as FragmentNews).setPage(1)
+            "tournamentsClosed" -> openTournamentScreen(null, 0)
+            "tournamentsOpen" -> openTournamentScreen(null, 1)
+            "tournamentsUpcoming" -> openTournamentScreen(null, 2)
+            "contentEducational" -> openContentScreen(0)
+            "contentInterview" -> openContentScreen(1)
+            "broadcastsLive" -> openBroadcastScreen(1)
+            "broadcastsUpcoming" -> openBroadcastScreen(2)
+            "resultsOfTournaments" -> openFragmentResults()
+            "discordPartners" -> openFragmentPartners()
+        }
+    }
+
     private fun getDynamicLink(linkIntent: Intent){
         Firebase.dynamicLinks
             .getDynamicLink(linkIntent)
@@ -267,26 +350,26 @@ class MainActivity : AppCompatActivity() {
                     val id = it.getQueryParameter(param)
                     when (param){
                         "News" ->{
-                            openNewsDeepLink(ObjectId(id))
+                            openNewsScreen(ObjectId(id))
                         }
                         "Reshuffle" ->{
-                            openReshufflesDeepLink(ObjectId(id))
+                            openReshufflesScreen(ObjectId(id))
                         }
                         "Tournament" ->{
                             val tournament = tournamentsViewModel.getTournamentById(ObjectId(id))
                             tournament?.status?.let{status ->
                                 when (status){
-                                    "Open" -> openTournamentDeepLink(ObjectId(id),1)
-                                    "Closed" -> openTournamentDeepLink(ObjectId(id),0)
-                                    "Upcoming" -> openTournamentDeepLink(ObjectId(id),2)
+                                    "Open" -> openTournamentScreen(ObjectId(id),1)
+                                    "Closed" -> openTournamentScreen(ObjectId(id),0)
+                                    "Upcoming" -> openTournamentScreen(ObjectId(id),2)
                                 }
                             }
                         }
                         "ResultsOfTournament"->{
-                            openResultsDeepLink(ObjectId(id))
+                            openResultsScreen(ObjectId(id))
                         }
                         "Partner"->{
-                            openPartnerDeepLink(ObjectId(id))
+                            openPartnerScreen(ObjectId(id))
                         }
                     }
                 }

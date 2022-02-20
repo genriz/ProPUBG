@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -74,6 +75,8 @@ class FragmentTournaments: Fragment() {
                             (activity as MainActivity).openTournamentDetails(it)
                             arguments = null
                         }
+                        if (tournament==null) Toast.makeText(requireContext(), "wrong ID",
+                            Toast.LENGTH_LONG).show()
                     }
                 }
 

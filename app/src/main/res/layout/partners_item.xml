@@ -102,7 +102,7 @@
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/sfpro_regular"
                     android:includeFontPadding="false"
-                    android:text="@{partnersItem.partner.descriptionOfPartner}"
+                    setPartnerDescription="@{partnersItem.partner}"
                     tools:ignore="SmallSp" />
             </LinearLayout>
 

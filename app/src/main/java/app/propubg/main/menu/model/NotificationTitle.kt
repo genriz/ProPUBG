@@ -8,5 +8,6 @@ data class NotificationTitle (
 
 data class NotificationItem(
     var title: String,
-    var isChecked: Boolean
+    var isChecked: Boolean,
+    var index: Int
     )

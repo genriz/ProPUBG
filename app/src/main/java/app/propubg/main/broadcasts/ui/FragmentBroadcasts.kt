@@ -60,6 +60,10 @@ class FragmentBroadcasts: Fragment() {
             }
         }.attach()
 
+        arguments?.let{
+            currentPage = it.get("page") as Int
+        }
+
         binding.pagerBroadcasts.setCurrentItem(currentPage, false)
 
         binding.pagerBroadcasts.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){

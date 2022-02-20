@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import app.propubg.R
 import app.propubg.currentLanguage
@@ -492,21 +493,47 @@ fun setImagePartners (view: CardView, partner: partner?){
     partner?.let {
         val waitImage = view.findViewById<ImageView>(R.id.partnersImageWait)
         val image = view.findViewById<ImageView>(R.id.partnersImage)
-        partner.imageSrc?.let {
-            if (partner.imageSrc!="") {
+        val img =
+        if (currentLanguage == "ru") {
+            partner.imageSrc_ru
+        } else partner.imageSrc_en
+        img?.let {
+            if (img!="") {
                 waitImage.post {
                     Glide.with(view).asGif().load(R.drawable.wait)
                         .into(waitImage)
                 }
-                Glide.with(view).load(it)
+                Glide.with(view).load(img)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .signature(ObjectKey(it))
+                    .signature(ObjectKey(img))
                     .into(image)
             } else {
                 Glide.with(view).load(R.drawable.item_holder)
                     .into(image)
             }
         }
+    }
+}
+
+@BindingAdapter("setPartnerDescription")
+fun setPartnerDescription (view: TextView, partner: partner?){
+    partner?.let {
+        val text =
+        if (currentLanguage == "ru") partner.descriptionOfPartner_ru
+        else partner.descriptionOfPartner_en
+        if (text!=null&&text!="") view.text = text
+        else view.isVisible = false
+    }
+}
+
+@BindingAdapter("setPartnerText")
+fun setPartnerText (view: LinearLayout, partner: partner?){
+    partner?.let {
+        val text =
+            if (currentLanguage == "ru") partner.text_ru
+            else partner.text_en
+        if (text!=null&&text!="") view.findViewById<TextView>(R.id.partnerText).text = text
+        else view.isVisible = false
     }
 }
 

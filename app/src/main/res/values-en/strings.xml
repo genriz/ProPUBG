@@ -95,11 +95,11 @@
     <string name="close">Close</string>
     <string name="edit">Change</string>
 
-    <string name="global_">Global</string>
+    <string name="global_">Other regions</string>
     <string name="cis">CIS</string>
     <string name="eu">EU</string>
     <string name="na">NA</string>
-    <string name="mena">MENA</string>
+    <string name="game">Games</string>
 
     <string name="en">English</string>
     <string name="ru">Russian</string>

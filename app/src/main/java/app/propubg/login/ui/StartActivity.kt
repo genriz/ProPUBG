@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -83,14 +84,22 @@ class StartActivity : AppCompatActivity() {
 
     }
 
-    fun startMain(){
+    private fun startMain(){
+        Log.v("DASD", "start extras ${intent.extras!=null}")
+        val mainIntent = Intent(this, MainActivity::class.java)
         intent.extras?.let{
-            if (it.getBoolean("needAuth")) {
+            it.keySet().forEach { key ->
+                Log.v("DASD", key)
+            }
+            if (it.getBoolean("needAuth", false)) {
                 setResult(RESULT_OK)
                 finish()
             }
+            if (it.containsKey("screen")){
+                mainIntent.putExtra("screen", it["screen"].toString())
+            } else mainIntent.putExtra("screen", "none")
         }
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(mainIntent)
         finish()
     }
 

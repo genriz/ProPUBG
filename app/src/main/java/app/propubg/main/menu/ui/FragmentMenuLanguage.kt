@@ -15,6 +15,7 @@ import app.propubg.R
 import app.propubg.databinding.FragmentMenuLanguageBinding
 import app.propubg.main.MainActivity
 import app.propubg.main.menu.model.MenuViewModel
+import app.propubg.utils.AppUtils
 import java.util.*
 
 class FragmentMenuLanguage: Fragment() {
@@ -50,6 +51,7 @@ class FragmentMenuLanguage: Fragment() {
             resources.updateConfiguration(config, dm)
             (activity as MainActivity).navController.navigateUp()
             (activity as MainActivity).navController.navigate(R.id.fragmentMenuLanguage)
+            AppUtils().resubscribeTopicsFCM(requireContext(), "ru", "en")
         }
 
         binding.langRussian.setOnClickListener {
@@ -63,6 +65,7 @@ class FragmentMenuLanguage: Fragment() {
             resources.updateConfiguration(config, dm)
             (activity as MainActivity).navController.navigateUp()
             (activity as MainActivity).navController.navigate(R.id.fragmentMenuLanguage)
+            AppUtils().resubscribeTopicsFCM(requireContext(), "en", "ru")
         }
 
         binding.header.btnBack.setOnClickListener {

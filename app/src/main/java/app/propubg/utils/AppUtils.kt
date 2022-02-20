@@ -2,7 +2,10 @@ package app.propubg.utils
 
 import android.content.Context
 import android.text.format.DateUtils
+import androidx.appcompat.app.AppCompatActivity
 import app.propubg.R
+import app.propubg.currentLanguage
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.*
 
 class AppUtils {
@@ -22,6 +25,17 @@ class AppUtils {
             if (date.time>cal.timeInMillis){
                 context.getString(R.string.week_header)
             } else context.getString(R.string.earlier_header)
+        }
+    }
+
+    fun resubscribeTopicsFCM(context: Context, prevLang: String, newLang: String){
+        val fcm = FirebaseMessaging.getInstance()
+        LocalData.topics.forEach { topic ->
+            if (context.getSharedPreferences("prefs", AppCompatActivity.MODE_PRIVATE)
+                    .getBoolean(topic, true)){
+                fcm.unsubscribeFromTopic("$topic$prevLang")
+                fcm.subscribeToTopic("$topic$newLang")
+            }
         }
     }
 }
