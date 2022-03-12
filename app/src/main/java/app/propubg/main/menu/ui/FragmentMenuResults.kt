@@ -93,6 +93,16 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     adapter.updateData(viewModel.searchResults(searchString))
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noResults.visibility = View.VISIBLE
+                                binding.noResults.setText(R.string.search_empty)
+                            }
+                            else binding.noResults.visibility = View.GONE
+                        }
+                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
                     adapter.updateData(viewModel.getResults())
                 }

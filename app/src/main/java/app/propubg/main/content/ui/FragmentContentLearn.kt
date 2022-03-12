@@ -76,6 +76,16 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     adapter.updateData(viewModel.searchContentInformative(searchString))
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noContent.visibility = View.VISIBLE
+                                binding.noContent.setText(R.string.search_empty)
+                            }
+                            else binding.noContent.visibility = View.GONE
+                        }
+                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
                     adapter.updateData(viewModel.getContentInformative())
                 }

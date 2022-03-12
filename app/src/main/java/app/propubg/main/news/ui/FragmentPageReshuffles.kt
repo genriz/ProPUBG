@@ -83,6 +83,7 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
                 viewModel.searchString.observe(viewLifecycleOwner,{
                     it?.let{ searchString ->
                         if (searchString.length>1){
+                            binding.expandLayout.setExpanded(true)
                             adapter.updateData(viewModel.searchReshuffles(searchString))
                             adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
                                 override fun onChanged() {

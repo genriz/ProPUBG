@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageTournamentsBinding
@@ -76,6 +74,16 @@ class FragmentTournamentsUpcoming: Fragment(), TournamentsAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     adapter.updateData(viewModel.searchTournamentsUpcoming(searchString))
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noTournaments.visibility = View.VISIBLE
+                                binding.noTournaments.setText(R.string.search_empty)
+                            }
+                            else binding.noTournaments.visibility = View.GONE
+                        }
+                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
                     adapter.updateData(viewModel.getTournamentsUpcoming())
                 }

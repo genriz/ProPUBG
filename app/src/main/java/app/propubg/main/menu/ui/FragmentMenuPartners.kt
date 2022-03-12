@@ -93,6 +93,16 @@ class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     adapter.updateData(viewModel.searchPartners(searchString))
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noDiscords.visibility = View.VISIBLE
+                                binding.noDiscords.setText(R.string.search_empty)
+                            }
+                            else binding.noDiscords.visibility = View.GONE
+                        }
+                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
                     adapter.updateData(viewModel.getPartners())
                 }

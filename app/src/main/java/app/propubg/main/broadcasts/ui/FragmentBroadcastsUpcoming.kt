@@ -88,6 +88,16 @@ class FragmentBroadcastsUpcoming: Fragment(), BroadcastsAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     adapter.updateData(viewModel.searchBroadcastsUpcoming(searchString))
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noLiveBroadcasts.visibility = View.VISIBLE
+                                binding.noLiveBroadcasts.setText(R.string.search_empty)
+                            }
+                            else binding.noLiveBroadcasts.visibility = View.GONE
+                        }
+                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
                     adapter.updateData(viewModel.getBroadcastsUpcoming())
                 }
