@@ -27,17 +27,15 @@ class ResultsAdapter(data: OrderedRealmCollection<resultsOfTournament?>?,
 
     override fun onBindViewHolder(holder: ResultsViewHolder, position: Int) {
 
-        listener.isEmpty(false)
-
         val results = getItem(position)!!
         val resultsItem = ResultsItem()
         resultsItem.resultsOfTournament = results
         holder.binding.resultsItem = resultsItem
         holder.binding.executePendingBindings()
 
-        if ((position/2f-position/2)==0f){
-            holder.binding.itemDot.visibility = View.VISIBLE
-        } else holder.binding.itemDot.visibility = View.INVISIBLE
+//        if ((position/2f-position/2)==0f){
+//            holder.binding.itemDot.visibility = View.VISIBLE
+//        } else holder.binding.itemDot.visibility = View.INVISIBLE
 
         holder.itemView.setOnClickListener {
             listener.onResultsClick(results)
@@ -50,6 +48,5 @@ class ResultsAdapter(data: OrderedRealmCollection<resultsOfTournament?>?,
 
     interface OnClick{
         fun onResultsClick(resultsOfTournament: resultsOfTournament)
-        fun isEmpty(isEmpty: Boolean)
     }
 }

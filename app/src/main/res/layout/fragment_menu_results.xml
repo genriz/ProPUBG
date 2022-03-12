@@ -27,6 +27,23 @@
                     tools:listitem="@layout/result_tournament_item"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:padding="18dp"
+                        android:gravity="center_horizontal"
+                        android:visibility="gone"
+                        android:id="@+id/noResults"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/sfpro_regular"
+                        android:textSize="14sp"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/text_gray2"/>
+                </RelativeLayout>
+
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/expandLayout"
                     android:layout_width="match_parent"

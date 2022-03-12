@@ -35,7 +35,7 @@
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/bottom_sheet.xml" value="0.14666666666666667" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/bottom_sheet_teams.xml" value="0.15092592592592594" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/bottom_sheet_tournament.xml" value="0.14907407407407408" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/broadcast_item.xml" value="0.16666666666666666" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/broadcast_item.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/content_item.xml" value="0.17552083333333332" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/dialog_loading.xml" value="0.14666666666666667" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_broadcasts.xml" value="0.12962962962962962" />
@@ -45,18 +45,19 @@
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_language.xml" value="0.14666666666666667" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_language_list.xml" value="0.1425925925925926" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_notifications.xml" value="0.14444920702957564" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_partner_details.xml" value="0.14666666666666667" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_partner_details.xml" value="0.16666666666666666" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_partners.xml" value="0.16666666666666666" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_password_change.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_profile.xml" value="0.16666666666666666" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_profile_edit.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_results.xml" value="0.14666666666666667" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_results_details.xml" value="0.22" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_menu_results_details.xml" value="0.16666666666666666" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_news.xml" value="0.12" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_news_details.xml" value="0.12" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_news_details.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_page_broadcasts.xml" value="0.14666666666666667" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_page_news.xml" value="0.13333333333333333" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_page_reshuffles.xml" value="0.1648148148148148" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_page_content.xml" value="0.12685185185185185" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_page_news.xml" value="0.22" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_page_reshuffles.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_page_tournaments.xml" value="0.1712962962962963" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_register1.xml" value="0.16666666666666666" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/fragment_register2.xml" value="0.16666666666666666" />
@@ -82,15 +83,15 @@
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/notification_item.xml" value="0.26140155728587317" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/notification_subtitle_item.xml" value="0.10666666666666667" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/notification_title_item.xml" value="0.13333333333333333" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/partners_item.xml" value="0.10977198697068404" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/reshuffle_item.xml" value="0.17282051282051283" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/result_tournament_item.xml" value="0.14666666666666667" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/partners_item.xml" value="0.22" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/reshuffle_item.xml" value="0.13333333333333333" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/result_tournament_item.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_broadcasts.xml" value="0.17552083333333332" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_news.xml" value="0.11085526315789473" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_partners.xml" value="0.10977198697068404" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_results.xml" value="0.11085526315789473" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_tournaments.xml" value="0.11085526315789473" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/tournament_item.xml" value="0.5" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/tournament_item.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/menu/bottom_menu.xml" value="0.1648148148148148" />
       </map>
     </option>

@@ -18,7 +18,6 @@ class ReshufflesAdapter(data: OrderedRealmCollection<reshuffle?>?,
 
     class ReshufflesViewHolder(val binding: ReshuffleItemBinding):
         RecyclerView.ViewHolder(binding.root) {
-        var data: reshuffle? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,
@@ -30,18 +29,15 @@ class ReshufflesAdapter(data: OrderedRealmCollection<reshuffle?>?,
 
     override fun onBindViewHolder(holder: ReshufflesViewHolder, position: Int) {
 
-        listener.isEmpty(false)
-
         val reshuffle = getItem(position)!!
-        holder.data = reshuffle
         val reshuffleItem = ReshuffleItem()
         reshuffleItem.reshuffle = reshuffle
         holder.binding.reshuffleItem = reshuffleItem
         holder.binding.executePendingBindings()
 
-        if ((position/2f-position/2)==0f){
-            holder.binding.itemDot.visibility = View.VISIBLE
-        } else holder.binding.itemDot.visibility = View.INVISIBLE
+//        if ((position/2f-position/2)==0f){
+//            holder.binding.itemDot.visibility = View.VISIBLE
+//        } else holder.binding.itemDot.visibility = View.INVISIBLE
 
         reshuffle.date?.let{
             val dateHeader = AppUtils()
@@ -72,6 +68,5 @@ class ReshufflesAdapter(data: OrderedRealmCollection<reshuffle?>?,
 
     interface OnClick{
         fun onReshufflesClick(reshuffle: reshuffle)
-        fun isEmpty(isEmpty: Boolean)
     }
 }

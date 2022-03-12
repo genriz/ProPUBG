@@ -12,8 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false">
-        <include layout="@layout/header_layout"
-            android:id="@+id/headerDetails"/>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -101,7 +99,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical|end"
-                        tools:ignore="UseCompoundDrawables">
+                        tools:ignore="UseCompoundDrawables"
+                        android:visibility="gone">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -189,7 +188,8 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-
+        <include layout="@layout/header_layout"
+            android:id="@+id/headerDetails"/>
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="match_parent"

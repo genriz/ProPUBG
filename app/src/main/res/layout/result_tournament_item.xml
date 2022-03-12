@@ -139,7 +139,7 @@
                 setSimpleDate="@{resultsItem.resultsOfTournament.date}"/>
 
             <LinearLayout
-                android:visibility="@{resultsItem.resultsOfTournament.countViews>=0?View.VISIBLE:View.GONE}"
+                android:visibility="invisible"
                 android:id="@+id/countsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -149,6 +149,7 @@
                 android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
+                <!-- android:visibility="@{resultsItem.resultsOfTournament.countViews>=0?View.VISIBLE:View.GONE}" -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -158,8 +159,9 @@
                     android:layout_marginEnd="2dp"
                     tools:ignore="SmallSp"
                     android:text="@{String.valueOf(resultsItem.resultsOfTournament.countViews)}"/>
+
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="18dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_viewers"

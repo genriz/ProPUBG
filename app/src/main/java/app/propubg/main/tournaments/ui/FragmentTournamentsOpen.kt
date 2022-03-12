@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageTournamentsBinding
 import app.propubg.main.MainActivity
@@ -45,6 +46,16 @@ class FragmentTournamentsOpen: Fragment(), TournamentsAdapter.OnClick {
                     binding.recyclerTournaments.setHasFixedSize(true)
                     adapter = TournamentsAdapter(viewModel.getTournamentsOpen(), this)
                     binding.recyclerTournaments.adapter = adapter
+
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noTournaments.visibility = View.VISIBLE
+                                binding.noTournaments.setText(R.string.no_tournaments_opened)
+                            } else binding.noTournaments.visibility = View.GONE
+                        }
+                    })
                 }
             }
         })
@@ -75,10 +86,6 @@ class FragmentTournamentsOpen: Fragment(), TournamentsAdapter.OnClick {
 
     override fun onTournamentClick(tournament: tournament) {
         (activity as MainActivity).openTournamentDetails(tournament)
-    }
-
-    override fun isEmpty(isEmpty: Boolean) {
-        if (!isEmpty) binding.noTournaments.visibility = View.GONE
     }
 
 }

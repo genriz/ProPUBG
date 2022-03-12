@@ -107,7 +107,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="@{partnersItem.partner.countViews>=0?View.VISIBLE:View.GONE}"
+                android:visibility="invisible"
                 android:id="@+id/countsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -117,6 +117,7 @@
                 android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
+                <!-- android:visibility="@{partnersItem.partner.countViews>=0?View.VISIBLE:View.GONE}" -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

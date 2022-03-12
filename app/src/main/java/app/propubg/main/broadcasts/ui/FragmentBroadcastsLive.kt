@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageBroadcastsBinding
 import app.propubg.main.MainActivity
@@ -61,9 +62,17 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
                         }
                     }
                     binding.recyclerBroadcasts.adapter = adapter
-                    if (adapter.data?.size==0)
-                        binding.noLiveBroadcasts.visibility = View.VISIBLE
-                    else binding.noLiveBroadcasts.visibility = View.GONE
+
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noLiveBroadcasts.visibility = View.VISIBLE
+                                binding.noLiveBroadcasts.setText(R.string.no_live_broadcasts)
+                            } else binding.noLiveBroadcasts.visibility = View.GONE
+                        }
+                    })
+
                 }
             }
         })

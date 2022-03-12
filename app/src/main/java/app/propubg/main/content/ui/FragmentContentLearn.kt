@@ -12,6 +12,7 @@ import android.webkit.URLUtil
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageContentBinding
 import app.propubg.main.content.adapters.ContentAdapter
@@ -45,6 +46,16 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
                     binding.recyclerContent.setHasFixedSize(true)
                     adapter = ContentAdapter(viewModel.getContentInformative(), this)
                     binding.recyclerContent.adapter = adapter
+
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noContent.visibility = View.VISIBLE
+                                binding.noContent.setText(R.string.no_content_learn)
+                            } else binding.noContent.visibility = View.GONE
+                        }
+                    })
                 }
             }
         })
@@ -84,7 +95,4 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
         }
     }
 
-    override fun isEmpty(isEmpty: Boolean) {
-        if (!isEmpty) binding.noContent.visibility = View.GONE
-    }
 }

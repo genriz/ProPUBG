@@ -87,20 +87,24 @@ class StartActivity : AppCompatActivity() {
     private fun startMain(){
         Log.v("DASD", "start extras ${intent.extras!=null}")
         val mainIntent = Intent(this, MainActivity::class.java)
+        var needAuth = false
         intent.extras?.let{
             it.keySet().forEach { key ->
                 Log.v("DASD", key)
             }
-            if (it.getBoolean("needAuth", false)) {
-                setResult(RESULT_OK)
-                finish()
-            }
             if (it.containsKey("screen")){
                 mainIntent.putExtra("screen", it["screen"].toString())
             } else mainIntent.putExtra("screen", "none")
+            if (it.getBoolean("needAuth", false)) {
+                needAuth = true
+                setResult(RESULT_OK, mainIntent)
+                finish()
+            }
         }
-        startActivity(mainIntent)
-        finish()
+        if (!needAuth) {
+            startActivity(mainIntent)
+            finish()
+        }
     }
 
     private fun setLanguage() {

@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentMenuPartnersBinding
@@ -61,6 +62,16 @@ class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
                     adapter = PartnersAdapter(viewModel.getPartners(), this)
                     binding.recyclerPartners.setHasFixedSize(true)
                     binding.recyclerPartners.adapter = adapter
+
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noDiscords.visibility = View.VISIBLE
+                                binding.noDiscords.setText(R.string.no_discords)
+                            } else binding.noDiscords.visibility = View.GONE
+                        }
+                    })
                 }
             }
         })
@@ -140,9 +151,5 @@ class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
 
     override fun onPartnerClick(partner: partner) {
         (activity as MainActivity).openPartnerDetails(partner)
-    }
-
-    override fun isEmpty(isEmpty: Boolean) {
-
     }
 }

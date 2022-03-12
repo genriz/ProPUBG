@@ -59,6 +59,13 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
                         adapter.notifyItemChanged(positionStart-1)
                         adapter.notifyItemChanged(positionStart+1)
                     }
+
+                    override fun onChanged() {
+                        super.onChanged()
+                        if (adapter.itemCount==0)
+                            binding.noNews.visibility = View.VISIBLE
+                        else binding.noNews.visibility = View.GONE
+                    }
                 })
 
                 binding.searchNews.searchCancel.setOnClickListener {
@@ -78,6 +85,16 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
                         if (searchString.length>1){
                             binding.expandLayout.setExpanded(true)
                             adapter.updateData(viewModel.searchNews(searchString))
+                            adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                                override fun onChanged() {
+                                    super.onChanged()
+                                    if (adapter.itemCount==0) {
+                                        binding.noNews.visibility = View.VISIBLE
+                                        binding.noNews.setText(R.string.search_empty)
+                                    }
+                                    else binding.noNews.visibility = View.GONE
+                                }
+                            })
                         } else if (searchString.isEmpty()) {
                             adapter.updateData(viewModel.getNews())
                         }
@@ -96,9 +113,4 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
             }
         }
     }
-
-    override fun isEmpty(isEmpty: Boolean) {
-        if (!isEmpty) binding.noNews.visibility = View.GONE
-    }
-
 }

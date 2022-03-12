@@ -161,7 +161,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
-                tools:ignore="UseCompoundDrawables">
+                tools:ignore="UseCompoundDrawables"
+                android:visibility="invisible">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

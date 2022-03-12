@@ -1,5 +1,6 @@
 package app.propubg.main.news.model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.propubg.currentLanguage
@@ -34,7 +35,7 @@ class NewsViewModel:ViewModel() {
     }
 
     fun getNews(): OrderedRealmCollection<news?>?{
-        return if (currentLanguage=="ru") {
+        val news = if (currentLanguage=="ru") {
             realm.where(news::class.java).isNotNull("title_ru")
                 .and().isNotNull("imageSrc_ru")
                 .and().isNotNull("text_ru")
@@ -45,6 +46,7 @@ class NewsViewModel:ViewModel() {
                 .and().isNotNull("text_en")
                 .sort("date", Sort.DESCENDING).findAllAsync()
         }
+        return news
     }
 
     fun searchNews(text: String): OrderedRealmCollection<news?>?{
@@ -76,17 +78,18 @@ class NewsViewModel:ViewModel() {
 
 
     fun getReshuffles(): OrderedRealmCollection<reshuffle?>?{
-        return if (currentLanguage=="ru"){
+        val reshuffles = if (currentLanguage=="ru"){
             realm.where(reshuffle::class.java).isNotNull("title_ru")
                 .and().isNotNull("imageSrc_ru")
-                .and().isNotNull("text_ru")
+                .and().isNotEmpty("text_ru")
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(reshuffle::class.java).isNotNull("title_en")
                 .and().isNotNull("imageSrc_en")
-                .and().isNotNull("text_en")
+                .and().isNotEmpty("text_en")
                 .sort("date", Sort.DESCENDING).findAllAsync()
         }
+        return reshuffles
     }
 
     fun searchReshuffles(text: String): OrderedRealmCollection<reshuffle?>?{

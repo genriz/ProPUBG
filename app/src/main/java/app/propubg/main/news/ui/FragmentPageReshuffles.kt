@@ -2,6 +2,7 @@ package app.propubg.main.news.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +59,13 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
                         adapter.notifyItemChanged(positionStart-1)
                         adapter.notifyItemChanged(positionStart+1)
                     }
+
+                    override fun onChanged() {
+                        super.onChanged()
+                        if (adapter.itemCount==0)
+                            binding.noReshuffles.visibility = View.VISIBLE
+                        else binding.noReshuffles.visibility = View.GONE
+                    }
                 })
 
                 binding.searchReshuffles.searchCancel.setOnClickListener {
@@ -76,20 +84,27 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
                     it?.let{ searchString ->
                         if (searchString.length>1){
                             adapter.updateData(viewModel.searchReshuffles(searchString))
+                            adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                                override fun onChanged() {
+                                    super.onChanged()
+                                    if (adapter.itemCount==0) {
+                                        binding.noReshuffles.visibility = View.VISIBLE
+                                        binding.noReshuffles.setText(R.string.search_empty)
+                                    }
+                                    else binding.noReshuffles.visibility = View.GONE
+                                }
+                            })
                         } else if (searchString.isEmpty()) {
                             adapter.updateData(viewModel.getReshuffles())
                         }
                     }
                 })
+
             }
         })
     }
 
     override fun onReshufflesClick(reshuffle: reshuffle) {
         (activity as MainActivity).openReshufflesDetails(reshuffle)
-    }
-
-    override fun isEmpty(isEmpty: Boolean) {
-        if (!isEmpty) binding.noReshuffles.visibility = View.GONE
     }
 }

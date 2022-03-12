@@ -26,8 +26,6 @@ class ContentAdapter(data: OrderedRealmCollection<content?>?,
 
     override fun onBindViewHolder(holder: TournamentsViewHolder, position: Int) {
 
-        listener.isEmpty(false)
-
         val content = getItem(position)!!
         val contentItem = ContentItem()
         contentItem.content = content
@@ -46,6 +44,5 @@ class ContentAdapter(data: OrderedRealmCollection<content?>?,
 
     interface OnClick{
         fun onWatchClick(content: content)
-        fun isEmpty(isEmpty: Boolean)
     }
 }

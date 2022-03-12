@@ -96,12 +96,21 @@ class MenuViewModel: ViewModel() {
     }
 
     fun getPartners(): OrderedRealmCollection<partner?>?{
-        return realm.where(partner::class.java).isNotNull("title")
-            .and().isNotNull("imageSrc")
-            .and().isNotNull("text")
-            .and().isNotNull("descriptionOfPartner")
-            .and().isNotNull("link")
-            .sort("date", Sort.DESCENDING).findAllAsync()
+        return if (currentLanguage =="ru"){
+            realm.where(partner::class.java).isNotNull("title")
+                .and().isNotNull("imageSrc_ru")
+                .and().isNotNull("text_ru")
+                .and().isNotNull("descriptionOfPartner_ru")
+                .and().isNotNull("link")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+        } else {
+            realm.where(partner::class.java).isNotNull("title")
+                .and().isNotNull("imageSrc_en")
+                .and().isNotNull("text_en")
+                .and().isNotNull("descriptionOfPartner_en")
+                .and().isNotNull("link")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+        }
     }
 
     fun searchPartners(text: String): OrderedRealmCollection<partner?>?{

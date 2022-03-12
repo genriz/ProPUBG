@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "1061337498860",
+    "firebase_url": "https://propubg-ba5b4-default-rtdb.firebaseio.com",
+    "project_id": "propubg-ba5b4",
+    "storage_bucket": "propubg-ba5b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061337498860:android:b03d01d9d98100d590d1c9",
+        "android_client_info": {
+          "package_name": "app.propubg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1061337498860-sj9mmtm09thqqgc64m0kmtnf8r9pa6hd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.propubg",
+            "certificate_hash": "3124e835c80878ddda708d804fc68df01fef2bd7"
+          }
+        },
+        {
+          "client_id": "1061337498860-g30qonpl5mq86233js8trrq1m18f363i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqYy4TqL0am4EqXdE0ZT3k5uFHaq-7SMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1061337498860-g30qonpl5mq86233js8trrq1m18f363i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1061337498860-2qdj09tujv1ou7j0ku0e6i6dv8j6u0go.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ProPUBG",
+                "app_store_id": "1557750315"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

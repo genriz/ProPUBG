@@ -153,42 +153,45 @@
                         android:textColor="@color/text_gray2"
                         android:text="@{newsItem.news.author}"
                         tools:ignore="SmallSp" />
+
                     <LinearLayout
-                        android:visibility="@{newsItem.news.countViews==null?View.GONE:View.VISIBLE}"
-                        android:layout_width="wrap_content"
+                        android:layout_width="6dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="invisible">
+                        <!-- android:visibility="@{newsItem.news.countViews==null?View.GONE:View.VISIBLE}" -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            android:fontFamily="@font/sfpro_regular"
-                            android:textColor="@color/text_gray2"
                             android:layout_marginEnd="2dp"
+                            android:fontFamily="@font/sfpro_regular"
                             android:text="@{String.valueOf(newsItem.news.countViews)}"
+                            android:textColor="@color/text_gray2"
+                            android:textSize="10sp"
                             tools:ignore="SmallSp" />
+
                         <ImageView
-                            android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:src="@drawable/ic_viewers"
                             tools:ignore="ContentDescription" />
                     </LinearLayout>
-                </LinearLayout>
+            </LinearLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_unique"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginEnd="12dp"
-                    tools:ignore="ContentDescription"
-                    android:visibility="@{newsItem.news.uniqueness?View.VISIBLE:View.GONE}"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_unique"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="12dp"
+                tools:ignore="ContentDescription"
+                android:visibility="@{newsItem.news.uniqueness?View.VISIBLE:View.GONE}"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
+</LinearLayout>
 </layout>

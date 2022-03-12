@@ -15,7 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentMenuResultsBinding
@@ -62,6 +62,16 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
                     adapter = ResultsAdapter(viewModel.getResults(), this)
                     binding.recyclerResults.setHasFixedSize(true)
                     binding.recyclerResults.adapter = adapter
+
+                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                        override fun onChanged() {
+                            super.onChanged()
+                            if (adapter.itemCount==0) {
+                                binding.noResults.visibility = View.VISIBLE
+                                binding.noResults.setText(R.string.no_results)
+                            } else binding.noResults.visibility = View.GONE
+                        }
+                    })
                 }
             }
         })
@@ -142,9 +152,5 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
 
     override fun onResultsClick(resultsOfTournament: resultsOfTournament) {
         (activity as MainActivity).openResultsDetails(resultsOfTournament)
-    }
-
-    override fun isEmpty(isEmpty: Boolean) {
-
     }
 }

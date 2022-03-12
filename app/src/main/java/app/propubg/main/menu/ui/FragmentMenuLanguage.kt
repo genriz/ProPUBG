@@ -49,6 +49,7 @@ class FragmentMenuLanguage: Fragment() {
             val config: Configuration = resources.configuration
             config.setLocale(Locale("en"))
             resources.updateConfiguration(config, dm)
+            (activity as MainActivity).recreate()
             (activity as MainActivity).navController.navigateUp()
             (activity as MainActivity).navController.navigate(R.id.fragmentMenuLanguage)
             AppUtils().resubscribeTopicsFCM(requireContext(), "ru", "en")
@@ -63,6 +64,7 @@ class FragmentMenuLanguage: Fragment() {
             val config: Configuration = resources.configuration
             config.setLocale(Locale("ru"))
             resources.updateConfiguration(config, dm)
+            (activity as MainActivity).recreate()
             (activity as MainActivity).navController.navigateUp()
             (activity as MainActivity).navController.navigate(R.id.fragmentMenuLanguage)
             AppUtils().resubscribeTopicsFCM(requireContext(), "en", "ru")

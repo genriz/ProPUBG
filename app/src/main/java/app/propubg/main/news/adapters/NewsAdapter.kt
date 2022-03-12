@@ -30,17 +30,15 @@ class NewsAdapter(data: OrderedRealmCollection<news?>?,
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
 
-        listener.isEmpty(false)
-
         val news = getItem(position)!!
         val newsItem = NewsItem()
         newsItem.news = news
         holder.binding.newsItem = newsItem
         holder.binding.executePendingBindings()
 
-        if ((position/2f-position/2)==0f){
-            holder.binding.itemDot.visibility = View.VISIBLE
-        } else holder.binding.itemDot.visibility = View.INVISIBLE
+//        if ((position/2f-position/2)==0f){
+//            holder.binding.itemDot.visibility = View.VISIBLE
+//        } else holder.binding.itemDot.visibility = View.INVISIBLE
 
         news.date?.let{
             val dateHeader = AppUtils()
@@ -73,6 +71,5 @@ class NewsAdapter(data: OrderedRealmCollection<news?>?,
 
     interface OnClick{
         fun onNewsClick(news: news, imageView: ImageView)
-        fun isEmpty(isEmpty: Boolean)
     }
 }

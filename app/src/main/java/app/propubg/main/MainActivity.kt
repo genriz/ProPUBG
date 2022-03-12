@@ -68,6 +68,9 @@ class MainActivity : AppCompatActivity() {
         .StartActivityForResult()){
         if (it.resultCode==Activity.RESULT_OK){
             currentUserRealm = realmApp.currentUser()
+            it.data?.extras?.let{ data ->
+                intent.putExtra("screen", data["screen"].toString())
+            }
             initUI()
         } else {
             finish()
@@ -91,10 +94,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             currentUserRealm = realmApp.currentUser()
             initUI()
-            intent.extras?.let{extras ->
-                if (extras.containsKey("screen"))
-                    processScreen(extras["screen"].toString())
-            }
         }
     }
 
@@ -104,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         setFCM()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.lifecycleOwner = this
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -112,6 +112,11 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(bottomBar, navController)
 
         getDynamicLink(intent)
+
+        intent.extras?.let{extras ->
+            if (extras.containsKey("screen"))
+                processScreen(extras["screen"].toString())
+        }
 
         setupBottomSheetTeams()
         setupBottomSheetTournament()

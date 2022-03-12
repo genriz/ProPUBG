@@ -27,17 +27,15 @@ class PartnersAdapter(data: OrderedRealmCollection<partner?>?,
 
     override fun onBindViewHolder(holder: PartnersViewHolder, position: Int) {
 
-        listener.isEmpty(false)
-
         val partner = getItem(position)!!
         val partnerItem = PartnerItem()
         partnerItem.partner = partner
         holder.binding.partnersItem = partnerItem
         holder.binding.executePendingBindings()
 
-        if ((position/2f-position/2)==0f){
-            holder.binding.itemDot.visibility = View.VISIBLE
-        } else holder.binding.itemDot.visibility = View.INVISIBLE
+//        if ((position/2f-position/2)==0f){
+//            holder.binding.itemDot.visibility = View.VISIBLE
+//        } else holder.binding.itemDot.visibility = View.INVISIBLE
 
         holder.itemView.setOnClickListener {
             listener.onPartnerClick(partner)
@@ -50,6 +48,5 @@ class PartnersAdapter(data: OrderedRealmCollection<partner?>?,
 
     interface OnClick{
         fun onPartnerClick(partner: partner)
-        fun isEmpty(isEmpty: Boolean)
     }
 }

@@ -154,10 +154,11 @@
                         android:text="@{reshuffleItem.reshuffle.author}"
                         tools:ignore="SmallSp" />
                     <LinearLayout
-                        android:visibility="@{reshuffleItem.reshuffle.countViews==null?View.GONE:View.VISIBLE}"
+                        android:visibility="invisible"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+                        <!-- android:visibility="@{reshuffleItem.reshuffle.countViews==null?View.GONE:View.VISIBLE}" -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -25,7 +25,6 @@
                 android:id="@+id/noTournaments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/no_tournaments"
                 android:fontFamily="@font/sfpro_regular"
                 android:textSize="14sp"
                 android:includeFontPadding="false"

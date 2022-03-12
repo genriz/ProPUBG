@@ -48,7 +48,9 @@
     <string name="tournaments_upcoming">Upcoming</string>
     <string name="tournament_text">Editorial note:</string>
     <string name="copy_link">Copy link</string>
-    <string name="no_tournaments">No available tournaments at the moment</string>
+    <string name="no_tournaments_closed">К сожалению, нет доступных записей о турнирах с закрытой регистрацией🥺\n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻</string>
+    <string name="no_tournaments_opened">К сожалению, сейчас нет турниров с открытой регистрацией😥\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новое мероприятие🤗</string>
+    <string name="no_tournaments_upcoming">К сожалению, сейчас нет турниров с запланированной регистрацией😥 \n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новое мероприятие🤗</string>
     <string name="btn_tournament_register">Register</string>
     <string name="btn_tournament_more">More information</string>
     <string name="btn_tournament_know">Check out the tournament</string>
@@ -61,6 +63,8 @@
 
     <string name="broadcasts">Streams</string>
     <string name="no_live_broadcasts">Все прямые эфиры закончены</string>
+    <string name="no_past_broadcasts">К сожалению, нет доступных записей о завершенных трансляциях🥺 \n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻</string>
+    <string name="no_upcoming_broadcasts">К сожалению, мы еще не подготовили информацию о предстоящих трансляциях🥺\n\nВернитесь сюда чуть – чуть попозже⏳</string>
     <string name="broadcasts_live">Live</string>
     <string name="broadcasts_past">Past</string>
     <string name="broadcasts_upcoming">Upcoming</string>
@@ -74,14 +78,17 @@
     <string name="content">Content</string>
     <string name="content_learn">Educational</string>
     <string name="content_interview">Interview and podcasts</string>
-    <string name="no_content">No available content at the moment</string>
+    <string name="no_content_interview">К сожалению, нет доступных записей с интервью или подкастами🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новый видео – ролик🤗</string>
+    <string name="no_content_learn">К сожалению, нет доступных записей с обучающими роликами🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новый видео – ролик🤗</string>
 
     <string name="menu">Menu</string>
     <string name="password_change">Change password</string>
     <string name="notifications">Notification</string>
     <string name="language">Language</string>
     <string name="results_tournaments">Results of tournaments</string>
+    <string name="no_results">К сожалению, нет доступных записей с результатами турниров🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда здесь появится что - то новое🤗</string>
     <string name="partners">Discord partners</string>
+    <string name="no_discords">К сожалению, нет доступной информации о наших Discord партнерах🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новая запись🤗</string>
     <string name="profile">Profile</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -127,4 +134,6 @@
     <string name="update_app">Please update the app\nto continue using it.</string>
     <string name="update">Update</string>
     <string name="error">Error</string>
+    <string name="search_empty">К сожалению, нам не удалось найти подходящую запись по введенной информации🥺\n\nПопробуйте, пожалуйста, ввести другой текст для поиска⌨</string>
+
 </resources>
