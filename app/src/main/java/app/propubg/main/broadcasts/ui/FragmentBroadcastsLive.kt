@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageBroadcastsBinding
@@ -22,7 +19,6 @@ import app.propubg.main.MainActivity
 import app.propubg.main.broadcasts.adapters.BroadcastsAdapter
 import app.propubg.main.broadcasts.model.BroadcastsViewModel
 import app.propubg.main.broadcasts.model.broadcast
-import app.propubg.main.menu.model.MenuViewModel
 import org.bson.types.ObjectId
 
 
@@ -31,6 +27,7 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
     private lateinit var binding: FragmentPageBroadcastsBinding
     private val viewModel: BroadcastsViewModel by viewModels()
     private lateinit var adapter: BroadcastsAdapter
+    private var isSearching = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,8 +65,12 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
                             super.onChanged()
                             if (adapter.itemCount==0) {
                                 binding.noLiveBroadcasts.visibility = View.VISIBLE
-                                binding.noLiveBroadcasts.setText(R.string.no_live_broadcasts)
-                            } else binding.noLiveBroadcasts.visibility = View.GONE
+                                if (isSearching)
+                                    binding.noLiveBroadcasts.setText(R.string.search_empty)
+                                else
+                                    binding.noLiveBroadcasts.setText(R.string.no_live_broadcasts)
+                            }
+                            else binding.noLiveBroadcasts.visibility = View.GONE
                         }
                     })
 
@@ -92,18 +93,10 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
         viewModel.searchString.observe(viewLifecycleOwner,{
             it?.let{ searchString ->
                 if (searchString.length>1){
+                    isSearching = true
                     adapter.updateData(viewModel.searchBroadcastsLive(searchString))
-                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
-                        override fun onChanged() {
-                            super.onChanged()
-                            if (adapter.itemCount==0) {
-                                binding.noLiveBroadcasts.visibility = View.VISIBLE
-                                binding.noLiveBroadcasts.setText(R.string.search_empty)
-                            }
-                            else binding.noLiveBroadcasts.visibility = View.GONE
-                        }
-                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
+                    isSearching = false
                     adapter.updateData(viewModel.getBroadcastsLive())
                 }
             }

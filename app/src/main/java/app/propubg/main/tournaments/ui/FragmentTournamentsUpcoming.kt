@@ -22,6 +22,7 @@ class FragmentTournamentsUpcoming: Fragment(), TournamentsAdapter.OnClick {
     private lateinit var binding: FragmentPageTournamentsBinding
     private val viewModel: TournamentsViewModel by viewModels()
     private lateinit var adapter: TournamentsAdapter
+    private var isSearching = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,8 +51,12 @@ class FragmentTournamentsUpcoming: Fragment(), TournamentsAdapter.OnClick {
                             super.onChanged()
                             if (adapter.itemCount==0) {
                                 binding.noTournaments.visibility = View.VISIBLE
-                                binding.noTournaments.setText(R.string.no_tournaments_upcoming)
-                            } else binding.noTournaments.visibility = View.GONE
+                                if (isSearching)
+                                    binding.noTournaments.setText(R.string.search_empty)
+                                else
+                                    binding.noTournaments.setText(R.string.no_tournaments_upcoming)
+                            }
+                            else binding.noTournaments.visibility = View.GONE
                         }
                     })
                 }
@@ -73,18 +78,10 @@ class FragmentTournamentsUpcoming: Fragment(), TournamentsAdapter.OnClick {
         viewModel.searchString.observe(viewLifecycleOwner,{
             it?.let{ searchString ->
                 if (searchString.length>1){
+                    isSearching = true
                     adapter.updateData(viewModel.searchTournamentsUpcoming(searchString))
-                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
-                        override fun onChanged() {
-                            super.onChanged()
-                            if (adapter.itemCount==0) {
-                                binding.noTournaments.visibility = View.VISIBLE
-                                binding.noTournaments.setText(R.string.search_empty)
-                            }
-                            else binding.noTournaments.visibility = View.GONE
-                        }
-                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
+                    isSearching = false
                     adapter.updateData(viewModel.getTournamentsUpcoming())
                 }
             }

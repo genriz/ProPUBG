@@ -114,11 +114,19 @@ class MenuViewModel: ViewModel() {
     }
 
     fun searchPartners(text: String): OrderedRealmCollection<partner?>?{
-        return realm.where(partner::class.java).isNotNull("title")
-            .contains("title", text, Case.SENSITIVE)
-            .or().contains("text", text, Case.INSENSITIVE)
-            .or().contains("descriptionOfPartner", text, Case.INSENSITIVE)
-            .sort("date", Sort.DESCENDING).findAllAsync()
+        return if (currentLanguage =="ru") {
+            realm.where(partner::class.java).isNotNull("title")
+                .contains("title", text, Case.SENSITIVE)
+                .or().contains("text_ru", text, Case.INSENSITIVE)
+                .or().contains("descriptionOfPartner_ru", text, Case.INSENSITIVE)
+                .sort("date", Sort.DESCENDING).findAllAsync()
+        } else {
+            realm.where(partner::class.java).isNotNull("title")
+                .contains("title", text, Case.SENSITIVE)
+                .or().contains("text_en", text, Case.INSENSITIVE)
+                .or().contains("descriptionOfPartner_en", text, Case.INSENSITIVE)
+                .sort("date", Sort.DESCENDING).findAllAsync()
+        }
     }
 
     fun getPartnerById(id: ObjectId): partner? {

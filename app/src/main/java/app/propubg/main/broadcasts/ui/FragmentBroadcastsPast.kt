@@ -12,7 +12,6 @@ import android.webkit.URLUtil
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageBroadcastsBinding
@@ -27,6 +26,7 @@ class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick {
     private lateinit var binding: FragmentPageBroadcastsBinding
     private val viewModel: BroadcastsViewModel by viewModels()
     private lateinit var adapter: BroadcastsAdapter
+    private var isSearching = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,8 +64,12 @@ class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick {
                             super.onChanged()
                             if (adapter.itemCount==0) {
                                 binding.noLiveBroadcasts.visibility = View.VISIBLE
-                                binding.noLiveBroadcasts.setText(R.string.no_past_broadcasts)
-                            } else binding.noLiveBroadcasts.visibility = View.GONE
+                                if (isSearching)
+                                    binding.noLiveBroadcasts.setText(R.string.search_empty)
+                                else
+                                    binding.noLiveBroadcasts.setText(R.string.no_past_broadcasts)
+                            }
+                            else binding.noLiveBroadcasts.visibility = View.GONE
                         }
                     })
                 }
@@ -87,18 +91,10 @@ class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick {
         viewModel.searchString.observe(viewLifecycleOwner,{
             it?.let{ searchString ->
                 if (searchString.length>1){
+                    isSearching = true
                     adapter.updateData(viewModel.searchBroadcastsPast(searchString))
-                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
-                        override fun onChanged() {
-                            super.onChanged()
-                            if (adapter.itemCount==0) {
-                                binding.noLiveBroadcasts.visibility = View.VISIBLE
-                                binding.noLiveBroadcasts.setText(R.string.search_empty)
-                            }
-                            else binding.noLiveBroadcasts.visibility = View.GONE
-                        }
-                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
+                    isSearching = false
                     adapter.updateData(viewModel.getBroadcastsPast())
                 }
             }

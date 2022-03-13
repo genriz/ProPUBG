@@ -34,6 +34,7 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
     private val viewModel: MenuViewModel by activityViewModels()
     private lateinit var adapter: ResultsAdapter
     private val advertViewModel: AdvertViewModel by viewModels()
+    private var isSearching = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,8 +69,12 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
                             super.onChanged()
                             if (adapter.itemCount==0) {
                                 binding.noResults.visibility = View.VISIBLE
-                                binding.noResults.setText(R.string.no_results)
-                            } else binding.noResults.visibility = View.GONE
+                                if (isSearching)
+                                    binding.noResults.setText(R.string.search_empty)
+                                else
+                                    binding.noResults.setText(R.string.no_results)
+                            }
+                            else binding.noResults.visibility = View.GONE
                         }
                     })
                 }
@@ -92,18 +97,10 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
         viewModel.searchString.observe(viewLifecycleOwner,{
             it?.let{ searchString ->
                 if (searchString.length>1){
+                    isSearching = true
                     adapter.updateData(viewModel.searchResults(searchString))
-                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
-                        override fun onChanged() {
-                            super.onChanged()
-                            if (adapter.itemCount==0) {
-                                binding.noResults.visibility = View.VISIBLE
-                                binding.noResults.setText(R.string.search_empty)
-                            }
-                            else binding.noResults.visibility = View.GONE
-                        }
-                    })
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
+                    isSearching = false
                     adapter.updateData(viewModel.getResults())
                 }
             }

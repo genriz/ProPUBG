@@ -21,6 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:padding="18dp"
+                android:gravity="center_horizontal"
                 android:visibility="gone"
                 android:id="@+id/noTournaments"
                 android:layout_width="wrap_content"

@@ -39,8 +39,8 @@
     <string name="yesterday_header">YESTERDAY</string>
     <string name="week_header">THIS WEEK</string>
     <string name="earlier_header">EARLIER</string>
-    <string name="no_news">No available news</string>
-    <string name="no_reshuffles">No available reshuffles</string>
+    <string name="no_news">К сожалению, записей в данном разделе еще нет🥺\n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻 \n\nЕсли вы считаете это ошибкой или у вас есть идея для поста, сообщите нам об этом, пожалуйста✍🏻</string>
+    <string name="no_reshuffles">К сожалению, записей в данном разделе еще нет🥺\n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻 \n\nЕсли вы считаете это ошибкой или у вас есть идея для поста, сообщите нам об этом, пожалуйста✍🏻</string>
 
     <string name="tournaments">Tournaments</string>
     <string name="tournaments_open">Opened</string>

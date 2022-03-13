@@ -24,6 +24,7 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
     private lateinit var binding: FragmentPageNewsBinding
     private val viewModel: NewsViewModel by viewModels()
     private lateinit var adapter: NewsAdapter
+    private var isSearching = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,8 +63,13 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
 
                     override fun onChanged() {
                         super.onChanged()
-                        if (adapter.itemCount==0)
+                        if (adapter.itemCount==0) {
                             binding.noNews.visibility = View.VISIBLE
+                            if (isSearching)
+                                binding.noNews.setText(R.string.search_empty)
+                            else
+                                binding.noNews.setText(R.string.no_reshuffles)
+                        }
                         else binding.noNews.visibility = View.GONE
                     }
                 })
@@ -83,19 +89,11 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
                 viewModel.searchString.observe(viewLifecycleOwner,{
                     it?.let{ searchString ->
                         if (searchString.length>1){
+                            isSearching = true
                             binding.expandLayout.setExpanded(true)
                             adapter.updateData(viewModel.searchNews(searchString))
-                            adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
-                                override fun onChanged() {
-                                    super.onChanged()
-                                    if (adapter.itemCount==0) {
-                                        binding.noNews.visibility = View.VISIBLE
-                                        binding.noNews.setText(R.string.search_empty)
-                                    }
-                                    else binding.noNews.visibility = View.GONE
-                                }
-                            })
                         } else if (searchString.isEmpty()) {
+                            isSearching = false
                             adapter.updateData(viewModel.getNews())
                         }
                     }

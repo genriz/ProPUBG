@@ -2,7 +2,6 @@ package app.propubg.main.news.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageReshufflesBinding
@@ -24,6 +22,7 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
     private lateinit var binding: FragmentPageReshufflesBinding
     private val viewModel: NewsViewModel by viewModels()
     private lateinit var adapter: ReshufflesAdapter
+    private var isSearching = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,8 +61,13 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
 
                     override fun onChanged() {
                         super.onChanged()
-                        if (adapter.itemCount==0)
+                        if (adapter.itemCount==0) {
                             binding.noReshuffles.visibility = View.VISIBLE
+                            if (isSearching)
+                                binding.noReshuffles.setText(R.string.search_empty)
+                            else
+                                binding.noReshuffles.setText(R.string.no_reshuffles)
+                        }
                         else binding.noReshuffles.visibility = View.GONE
                     }
                 })
@@ -83,19 +87,11 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
                 viewModel.searchString.observe(viewLifecycleOwner,{
                     it?.let{ searchString ->
                         if (searchString.length>1){
+                            isSearching = true
                             binding.expandLayout.setExpanded(true)
                             adapter.updateData(viewModel.searchReshuffles(searchString))
-                            adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
-                                override fun onChanged() {
-                                    super.onChanged()
-                                    if (adapter.itemCount==0) {
-                                        binding.noReshuffles.visibility = View.VISIBLE
-                                        binding.noReshuffles.setText(R.string.search_empty)
-                                    }
-                                    else binding.noReshuffles.visibility = View.GONE
-                                }
-                            })
                         } else if (searchString.isEmpty()) {
+                            isSearching = false
                             adapter.updateData(viewModel.getReshuffles())
                         }
                     }
