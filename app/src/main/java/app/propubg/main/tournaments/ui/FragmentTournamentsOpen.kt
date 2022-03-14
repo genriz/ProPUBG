@@ -16,6 +16,7 @@ import app.propubg.main.MainActivity
 import app.propubg.main.tournaments.adapters.TournamentsAdapter
 import app.propubg.main.tournaments.model.TournamentsViewModel
 import app.propubg.main.tournaments.model.tournament
+import org.json.JSONObject
 
 class FragmentTournamentsOpen: Fragment(), TournamentsAdapter.OnClick {
 
@@ -31,8 +32,8 @@ class FragmentTournamentsOpen: Fragment(), TournamentsAdapter.OnClick {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_tournaments,
             container, false)
         binding.searchTournament.viewModel = viewModel
-        binding.searchTournament.lifecycleOwner = this
-        binding.lifecycleOwner = this
+        binding.searchTournament.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -90,7 +91,17 @@ class FragmentTournamentsOpen: Fragment(), TournamentsAdapter.OnClick {
     }
 
     override fun onTournamentClick(tournament: tournament) {
-        (activity as MainActivity).openTournamentDetails(tournament)
+        (activity as MainActivity).openTournamentDetails(tournament, "OpenDetails")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Tournaments[Open]")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 
 }

@@ -1,14 +1,12 @@
 package app.propubg
 
 import android.app.Application
-import android.content.Context
 import app.propubg.login.model.UserRealm
-import com.google.gson.Gson
+import app.propubg.login.model.configuration
 import io.realm.Realm
 import io.realm.mongodb.App
 import io.realm.mongodb.AppConfiguration
 import io.realm.mongodb.User
-import com.mixpanel.android.mpmetrics.MixpanelAPI
 
 
 
@@ -23,6 +21,8 @@ var verificationId: String? = null
 var timerSaved = -1
 var timeExit = -1L
 var currentTimer = 60
+var firstStart = true
+var appConfig: configuration? = null
 
 
 class AppPubg: Application() {

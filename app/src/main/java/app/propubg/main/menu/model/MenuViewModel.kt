@@ -60,12 +60,14 @@ class MenuViewModel: ViewModel() {
                 .and().isNotNull("imageSrc_ru")
                 .and().isNotNull("stage_ru")
                 .and().isNotNull("author")
+                .and().isNotNull("dayOfTournament")
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(resultsOfTournament::class.java).isNotNull("title")
                 .and().isNotNull("imageSrc_en")
                 .and().isNotNull("stage_en")
                 .and().isNotNull("author")
+                .and().isNotNull("dayOfTournament")
                 .sort("date", Sort.DESCENDING).findAllAsync()
         }
     }
@@ -98,14 +100,12 @@ class MenuViewModel: ViewModel() {
     fun getPartners(): OrderedRealmCollection<partner?>?{
         return if (currentLanguage =="ru"){
             realm.where(partner::class.java).isNotNull("title")
-                .and().isNotNull("imageSrc_ru")
                 .and().isNotNull("text_ru")
                 .and().isNotNull("descriptionOfPartner_ru")
                 .and().isNotNull("link")
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(partner::class.java).isNotNull("title")
-                .and().isNotNull("imageSrc_en")
                 .and().isNotNull("text_en")
                 .and().isNotNull("descriptionOfPartner_en")
                 .and().isNotNull("link")
@@ -116,15 +116,22 @@ class MenuViewModel: ViewModel() {
     fun searchPartners(text: String): OrderedRealmCollection<partner?>?{
         return if (currentLanguage =="ru") {
             realm.where(partner::class.java).isNotNull("title")
+                .and().isNotNull("text_ru")
+                .and().isNotNull("descriptionOfPartner_ru")
+                .and().isNotNull("link")
                 .contains("title", text, Case.SENSITIVE)
                 .or().contains("text_ru", text, Case.INSENSITIVE)
                 .or().contains("descriptionOfPartner_ru", text, Case.INSENSITIVE)
+                .or().contains("regions", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(partner::class.java).isNotNull("title")
+                .and().isNotNull("text_en")
+                .and().isNotNull("descriptionOfPartner_en")
+                .and().isNotNull("link")
                 .contains("title", text, Case.SENSITIVE)
                 .or().contains("text_en", text, Case.INSENSITIVE)
-                .or().contains("descriptionOfPartner_en", text, Case.INSENSITIVE)
+                .or().contains("regions", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         }
     }

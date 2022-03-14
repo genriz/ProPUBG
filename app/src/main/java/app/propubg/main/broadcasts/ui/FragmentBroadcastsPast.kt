@@ -20,6 +20,7 @@ import app.propubg.main.broadcasts.adapters.BroadcastsAdapter
 import app.propubg.main.broadcasts.model.BroadcastsViewModel
 import app.propubg.main.broadcasts.model.broadcast
 import org.bson.types.ObjectId
+import org.json.JSONObject
 
 class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick {
 
@@ -35,8 +36,8 @@ class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_broadcasts,
             container, false)
         binding.searchBroadcasts.viewModel = viewModel
-        binding.searchBroadcasts.lifecycleOwner = this
-        binding.lifecycleOwner = this
+        binding.searchBroadcasts.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -126,6 +127,16 @@ class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick {
 
     override fun isEmpty(isEmpty: Boolean) {
         if (!isEmpty) binding.noLiveBroadcasts.visibility = View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Broadcasts[Past]")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 
 }

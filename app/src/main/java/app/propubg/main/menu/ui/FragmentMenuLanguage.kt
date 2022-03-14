@@ -16,6 +16,7 @@ import app.propubg.databinding.FragmentMenuLanguageBinding
 import app.propubg.main.MainActivity
 import app.propubg.main.menu.model.MenuViewModel
 import app.propubg.utils.AppUtils
+import org.json.JSONObject
 import java.util.*
 
 class FragmentMenuLanguage: Fragment() {
@@ -30,7 +31,7 @@ class FragmentMenuLanguage: Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu_language,
             container, false)
         binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -73,5 +74,15 @@ class FragmentMenuLanguage: Fragment() {
         binding.header.btnBack.setOnClickListener {
             (activity as MainActivity).onBackPressed()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Language")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 }

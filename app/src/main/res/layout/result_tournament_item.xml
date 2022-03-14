@@ -72,6 +72,39 @@
                     tools:ignore="SmallSp"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/results_day_back"
+                    android:orientation="horizontal"
+                    android:paddingStart="4dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="3dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sfpro_thin"
+                        android:includeFontPadding="false"
+                        android:text="@string/day"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:fontFamily="@font/sfpro_thin"
+                        android:includeFontPadding="false"
+                        android:text="@{resultsItem.resultsOfTournament.dayOfTournament}"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+                </LinearLayout>
             </RelativeLayout>
 
             <LinearLayout

@@ -326,8 +326,8 @@ fun setImageContent (view: RelativeLayout, content: content){
         Glide.with(view).asGif().load(R.drawable.wait)
             .into(waitImage)
     }
-    if (content.imageOfContentSrc!=null&&content.imageOfContentSrc!=""){
-        Glide.with(view).load(content.imageOfContentSrc)
+    if (content.imageSrc!=null&&content.imageSrc!=""){
+        Glide.with(view).load(content.imageSrc)
             .addListener(object: RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
@@ -363,7 +363,7 @@ fun setTitleContent (view: TextView, content: content){
 
 @BindingAdapter("setImageAuthor")
 fun setImageAuthor (view: ImageView, content: content){
-    Glide.with(view).load(content.imageOfAuthorSrc).into(view)
+    Glide.with(view).load(content.imageSrc).into(view)
 }
 
 @BindingAdapter("setBtnTeamsBroadcast")

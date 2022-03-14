@@ -23,7 +23,9 @@
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/ic_thumb.xml" value="0.19166666666666668" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/menu_lang_back.xml" value="0.11986970684039087" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/progress_loading.xml" value="0.19166666666666668" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/region_back.xml" value="0.15925925925925927" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/region_back2.xml" value="0.19166666666666668" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/results_day_back.xml" value="0.15925925925925927" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/selected_dot.xml" value="0.18611111111111112" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/switch_settings.xml" value="0.19166666666666668" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/drawable/switch_thumb.xml" value="0.19166666666666668" />
@@ -85,7 +87,7 @@
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/notification_title_item.xml" value="0.13333333333333333" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/partners_item.xml" value="0.22" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/reshuffle_item.xml" value="0.13333333333333333" />
-        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/result_tournament_item.xml" value="0.22" />
+        <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/result_tournament_item.xml" value="0.5" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_broadcasts.xml" value="0.17552083333333332" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_news.xml" value="0.11085526315789473" />
         <entry key="..\:/AndroidProjects/ProPUBG/app/src/main/res/layout/search_layout_partners.xml" value="0.10977198697068404" />

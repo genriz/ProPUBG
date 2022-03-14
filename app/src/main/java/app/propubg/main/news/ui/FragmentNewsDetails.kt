@@ -1,7 +1,6 @@
 package app.propubg.main.news.ui
 
 import android.content.Intent
-import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +12,6 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import app.propubg.R
 import app.propubg.currentLanguage
@@ -48,7 +46,7 @@ class FragmentNewsDetails: Fragment() {
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news_details,
             container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -62,21 +60,32 @@ class FragmentNewsDetails: Fragment() {
                 news = viewModel.getNewsById(
                     requireArguments().getSerializable("newsId") as ObjectId)
                 images.clear()
-                if (currentLanguage=="ru") images.addAll(news!!.imageSrc_ru)
-                else images.addAll(news!!.imageSrc_en)
-                adapter = DetailsImagesAdapter(images)
+                news?.let{ news_->
+                    if (currentLanguage=="ru") images.addAll(news_.imageSrc_ru)
+                    else images.addAll(news_.imageSrc_en)
+                    adapter = DetailsImagesAdapter(images)
 
-                binding.newsItemPager.adapter = adapter
+                    binding.newsItemPager.adapter = adapter
 
-                binding.dots.visibility =
-                    if (images.size>1) View.VISIBLE
-                    else View.GONE
-                binding.dots.setViewPager2(binding.newsItemPager)
+                    binding.dots.visibility =
+                        if (images.size>1) View.VISIBLE
+                        else View.GONE
+                    binding.dots.setViewPager2(binding.newsItemPager)
 
-                val newsItem = NewsItem()
-                newsItem.news = news
-                binding.newsItem = newsItem
-                binding.executePendingBindings()
+                    val newsItem = NewsItem()
+                    newsItem.news = news_
+                    binding.newsItem = newsItem
+                    binding.executePendingBindings()
+
+                    val title = if (currentLanguage=="ru") news_.title_ru
+                    else news_.title_en
+                    val json = JSONObject()
+                    json.put("Screen", "OthersDetails")
+                    json.put("ObjectID", news_._id.toString())
+                    json.put("Title", title)
+                    json.put("Regions", news_.getRegionList())
+                    (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+                }
             }
         })
 
@@ -87,38 +96,53 @@ class FragmentNewsDetails: Fragment() {
         binding.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
         binding.headerDetails.btnOption.setOnClickListener {
             news?.let { news_ ->
-                Firebase.dynamicLinks.createDynamicLink()
-                    .setDomainUriPrefix("https://link.propubg.app")
-                    .setLink(Uri.parse("https://link.propubg.app/?News=${news_._id}"))
-                    .setSocialMetaTagParameters(DynamicLink.SocialMetaTagParameters.Builder()
-                        .setImageUrl(if (currentLanguage=="ru") Uri.parse(news_.imageSrc_ru[0]!!)
-                        else Uri.parse(news_.imageSrc_en[0]!!))
-                        .setTitle(if (currentLanguage=="ru") news_.title_ru!!
-                        else news_.title_en!!).build())
-                    .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-                    .setIosParameters(DynamicLink.IosParameters
-                        .Builder("ProPUBG").build())
-                    .buildShortDynamicLink()
-                    .addOnSuccessListener {
-                        (activity as MainActivity).shareLink(it.shortLink.toString())
-                    }
-                    .addOnFailureListener {
-                        Log.v("DASD", it.toString())
-                    }
+                val link = if (currentLanguage=="ru")
+                    news_.dynamicLink_ru?:""
+                else news_.dynamicLink_en?:""
+                if (link!=""){
+                    (activity as MainActivity).shareLink(link)
+                } else {
+                    Firebase.dynamicLinks.createDynamicLink()
+                        .setDomainUriPrefix("https://link.propubg.app")
+                        .setLink(Uri.parse("https://link.propubg.app/?News=${news_._id}"))
+                        .setSocialMetaTagParameters(
+                            DynamicLink.SocialMetaTagParameters.Builder()
+                                .setImageUrl(
+                                    if (currentLanguage == "ru") Uri.parse(news_.imageSrc_ru[0]!!)
+                                    else Uri.parse(news_.imageSrc_en[0]!!)
+                                )
+                                .setTitle(
+                                    if (currentLanguage == "ru") news_.title_ru!!
+                                    else news_.title_en!!
+                                ).build()
+                        )
+                        .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
+                        .setIosParameters(
+                            DynamicLink.IosParameters
+                                .Builder("ProPUBG").build()
+                        )
+                        .buildShortDynamicLink()
+                        .addOnSuccessListener {
+                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                        }
+                        .addOnFailureListener {
+                            Log.v("DASD", it.toString())
+                        }
+                }
             }
 
         }
 
         binding.btnInstagram.setOnClickListener {
             val intent = Intent()
-            intent.action = ACTION_VIEW
+            intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://www.instagram.com/propubg.app")
             startActivity(intent)
         }
 
         binding.btnTelegram.setOnClickListener {
             val intent = Intent()
-            intent.action = ACTION_VIEW
+            intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://t.me/propubg_app")
             startActivity(intent)
         }

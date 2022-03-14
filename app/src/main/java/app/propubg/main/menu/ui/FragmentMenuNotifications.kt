@@ -32,7 +32,7 @@ class FragmentMenuNotifications: Fragment(), NotificationsAdapter.OnClickListene
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_menu_notifications, container,false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -85,6 +85,16 @@ class FragmentMenuNotifications: Fragment(), NotificationsAdapter.OnClickListene
         }
         (activity as MainActivity).mixpanelAPI!!.track("Changed subscription", json)
         Log.v("DASD", json.toString())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Notifications")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 
 }

@@ -16,6 +16,7 @@ import app.propubg.main.MainActivity
 import app.propubg.main.news.adapters.ReshufflesAdapter
 import app.propubg.main.news.model.NewsViewModel
 import app.propubg.main.news.model.reshuffle
+import org.json.JSONObject
 
 class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
 
@@ -31,8 +32,8 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_reshuffles,
             container, false)
         binding.searchReshuffles.viewModel = viewModel
-        binding.searchReshuffles.lifecycleOwner = this
-        binding.lifecycleOwner = this
+        binding.searchReshuffles.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -103,5 +104,15 @@ class FragmentPageReshuffles: Fragment(), ReshufflesAdapter.OnClick {
 
     override fun onReshufflesClick(reshuffle: reshuffle) {
         (activity as MainActivity).openReshufflesDetails(reshuffle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "News[Reshuffles]")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 }

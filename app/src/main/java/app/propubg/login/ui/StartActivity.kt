@@ -23,7 +23,6 @@ import app.propubg.main.MainActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.gson.Gson
-import io.realm.Realm
 import io.realm.mongodb.Credentials
 import io.realm.mongodb.functions.Functions
 import org.bson.BsonValue
@@ -54,6 +53,8 @@ class StartActivity : AppCompatActivity() {
             .getLong("timeExit", -1)
         currentTimer = getSharedPreferences("prefs", Context.MODE_PRIVATE)
             .getInt("currentTimer", 60)
+        firstStart = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getBoolean("firstStart", true)
 
         setLanguage()
 
@@ -85,7 +86,6 @@ class StartActivity : AppCompatActivity() {
     }
 
     private fun startMain(){
-        Log.v("DASD", "start extras ${intent.extras!=null}")
         val mainIntent = Intent(this, MainActivity::class.java)
         var needAuth = false
         intent.extras?.let{

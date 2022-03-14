@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import app.propubg.R
+import app.propubg.appConfig
 import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentMenuResultsDetailsBinding
 import app.propubg.main.MainActivity
@@ -46,7 +47,7 @@ class FragmentMenuResultsDetails: Fragment() {
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu_results_details,
             container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -59,24 +60,35 @@ class FragmentMenuResultsDetails: Fragment() {
                 resultsOfTournament = viewModel.getResultsById(
                     requireArguments()
                         .getSerializable("resultsId") as ObjectId)
-                val resultsItem = ResultsItem()
-                resultsItem.resultsOfTournament = resultsOfTournament
-                binding.resultsItem = resultsItem
-                binding.executePendingBindings()
+                resultsOfTournament?.let{ resultsOfTournament_ ->
+                    val resultsItem = ResultsItem()
+                    resultsItem.resultsOfTournament = resultsOfTournament_
+                    binding.resultsItem = resultsItem
+                    binding.executePendingBindings()
 
-                images.clear()
-                if (currentLanguage=="ru") images.addAll(resultsOfTournament!!.imageSrc_ru)
-                else images.addAll(resultsOfTournament!!.imageSrc_en)
-                adapter = DetailsImagesAdapter(images)
+                    images.clear()
+                    if (currentLanguage=="ru") images.addAll(resultsOfTournament_.imageSrc_ru)
+                    else images.addAll(resultsOfTournament_.imageSrc_en)
+                    adapter = DetailsImagesAdapter(images)
 
-                binding.headerDetails.headerTitle.text = resultsOfTournament?.title
+                    binding.headerDetails.headerTitle.text = resultsOfTournament_.title
 
-                binding.resultsItemPager.adapter = adapter
+                    binding.resultsItemPager.adapter = adapter
 
-                binding.dots.visibility =
-                    if (images.size>1) View.VISIBLE
-                    else View.GONE
-                binding.dots.setViewPager2(binding.resultsItemPager)
+                    binding.dots.visibility =
+                        if (images.size>1) View.VISIBLE
+                        else View.GONE
+                    binding.dots.setViewPager2(binding.resultsItemPager)
+
+                    val title = resultsOfTournament_.title
+                    val json = JSONObject()
+                    json.put("Screen", "Tournament Results Details")
+                    json.put("ObjectID", resultsOfTournament_._id.toString())
+                    json.put("Title", title)
+                    json.put("Regions", resultsOfTournament_.getRegionList())
+                    (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+
+                }
             }
         })
 
@@ -87,41 +99,60 @@ class FragmentMenuResultsDetails: Fragment() {
         binding.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
         binding.headerDetails.btnOption.setOnClickListener {
             resultsOfTournament?.let { results_ ->
-                Firebase.dynamicLinks.createDynamicLink()
-                    .setDomainUriPrefix("https://link.propubg.app")
-                    .setLink(Uri.parse("https://link.propubg.app/?ResultsOfTournament=${results_._id}"))
-                    .setSocialMetaTagParameters(DynamicLink.SocialMetaTagParameters.Builder()
-                        .setImageUrl(if (currentLanguage=="ru") Uri.parse(results_.imageSrc_ru[0]!!)
-                        else Uri.parse(results_.imageSrc_en[0]!!))
-                        .setTitle(if (currentLanguage=="ru") "${results_.title} ${results_.stage_ru}"
-                        else "${results_.title} ${results_.stage_en}")
-                        .setDescription(getString(R.string.results_text)).build())
-                    .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-                    .setIosParameters(DynamicLink.IosParameters
-                        .Builder("ProPUBG").build())
-                    .buildShortDynamicLink()
-                    .addOnSuccessListener {
-                        (activity as MainActivity).shareLink(it.shortLink.toString())
-                    }
-                    .addOnFailureListener {
-                        Log.v("DASD", it.toString())
-                    }
+                val link = if (currentLanguage=="ru")
+                    results_.dynamicLink_ru?:""
+                else results_.dynamicLink_en?:""
+                if (link!=""){
+                    (activity as MainActivity).shareLink(link)
+                } else {
+                    Firebase.dynamicLinks.createDynamicLink()
+                        .setDomainUriPrefix("https://link.propubg.app")
+                        .setLink(Uri.parse("https://link.propubg.app/?ResultsOfTournament=${results_._id}"))
+                        .setSocialMetaTagParameters(
+                            DynamicLink.SocialMetaTagParameters.Builder()
+                                .setImageUrl(
+                                    if (currentLanguage == "ru") Uri.parse(results_.imageSrc_ru[0]!!)
+                                    else Uri.parse(results_.imageSrc_en[0]!!)
+                                )
+                                .setTitle(
+                                    if (currentLanguage == "ru") "${results_.title} ${results_.stage_ru}"
+                                    else "${results_.title} ${results_.stage_en}"
+                                )
+                                .setDescription(getString(R.string.results_text)).build()
+                        )
+                        .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
+                        .setIosParameters(
+                            DynamicLink.IosParameters
+                                .Builder("ProPUBG").build()
+                        )
+                        .buildShortDynamicLink()
+                        .addOnSuccessListener {
+                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                        }
+                        .addOnFailureListener {
+                            Log.v("DASD", it.toString())
+                        }
+                }
             }
 
         }
 
         binding.btnInstagram.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://www.instagram.com/propubg.app")
-            startActivity(intent)
+            appConfig?.socialLink_Instagram?.let{
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(it)
+                startActivity(intent)
+            }
         }
 
         binding.btnTelegram.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://t.me/propubg_app")
-            startActivity(intent)
+            appConfig?.socialLink_Telegram?.let {
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(it)
+                startActivity(intent)
+            }
         }
 
         advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->

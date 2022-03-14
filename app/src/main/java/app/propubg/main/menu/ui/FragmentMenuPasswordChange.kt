@@ -20,7 +20,7 @@ class FragmentMenuPasswordChange: Fragment() {
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu_password_change,
             container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

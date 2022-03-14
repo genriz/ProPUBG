@@ -14,6 +14,7 @@ import app.propubg.databinding.FragmentMenuBinding
 import app.propubg.main.MainActivity
 import app.propubg.main.menu.model.MenuViewModel
 import org.bson.types.ObjectId
+import org.json.JSONObject
 
 class FragmentMenu: Fragment() {
 
@@ -27,7 +28,7 @@ class FragmentMenu: Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu,
             container, false)
         binding.user = currentUser
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -96,5 +97,12 @@ class FragmentMenu: Fragment() {
         super.onResume()
         binding.user = currentUser
         binding.executePendingBindings()
+
+        val json = JSONObject()
+        json.put("Screen", "Menu")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 }

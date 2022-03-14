@@ -42,7 +42,7 @@ class FragmentNews: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 

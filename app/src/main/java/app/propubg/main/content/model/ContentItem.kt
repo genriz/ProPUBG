@@ -18,8 +18,7 @@ open class content(
     var key: String? = null,
     var link: String? = null,
     var typeOfContent: String? = null,
-    var imageOfAuthorSrc: String? = null,
-    var imageOfContentSrc: String? = null,
+    var imageSrc: String? = null,
     @Required
     var languageOfContent: RealmList<String> = RealmList(),
     var title_en: String? = null,

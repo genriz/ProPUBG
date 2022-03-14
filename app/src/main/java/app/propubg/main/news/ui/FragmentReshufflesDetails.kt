@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import app.propubg.R
+import app.propubg.appConfig
 import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentReshufflesDetailsBinding
 import app.propubg.main.MainActivity
@@ -45,7 +46,7 @@ class FragmentReshufflesDetails: Fragment() {
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_reshuffles_details,
             container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -59,18 +60,28 @@ class FragmentReshufflesDetails: Fragment() {
             if (ready){
                 reshuffle = viewModel.getReshuffleById(requireArguments()
                     .getSerializable("reshuffleId") as ObjectId)
+                reshuffle?.let{ reshuffle_ ->
+                    val images = ArrayList<String>()
+                    if (currentLanguage=="ru") images.addAll(reshuffle_.imageSrc_ru)
+                    else images.addAll(reshuffle_.imageSrc_en)
+                    adapter = DetailsImagesAdapter(images)
+                    binding.newsItemPager.adapter = adapter
 
-                val images = ArrayList<String>()
-                if (currentLanguage=="ru") images.addAll(reshuffle!!.imageSrc_ru)
-                else images.addAll(reshuffle!!.imageSrc_en)
-                adapter = DetailsImagesAdapter(images)
-                binding.newsItemPager.adapter = adapter
+                    val reshuffleItem = ReshuffleItem()
+                    reshuffleItem.reshuffle = reshuffle_
+                    binding.reshuffleItem = reshuffleItem
+                    binding.executePendingBindings()
 
-                val reshuffleItem = ReshuffleItem()
-                reshuffleItem.reshuffle = reshuffle
-                binding.reshuffleItem = reshuffleItem
-                binding.executePendingBindings()
+                    val title = if (currentLanguage=="ru") reshuffle_.title_ru
+                    else reshuffle_.title_en
+                    val json = JSONObject()
+                    json.put("Screen", "ReshuffleDetails")
+                    json.put("ObjectID", reshuffle_._id.toString())
+                    json.put("Title", title)
+                    json.put("Regions", reshuffle_.getRegionList())
+                    (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
 
+                }
             }
         })
 
@@ -81,40 +92,58 @@ class FragmentReshufflesDetails: Fragment() {
         binding.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
         binding.headerDetails.btnOption.setOnClickListener {
             reshuffle?.let{ reshuffle_ ->
-                Firebase.dynamicLinks.createDynamicLink()
-                    .setDomainUriPrefix("https://link.propubg.app")
-                    .setLink(Uri.parse("https://link.propubg.app/?Reshuffle=${reshuffle_._id}"))
-                    .setSocialMetaTagParameters(
-                        DynamicLink.SocialMetaTagParameters.Builder()
-                            .setImageUrl(if (currentLanguage=="ru") Uri.parse(reshuffle_.imageSrc_ru[0]!!)
-                            else Uri.parse(reshuffle_.imageSrc_en[0]!!))
-                            .setTitle(if (currentLanguage=="ru") reshuffle_.title_ru!!
-                            else reshuffle_.title_en!!).build())
-                    .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-                    .setIosParameters(DynamicLink.IosParameters
-                        .Builder("ProPUBG").build())
-                    .buildShortDynamicLink()
-                    .addOnSuccessListener { link ->
-                        (activity as MainActivity).shareLink(link.shortLink.toString())
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.v("DASD", exception.toString())
-                    }
+                val link = if (currentLanguage=="ru")
+                    reshuffle_.dynamicLink_ru?:""
+                else reshuffle_.dynamicLink_en?:""
+                if (link!=""){
+                    (activity as MainActivity).shareLink(link)
+                } else {
+                    Firebase.dynamicLinks.createDynamicLink()
+                        .setDomainUriPrefix("https://link.propubg.app")
+                        .setLink(Uri.parse("https://link.propubg.app/?Reshuffle=${reshuffle_._id}"))
+                        .setSocialMetaTagParameters(
+                            DynamicLink.SocialMetaTagParameters.Builder()
+                                .setImageUrl(
+                                    if (currentLanguage == "ru") Uri.parse(reshuffle_.imageSrc_ru[0]!!)
+                                    else Uri.parse(reshuffle_.imageSrc_en[0]!!)
+                                )
+                                .setTitle(
+                                    if (currentLanguage == "ru") reshuffle_.title_ru!!
+                                    else reshuffle_.title_en!!
+                                ).build()
+                        )
+                        .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
+                        .setIosParameters(
+                            DynamicLink.IosParameters
+                                .Builder("ProPUBG").build()
+                        )
+                        .buildShortDynamicLink()
+                        .addOnSuccessListener { link ->
+                            (activity as MainActivity).shareLink(link.shortLink.toString())
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.v("DASD", exception.toString())
+                        }
+                }
             }
         }
 
         binding.btnInstagram.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://www.instagram.com/propubg.app")
-            startActivity(intent)
+            appConfig?.socialLink_Instagram?.let{
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(it)
+                startActivity(intent)
+            }
         }
 
         binding.btnTelegram.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://t.me/propubg_app")
-            startActivity(intent)
+            appConfig?.socialLink_Telegram?.let {
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(it)
+                startActivity(intent)
+            }
         }
 
         advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->

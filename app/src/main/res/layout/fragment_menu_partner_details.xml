@@ -34,11 +34,11 @@
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:id="@+id/itemWait"
+                        android:id="@+id/partnersImageWait"
                         android:layout_gravity="center"
                         tools:ignore="ContentDescription" />
                     <ImageView
-                        android:id="@+id/partnerImage"
+                        android:id="@+id/partnersImage"
                         android:adjustViewBounds="true"
                         android:background="@color/item_image_back"
                         android:layout_width="match_parent"

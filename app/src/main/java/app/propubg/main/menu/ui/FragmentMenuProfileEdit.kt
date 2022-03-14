@@ -23,6 +23,7 @@ import com.google.gson.Gson
 import io.realm.mongodb.functions.Functions
 import org.bson.BsonBoolean
 import org.bson.BsonValue
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,7 +38,7 @@ class FragmentMenuProfileEdit: Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu_profile_edit,
             container, false)
         binding.user = currentUser
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -144,5 +145,15 @@ class FragmentMenuProfileEdit: Fragment() {
         binding.errorNickname.text = messageTime
         binding.inputNickname.isEnabled = false
         binding.nickDelete.isVisible = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Profile")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 }

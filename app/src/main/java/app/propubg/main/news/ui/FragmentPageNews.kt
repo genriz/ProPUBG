@@ -13,11 +13,13 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageNewsBinding
+import app.propubg.firstStart
 import app.propubg.main.MainActivity
 import app.propubg.main.news.adapters.NewsAdapter
 import app.propubg.main.news.model.NewsViewModel
 import app.propubg.main.news.model.news
 import app.propubg.realmApp
+import org.json.JSONObject
 
 class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
 
@@ -33,8 +35,8 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_news,
             container, false)
         binding.searchNews.viewModel = viewModel
-        binding.searchNews.lifecycleOwner = this
-        binding.lifecycleOwner = this
+        binding.searchNews.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -110,5 +112,15 @@ class FragmentPageNews: Fragment(), NewsAdapter.OnClick {
                 viewModel.updateNews(news, user.id)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "News[Others]")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 }

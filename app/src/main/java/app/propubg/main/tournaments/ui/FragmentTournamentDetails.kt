@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import app.propubg.R
+import app.propubg.appConfig
 import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentTournamentDetailsBinding
 import app.propubg.main.MainActivity
@@ -52,7 +53,7 @@ class FragmentTournamentDetails: Fragment() {
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tournament_details,
             container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -66,39 +67,51 @@ class FragmentTournamentDetails: Fragment() {
                 tournament = viewModel.getTournamentById(
                     requireArguments()
                         .getSerializable("tournamentId") as ObjectId)
-                binding.headerDetails.headerTitle.text = tournament?.title
+                val type = requireArguments().getString("type")?:"none"
+                tournament?.let{tournament_ ->
+                    binding.headerDetails.headerTitle.text = tournament_.title
 
-                binding.itemWait.postDelayed({
-                    Glide.with(binding.itemWait).asGif().load(R.drawable.wait)
-                        .into(binding.itemWait)
-                }, 200)
+                    binding.itemWait.postDelayed({
+                        Glide.with(binding.itemWait).asGif().load(R.drawable.wait)
+                            .into(binding.itemWait)
+                    }, 200)
 
-                Glide.with(binding.tournamentImage).load(tournament!!.imageSrc[0])
-                    .addListener(object: RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean): Boolean {
-                            return false
-                        }
+                    Glide.with(binding.tournamentImage).load(tournament_.imageSrc[0])
+                        .addListener(object: RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean): Boolean {
+                                return false
+                            }
 
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean): Boolean {
-                            binding.itemWait.visibility = View.GONE
-                            return false
-                        }
-                    }).signature(ObjectKey(tournament!!.imageSrc[0]!!))
-                    .into(binding.tournamentImage)
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean): Boolean {
+                                binding.itemWait.visibility = View.GONE
+                                return false
+                            }
+                        }).signature(ObjectKey(tournament_.imageSrc[0]!!))
+                        .into(binding.tournamentImage)
 
-                val tournamentItem = TournamentItem()
-                tournamentItem.tournament = tournament
-                binding.tournamentItem = tournamentItem
-                binding.executePendingBindings()
+                    val tournamentItem = TournamentItem()
+                    tournamentItem.tournament = tournament_
+                    binding.tournamentItem = tournamentItem
+                    binding.executePendingBindings()
+
+                    val title = tournament_.title
+                    val json = JSONObject()
+                    json.put("Screen", type)
+                    json.put("ObjectID", tournament_._id.toString())
+                    json.put("Title", title)
+                    json.put("Regions", tournament_.getRegionList())
+                    (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+
+                }
             }
         })
 
@@ -109,24 +122,34 @@ class FragmentTournamentDetails: Fragment() {
         binding.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
         binding.headerDetails.btnOption.setOnClickListener {
             tournament?.let{ tournament_ ->
-                Firebase.dynamicLinks.createDynamicLink()
-                    .setDomainUriPrefix("https://link.propubg.app")
-                    .setLink(Uri.parse("https://link.propubg.app/?Tournament=${tournament_._id}"))
-                    .setSocialMetaTagParameters(
-                        DynamicLink.SocialMetaTagParameters.Builder()
-                            .setImageUrl(Uri.parse(tournament_.imageSrc[0]!!))
-                            .setTitle(tournament_.title!!)
-                            .build())
-                    .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-                    .setIosParameters(DynamicLink.IosParameters
-                        .Builder("ProPUBG").build())
-                    .buildShortDynamicLink()
-                    .addOnSuccessListener {
-                        (activity as MainActivity).shareLink(it.shortLink.toString())
-                    }
-                    .addOnFailureListener {
-                        Log.v("DASD", it.toString())
-                    }
+                val link = if (currentLanguage=="ru")
+                    tournament_.dynamicLink_ru?:""
+                else tournament_.dynamicLink_en?:""
+                if (link!=""){
+                    (activity as MainActivity).shareLink(link)
+                } else {
+                    Firebase.dynamicLinks.createDynamicLink()
+                        .setDomainUriPrefix("https://link.propubg.app")
+                        .setLink(Uri.parse("https://link.propubg.app/?Tournament=${tournament_._id}"))
+                        .setSocialMetaTagParameters(
+                            DynamicLink.SocialMetaTagParameters.Builder()
+                                .setImageUrl(Uri.parse(tournament_.imageSrc[0]!!))
+                                .setTitle(tournament_.title!!)
+                                .build()
+                        )
+                        .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
+                        .setIosParameters(
+                            DynamicLink.IosParameters
+                                .Builder("ProPUBG").build()
+                        )
+                        .buildShortDynamicLink()
+                        .addOnSuccessListener {
+                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                        }
+                        .addOnFailureListener {
+                            Log.v("DASD", it.toString())
+                        }
+                }
             }
         }
 
@@ -142,17 +165,21 @@ class FragmentTournamentDetails: Fragment() {
         }
 
         binding.btnInstagram.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://www.instagram.com/propubg.app")
-            startActivity(intent)
+            appConfig?.socialLink_Instagram?.let{
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(it)
+                startActivity(intent)
+            }
         }
 
         binding.btnTelegram.setOnClickListener {
-            val intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://t.me/propubg_app")
-            startActivity(intent)
+            appConfig?.socialLink_Telegram?.let {
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(it)
+                startActivity(intent)
+            }
         }
 
         binding.txtCopyLink.setOnClickListener {

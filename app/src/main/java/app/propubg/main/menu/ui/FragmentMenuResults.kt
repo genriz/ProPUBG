@@ -44,8 +44,8 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu_results,
             container, false)
         binding.searchResults.viewModel = viewModel
-        binding.searchResults.lifecycleOwner = this
-        binding.lifecycleOwner = this
+        binding.searchResults.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -159,5 +159,15 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
 
     override fun onResultsClick(resultsOfTournament: resultsOfTournament) {
         (activity as MainActivity).openResultsDetails(resultsOfTournament)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Tournaments Results")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 }

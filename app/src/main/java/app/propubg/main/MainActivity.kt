@@ -22,6 +22,7 @@ import androidx.navigation.ui.NavigationUI
 import app.propubg.*
 import app.propubg.databinding.ActivityMainBinding
 import app.propubg.login.model.UserRealm
+import app.propubg.login.model.configuration
 import app.propubg.login.ui.StartActivity
 import app.propubg.main.broadcasts.adapters.TeamListAdapter
 import app.propubg.main.broadcasts.model.broadcast
@@ -49,6 +50,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.mixpanel.android.mpmetrics.MixpanelAPI
+import io.realm.Realm
+import io.realm.mongodb.sync.SyncConfiguration
 import org.bson.types.ObjectId
 import java.util.*
 import kotlin.collections.ArrayList
@@ -101,6 +104,7 @@ class MainActivity : AppCompatActivity() {
 
         setMixPanel()
         setFCM()
+        getAppConfig()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
@@ -120,6 +124,11 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomSheetTeams()
         setupBottomSheetTournament()
+
+        if (firstStart) {
+            getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .edit().putBoolean("firstStart", false).apply()
+        }
     }
 
     private fun setFCM() {
@@ -153,7 +162,10 @@ class MainActivity : AppCompatActivity() {
         val props = JSONObject()
         props.put("UID", currentUser!!.UID)
         mixpanelAPI?.registerSuperProperties(props)
-        mixpanelAPI!!.identify(currentUser!!.UID)
+        mixpanelAPI!!.people!!.identify(currentUser!!.UID)
+        currentUser?.user?.nickname?.let{nick->
+            mixpanelAPI?.people?.set("nickname", nick)
+        }
     }
 
     private fun setupBottomSheetTeams() {
@@ -212,9 +224,10 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.action_fragmentNews_to_fragmentReshufflesDetails, bundle)
     }
 
-    fun openTournamentDetails(tournament: tournament){
+    fun openTournamentDetails(tournament: tournament, type: String){
         val bundle = Bundle()
         bundle.putSerializable("tournamentId", tournament._id)
+        bundle.putString("type", type)
         navController.navigate(R.id.action_fragmentTournaments_to_fragmentTournamentDetails, bundle)
 
     }
@@ -354,13 +367,13 @@ class MainActivity : AppCompatActivity() {
                     val param = it.queryParameterNames.elementAt(0)
                     val id = it.getQueryParameter(param)
                     when (param){
-                        "News" ->{
+                        "News" -> {
                             openNewsScreen(ObjectId(id))
                         }
-                        "Reshuffle" ->{
+                        "Reshuffle" -> {
                             openReshufflesScreen(ObjectId(id))
                         }
-                        "Tournament" ->{
+                        "Tournament" -> {
                             val tournament = tournamentsViewModel.getTournamentById(ObjectId(id))
                             tournament?.status?.let{status ->
                                 when (status){
@@ -370,11 +383,18 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        "ResultsOfTournament"->{
+                        "ResultsOfTournament" -> {
                             openResultsScreen(ObjectId(id))
                         }
-                        "Partner"->{
+                        "DiscordPartner" -> {
                             openPartnerScreen(ObjectId(id))
+                        }
+                        "Promotion" -> {
+                            val json = JSONObject()
+                            json.put("Company", it.getQueryParameter(param))
+                            json.put("First open", firstStart)
+                            mixpanelAPI?.track("AppPromoDeepLinkOpen", json)
+                            if (firstStart) firstStart = false
                         }
                     }
                 }
@@ -386,6 +406,20 @@ class MainActivity : AppCompatActivity() {
 
     fun closeFragment(){
         navController.navigateUp()
+    }
+
+    private fun getAppConfig(){
+        val user = realmApp.currentUser()
+        val config = SyncConfiguration.Builder(user, "news")
+            .waitForInitialRemoteData()
+            .allowQueriesOnUiThread(true)
+            .allowWritesOnUiThread(true)
+            .build()
+        Realm.getInstanceAsync(config, object : Realm.Callback() {
+            override fun onSuccess(realm_: Realm) {
+                appConfig = realm_.where(configuration::class.java).findFirstAsync()
+            }
+        })
     }
 
     fun showBottomSheetTeams(broadcast: broadcast){
@@ -491,17 +525,21 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         binding.bottomSheetTournament.btnInstagram.setOnClickListener {
-                            val intent = Intent()
-                            intent.action = Intent.ACTION_VIEW
-                            intent.data = Uri.parse("https://www.instagram.com/propubg.app")
-                            startActivity(intent)
+                            appConfig?.socialLink_Instagram?.let{
+                                val intent = Intent()
+                                intent.action = Intent.ACTION_VIEW
+                                intent.data = Uri.parse(it)
+                                startActivity(intent)
+                            }
                         }
 
                         binding.bottomSheetTournament.btnTelegram.setOnClickListener {
-                            val intent = Intent()
-                            intent.action = Intent.ACTION_VIEW
-                            intent.data = Uri.parse("https://t.me/propubg_app")
-                            startActivity(intent)
+                            appConfig?.socialLink_Telegram?.let {
+                                val intent = Intent()
+                                intent.action = Intent.ACTION_VIEW
+                                intent.data = Uri.parse(it)
+                                startActivity(intent)
+                            }
                         }
 
                         binding.bottomSheetTournament.txtCopyLink.setOnClickListener {

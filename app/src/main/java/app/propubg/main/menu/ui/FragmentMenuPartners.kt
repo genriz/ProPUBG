@@ -44,8 +44,8 @@ class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu_partners,
             container, false)
         binding.searchPartners.viewModel = viewModel
-        binding.searchPartners.lifecycleOwner = this
-        binding.lifecycleOwner = this
+        binding.searchPartners.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -158,5 +158,15 @@ class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
 
     override fun onPartnerClick(partner: partner) {
         (activity as MainActivity).openPartnerDetails(partner)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Discord Partners")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 }

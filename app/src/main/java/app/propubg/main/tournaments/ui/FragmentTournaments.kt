@@ -42,7 +42,7 @@ class FragmentTournaments: Fragment() {
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tournaments, container, false)
         binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -72,7 +72,12 @@ class FragmentTournaments: Fragment() {
                     id?.let{
                         val tournament = viewModel.getTournamentById(id)
                         tournament?.let {
-                            (activity as MainActivity).openTournamentDetails(it)
+                            val type = when (currentPage){
+                                0 -> "ClosedDetails"
+                                1 -> "OpenDetails"
+                                else -> "UpcomingDetails"
+                            }
+                            (activity as MainActivity).openTournamentDetails(it, type)
                             arguments = null
                         }
                         if (tournament==null) Toast.makeText(requireContext(), "wrong ID",

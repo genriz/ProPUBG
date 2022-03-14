@@ -55,7 +55,7 @@ class FragmentMenuPartnersDetails: Fragment() {
         savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu_partner_details,
             container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -68,15 +68,25 @@ class FragmentMenuPartnersDetails: Fragment() {
                 partner = viewModel.getPartnerById(
                     requireArguments()
                         .getSerializable("partnerId") as ObjectId)
+                partner?.let{partner_ ->
+                    val partnerItem = PartnerItem()
+                    partnerItem.partner = partner_
+                    binding.partnerItem = partnerItem
+                    binding.executePendingBindings()
 
-                val partnerItem = PartnerItem()
-                partnerItem.partner = partner
-                binding.partnerItem = partnerItem
-                binding.executePendingBindings()
+                    binding.headerDetails.headerTitle.text = partner_.title
 
-                binding.headerDetails.headerTitle.text = partner?.title
+                    Linkify.addLinks(binding.partnerText, Linkify.ALL)
 
-                Linkify.addLinks(binding.partnerText, Linkify.ALL)
+                    val title = partner_.title
+                    val json = JSONObject()
+                    json.put("Screen", "Discord Partner Details")
+                    json.put("ObjectID", partner_._id.toString())
+                    json.put("Title", title)
+                    json.put("Regions", partner_.getRegionList())
+                    (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+
+                }
             }
         })
 
@@ -107,27 +117,38 @@ class FragmentMenuPartnersDetails: Fragment() {
         binding.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
         binding.headerDetails.btnOption.setOnClickListener {
             partner?.let { partner_ ->
-                val img = if (currentLanguage=="ru") partner_.imageSrc_ru
-                else partner_.imageSrc_en
-                val desc = if (currentLanguage=="ru") partner_.descriptionOfPartner_ru
-                else partner_.descriptionOfPartner_en
-                Firebase.dynamicLinks.createDynamicLink()
-                    .setDomainUriPrefix("https://link.propubg.app")
-                    .setLink(Uri.parse("https://link.propubg.app/?Partner=${partner_._id}"))
-                    .setSocialMetaTagParameters(DynamicLink.SocialMetaTagParameters.Builder()
-                        .setImageUrl(Uri.parse(img?:""))
-                        .setTitle(partner_.title?:"")
-                        .setDescription(desc?:"").build())
-                    .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-                    .setIosParameters(DynamicLink.IosParameters
-                        .Builder("ProPUBG").build())
-                    .buildShortDynamicLink()
-                    .addOnSuccessListener {
-                        (activity as MainActivity).shareLink(it.shortLink.toString())
-                    }
-                    .addOnFailureListener {
-                        Log.v("DASD", it.toString())
-                    }
+                val link = if (currentLanguage=="ru")
+                    partner_.dynamicLink_ru?:""
+                else partner_.dynamicLink_en?:""
+                if (link!=""){
+                    (activity as MainActivity).shareLink(link)
+                } else {
+                    val img = if (currentLanguage == "ru") partner_.imageSrc_ru
+                    else partner_.imageSrc_en
+                    val desc = if (currentLanguage == "ru") partner_.descriptionOfPartner_ru
+                    else partner_.descriptionOfPartner_en
+                    Firebase.dynamicLinks.createDynamicLink()
+                        .setDomainUriPrefix("https://link.propubg.app")
+                        .setLink(Uri.parse("https://link.propubg.app/?DiscordPartner=${partner_._id}"))
+                        .setSocialMetaTagParameters(
+                            DynamicLink.SocialMetaTagParameters.Builder()
+                                .setImageUrl(Uri.parse(img ?: ""))
+                                .setTitle(partner_.title ?: "")
+                                .setDescription(desc ?: "").build()
+                        )
+                        .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
+                        .setIosParameters(
+                            DynamicLink.IosParameters
+                                .Builder("ProPUBG").build()
+                        )
+                        .buildShortDynamicLink()
+                        .addOnSuccessListener {
+                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                        }
+                        .addOnFailureListener {
+                            Log.v("DASD", it.toString())
+                        }
+                }
             }
 
         }

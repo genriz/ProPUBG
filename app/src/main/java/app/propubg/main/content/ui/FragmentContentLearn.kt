@@ -15,9 +15,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageContentBinding
+import app.propubg.main.MainActivity
 import app.propubg.main.content.adapters.ContentAdapter
 import app.propubg.main.content.model.ContentViewModel
 import app.propubg.main.content.model.content
+import org.json.JSONObject
 
 class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
 
@@ -33,8 +35,8 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_content,
             container, false)
         binding.searchContent.viewModel = viewModel
-        binding.searchContent.lifecycleOwner = this
-        binding.lifecycleOwner = this
+        binding.searchContent.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -100,6 +102,16 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val json = JSONObject()
+        json.put("Screen", "Content[Informative]")
+        json.put("ObjectID", "No value")
+        json.put("Title", "No value")
+        json.put("Regions", "No value")
+        (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
     }
 
 }
