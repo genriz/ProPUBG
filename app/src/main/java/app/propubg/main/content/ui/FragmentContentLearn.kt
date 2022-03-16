@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
+import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentPageContentBinding
 import app.propubg.main.MainActivity
 import app.propubg.main.content.adapters.ContentAdapter
@@ -95,6 +96,14 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
 
     override fun onWatchClick(content: content) {
         content.link?.let{
+            val title = if (currentLanguage =="ru") content.title_ru
+            else content.title_en
+            val json = JSONObject()
+            json.put("ObjectID", content._id)
+            json.put("Type of content", "Educational")
+            json.put("Title", title)
+            (activity as MainActivity).mixpanelAPI?.track("WatchContentClick", json)
+
             if (URLUtil.isValidUrl(it)) {
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW

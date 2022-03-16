@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -22,6 +23,11 @@ import app.propubg.login.model.UserRealm
 import app.propubg.main.MainActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
+import com.google.firebase.dynamiclinks.ktx.androidParameters
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.dynamiclinks.ktx.iosParameters
+import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import io.realm.mongodb.Credentials
 import io.realm.mongodb.functions.Functions
@@ -95,6 +101,12 @@ class StartActivity : AppCompatActivity() {
             if (it.containsKey("screen")){
                 mainIntent.putExtra("screen", it["screen"].toString())
             } else mainIntent.putExtra("screen", "none")
+            if (it.containsKey("title")){
+                mainIntent.putExtra("title", it["title"].toString())
+            } else mainIntent.putExtra("title", "none")
+            if (it.containsKey("text")){
+                mainIntent.putExtra("text", it["text"].toString())
+            } else mainIntent.putExtra("text", "none")
             if (it.getBoolean("needAuth", false)) {
                 needAuth = true
                 setResult(RESULT_OK, mainIntent)

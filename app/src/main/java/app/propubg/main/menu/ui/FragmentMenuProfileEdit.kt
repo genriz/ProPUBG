@@ -1,24 +1,26 @@
 package app.propubg.main.menu.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import app.propubg.R
-import app.propubg.currentUser
-import app.propubg.currentUserRealm
+import app.propubg.*
 import app.propubg.databinding.FragmentMenuProfileEditBinding
 import app.propubg.main.MainActivity
-import app.propubg.realmApp
 import com.google.gson.Gson
 import io.realm.mongodb.functions.Functions
 import org.bson.BsonBoolean
@@ -81,6 +83,7 @@ class FragmentMenuProfileEdit: Fragment() {
                     it.isNotEmpty()&&binding.inputNickname.hasFocus()
             }
         }
+
         binding.nickDelete.setOnClickListener {
             binding.inputNickname.setText("")
         }
@@ -88,6 +91,36 @@ class FragmentMenuProfileEdit: Fragment() {
         binding.header.btnSave.setOnClickListener {
             binding.inputNickname.clearFocus()
             checkNick(binding.inputNickname.text.toString())
+        }
+
+        binding.btnCopyId.setOnClickListener {
+            (requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).apply {
+                setPrimaryClip(ClipData.newPlainText("", currentUser?.user?._id?.toString()?:""))
+                Toast.makeText(requireContext(), requireContext()
+                    .getString(R.string.id_copied), Toast.LENGTH_SHORT)
+                    .show()
+            }
+            (activity as MainActivity).mixpanelAPI?.track("CopyProfileIdClick", null)
+        }
+
+        binding.btnSupport.setOnClickListener {
+            (activity as MainActivity).mixpanelAPI?.track("ContactSupportClick", null)
+            appConfig?.supportLinkTelegram?.let {
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(it)
+                startActivity(intent)
+            }
+        }
+
+        binding.btnLogout.setOnClickListener {
+            (activity as MainActivity).mixpanelAPI?.track("RemoveAccountClick", null)
+            val link = if (currentLanguage=="ru") appConfig?.deleteMyAccount_ru?:""
+            else appConfig?.deleteMyAccount_en?:""
+            val intent = Intent()
+            intent.action = Intent.ACTION_VIEW
+            intent.data = Uri.parse(link)
+            startActivity(intent)
         }
     }
 

@@ -103,7 +103,9 @@ class FragmentMenuResultsDetails: Fragment() {
                     results_.dynamicLink_ru?:""
                 else results_.dynamicLink_en?:""
                 if (link!=""){
-                    (activity as MainActivity).shareLink(link)
+                    (activity as MainActivity).shareLink(link,
+                        results_._id.toString(), "ResultsOfTournament",
+                        results_.title!!, results_.getRegionList())
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
@@ -127,7 +129,9 @@ class FragmentMenuResultsDetails: Fragment() {
                         )
                         .buildShortDynamicLink()
                         .addOnSuccessListener {
-                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                            (activity as MainActivity).shareLink(it.shortLink.toString(),
+                                results_._id.toString(), "ResultsOfTournament",
+                                results_.title!!, results_.getRegionList())
                         }
                         .addOnFailureListener {
                             Log.v("DASD", it.toString())
@@ -138,6 +142,11 @@ class FragmentMenuResultsDetails: Fragment() {
         }
 
         binding.btnInstagram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", "Tournament Results Details")
+            json.put("Social network", "Instagram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             appConfig?.socialLink_Instagram?.let{
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW
@@ -147,6 +156,11 @@ class FragmentMenuResultsDetails: Fragment() {
         }
 
         binding.btnTelegram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", "Tournament Results Details")
+            json.put("Social network", "Telegram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             appConfig?.socialLink_Telegram?.let {
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW
@@ -171,6 +185,11 @@ class FragmentMenuResultsDetails: Fragment() {
                         binding.advertMain
                             .findViewById<ImageView>(R.id.advertClose)
                             .setOnClickListener {
+                                val json = JSONObject()
+                                json.put("campaign", advertisement.campaign)
+                                json.put("screen", "Detail results of tournaments")
+                                (activity as MainActivity).mixpanelAPI!!
+                                    .track("AdBannerCloseClick", json)
                                 binding.advertMain.isVisible = false
                             }
                         binding.advertMain
@@ -180,7 +199,7 @@ class FragmentMenuResultsDetails: Fragment() {
                                 json.put("campaign", advertisement.campaign)
                                 json.put("screen", "Detail results of tournaments")
                                 (activity as MainActivity).mixpanelAPI!!
-                                    .track("Click banner", json)
+                                    .track("AdBannerClick", json)
                                 val link =
                                     if (currentLanguage =="ru")
                                         advertisement.link_ru

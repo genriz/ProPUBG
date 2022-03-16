@@ -95,6 +95,11 @@ class FragmentContent: Fragment() {
                             binding.advertMain
                                 .findViewById<ImageView>(R.id.advertClose)
                                 .setOnClickListener {
+                                    val json = JSONObject()
+                                    json.put("campaign", advertisement.campaign)
+                                    json.put("screen", "Content")
+                                    (activity as MainActivity).mixpanelAPI!!
+                                        .track("AdBannerCloseClick", json)
                                     binding.advertMain.isVisible = false
                                     viewModel.advertClosed = true
                                 }
@@ -105,7 +110,7 @@ class FragmentContent: Fragment() {
                                     json.put("campaign", advertisement.campaign)
                                     json.put("screen", "Content")
                                     (activity as MainActivity).mixpanelAPI!!
-                                        .track("Click banner", json)
+                                        .track("AdBannerClick", json)
                                     val link =
                                         if (currentLanguage=="ru")
                                             advertisement.link_ru

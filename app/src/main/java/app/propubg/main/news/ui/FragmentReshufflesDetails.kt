@@ -95,8 +95,12 @@ class FragmentReshufflesDetails: Fragment() {
                 val link = if (currentLanguage=="ru")
                     reshuffle_.dynamicLink_ru?:""
                 else reshuffle_.dynamicLink_en?:""
+                val title = if (currentLanguage == "ru") reshuffle_.title_ru!!
+                else reshuffle_.title_en!!
                 if (link!=""){
-                    (activity as MainActivity).shareLink(link)
+                    (activity as MainActivity).shareLink(link,
+                        reshuffle_._id.toString(), "Reshuffle",
+                        title, reshuffle_.getRegionList())
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
@@ -107,10 +111,7 @@ class FragmentReshufflesDetails: Fragment() {
                                     if (currentLanguage == "ru") Uri.parse(reshuffle_.imageSrc_ru[0]!!)
                                     else Uri.parse(reshuffle_.imageSrc_en[0]!!)
                                 )
-                                .setTitle(
-                                    if (currentLanguage == "ru") reshuffle_.title_ru!!
-                                    else reshuffle_.title_en!!
-                                ).build()
+                                .setTitle(title).build()
                         )
                         .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
                         .setIosParameters(
@@ -118,8 +119,10 @@ class FragmentReshufflesDetails: Fragment() {
                                 .Builder("ProPUBG").build()
                         )
                         .buildShortDynamicLink()
-                        .addOnSuccessListener { link ->
-                            (activity as MainActivity).shareLink(link.shortLink.toString())
+                        .addOnSuccessListener {
+                            (activity as MainActivity).shareLink(it.shortLink.toString(),
+                                reshuffle_._id.toString(), "Reshuffle",
+                                title, reshuffle_.getRegionList())
                         }
                         .addOnFailureListener { exception ->
                             Log.v("DASD", exception.toString())
@@ -129,6 +132,11 @@ class FragmentReshufflesDetails: Fragment() {
         }
 
         binding.btnInstagram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", "ReshuffleDetails")
+            json.put("Social network", "Instagram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             appConfig?.socialLink_Instagram?.let{
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW
@@ -138,6 +146,11 @@ class FragmentReshufflesDetails: Fragment() {
         }
 
         binding.btnTelegram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", "ReshuffleDetails")
+            json.put("Social network", "Telegram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             appConfig?.socialLink_Telegram?.let {
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW
@@ -162,6 +175,11 @@ class FragmentReshufflesDetails: Fragment() {
                         binding.advertMain
                             .findViewById<ImageView>(R.id.advertClose)
                             .setOnClickListener {
+                                val json = JSONObject()
+                                json.put("campaign", advertisement.campaign)
+                                json.put("screen", "Detail news")
+                                (activity as MainActivity).mixpanelAPI!!
+                                    .track("AdBannerCloseClick", json)
                                 binding.advertMain.isVisible = false
                             }
                         binding.advertMain
@@ -171,7 +189,7 @@ class FragmentReshufflesDetails: Fragment() {
                                 json.put("campaign", advertisement.campaign)
                                 json.put("screen", "Detail news")
                                 (activity as MainActivity).mixpanelAPI!!
-                                    .track("Click banner", json)
+                                    .track("AdBannerClick", json)
                                 val link =
                                     if (currentLanguage=="ru")
                                         advertisement.link_ru

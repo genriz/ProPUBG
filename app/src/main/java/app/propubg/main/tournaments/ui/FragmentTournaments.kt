@@ -79,6 +79,13 @@ class FragmentTournaments: Fragment() {
                             }
                             (activity as MainActivity).openTournamentDetails(it, type)
                             arguments = null
+                            val json = JSONObject()
+                            json.put("ObjectID", id.toString())
+                            json.put("Type", "Tournament")
+                            json.put("Title", tournament.title)
+                            json.put("Regions", tournament.getRegionList())
+                            (activity as MainActivity)
+                                .mixpanelAPI?.track("DeepLinkOpened", json)
                         }
                         if (tournament==null) Toast.makeText(requireContext(), "wrong ID",
                             Toast.LENGTH_LONG).show()
@@ -120,6 +127,11 @@ class FragmentTournaments: Fragment() {
                             binding.advertMain
                                 .findViewById<ImageView>(R.id.advertClose)
                                 .setOnClickListener {
+                                    val json = JSONObject()
+                                    json.put("campaign", advertisement.campaign)
+                                    json.put("screen", "Tournaments")
+                                    (activity as MainActivity).mixpanelAPI!!
+                                        .track("AdBannerCloseClick", json)
                                     binding.advertMain.isVisible = false
                                     viewModel.advertClosed = true
                                 }
@@ -130,7 +142,7 @@ class FragmentTournaments: Fragment() {
                                     json.put("campaign", advertisement.campaign)
                                     json.put("screen", "Tournaments")
                                     (activity as MainActivity).mixpanelAPI!!
-                                        .track("Click banner", json)
+                                        .track("AdBannerClick", json)
                                     val link =
                                         if (currentLanguage=="ru")
                                             advertisement.link_ru

@@ -96,6 +96,11 @@ class FragmentMenuPartnersDetails: Fragment() {
 
         binding.btnOpenServer.setOnClickListener {
             partner?.link?.let{
+                val json = JSONObject()
+                json.put("ObjectID", partner!!._id)
+                json.put("Title", partner!!.title)
+                (activity as MainActivity).mixpanelAPI?.track("GoToDiscordClick", json)
+
                 if (URLUtil.isValidUrl(it)) {
                     val intent = Intent()
                     intent.action = Intent.ACTION_VIEW
@@ -121,7 +126,9 @@ class FragmentMenuPartnersDetails: Fragment() {
                     partner_.dynamicLink_ru?:""
                 else partner_.dynamicLink_en?:""
                 if (link!=""){
-                    (activity as MainActivity).shareLink(link)
+                    (activity as MainActivity).shareLink(link,
+                        partner_._id.toString(), "DiscordPartner",
+                        partner_.title!!, partner_.getRegionList())
                 } else {
                     val img = if (currentLanguage == "ru") partner_.imageSrc_ru
                     else partner_.imageSrc_en
@@ -143,7 +150,9 @@ class FragmentMenuPartnersDetails: Fragment() {
                         )
                         .buildShortDynamicLink()
                         .addOnSuccessListener {
-                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                            (activity as MainActivity).shareLink(it.shortLink.toString(),
+                                partner_._id.toString(), "DiscordPartner",
+                                partner_.title!!, partner_.getRegionList())
                         }
                         .addOnFailureListener {
                             Log.v("DASD", it.toString())
@@ -169,6 +178,11 @@ class FragmentMenuPartnersDetails: Fragment() {
                         binding.advertMain
                             .findViewById<ImageView>(R.id.advertClose)
                             .setOnClickListener {
+                                val json = JSONObject()
+                                json.put("campaign", advertisement.campaign)
+                                json.put("screen", "Detail discord partners")
+                                (activity as MainActivity).mixpanelAPI!!
+                                    .track("AdBannerCloseClick", json)
                                 binding.advertMain.isVisible = false
                             }
                         binding.advertMain
@@ -178,7 +192,7 @@ class FragmentMenuPartnersDetails: Fragment() {
                                 json.put("campaign", advertisement.campaign)
                                 json.put("screen", "Detail discord partners")
                                 (activity as MainActivity).mixpanelAPI!!
-                                    .track("Click banner", json)
+                                    .track("AdBannerClick", json)
                                 val link =
                                     if (currentLanguage =="ru")
                                         advertisement.link_ru

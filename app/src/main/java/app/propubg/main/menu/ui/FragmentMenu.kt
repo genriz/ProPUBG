@@ -51,6 +51,13 @@ class FragmentMenu: Fragment() {
                                 results?.let {
                                     (activity as MainActivity).openResultsDetails(results)
                                     arguments = null
+                                    val json = JSONObject()
+                                    json.put("ObjectID", id.toString())
+                                    json.put("Type", "ResultsOfTournament")
+                                    json.put("Title", results.title)
+                                    json.put("Regions", results.getRegionList())
+                                    (activity as MainActivity)
+                                        .mixpanelAPI?.track("DeepLinkOpened", json)
                                 }
                             } else {
                                 (activity as MainActivity).openFragmentPartners()
@@ -58,6 +65,13 @@ class FragmentMenu: Fragment() {
                                 partner?.let {
                                     (activity as MainActivity).openPartnerDetails(partner)
                                     arguments = null
+                                    val json = JSONObject()
+                                    json.put("ObjectID", id.toString())
+                                    json.put("Type", "DiscordPartner")
+                                    json.put("Title", partner.title)
+                                    json.put("Regions", partner.getRegionList())
+                                    (activity as MainActivity)
+                                        .mixpanelAPI?.track("DeepLinkOpened", json)
                                 }
                             }
                         }

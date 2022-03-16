@@ -99,8 +99,12 @@ class FragmentNewsDetails: Fragment() {
                 val link = if (currentLanguage=="ru")
                     news_.dynamicLink_ru?:""
                 else news_.dynamicLink_en?:""
+                val title = if (currentLanguage == "ru") news_.title_ru!!
+                else news_.title_en!!
                 if (link!=""){
-                    (activity as MainActivity).shareLink(link)
+                    (activity as MainActivity).shareLink(link,
+                        news_._id.toString(), "News",
+                        title, news_.getRegionList())
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
@@ -111,10 +115,7 @@ class FragmentNewsDetails: Fragment() {
                                     if (currentLanguage == "ru") Uri.parse(news_.imageSrc_ru[0]!!)
                                     else Uri.parse(news_.imageSrc_en[0]!!)
                                 )
-                                .setTitle(
-                                    if (currentLanguage == "ru") news_.title_ru!!
-                                    else news_.title_en!!
-                                ).build()
+                                .setTitle(title).build()
                         )
                         .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
                         .setIosParameters(
@@ -123,7 +124,9 @@ class FragmentNewsDetails: Fragment() {
                         )
                         .buildShortDynamicLink()
                         .addOnSuccessListener {
-                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                            (activity as MainActivity).shareLink(it.shortLink.toString(),
+                                news_._id.toString(), "News",
+                                title, news_.getRegionList())
                         }
                         .addOnFailureListener {
                             Log.v("DASD", it.toString())
@@ -134,6 +137,11 @@ class FragmentNewsDetails: Fragment() {
         }
 
         binding.btnInstagram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", "OthersDetails")
+            json.put("Social network", "Instagram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://www.instagram.com/propubg.app")
@@ -141,6 +149,11 @@ class FragmentNewsDetails: Fragment() {
         }
 
         binding.btnTelegram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", "OthersDetails")
+            json.put("Social network", "Telegram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://t.me/propubg_app")
@@ -163,6 +176,11 @@ class FragmentNewsDetails: Fragment() {
                         binding.advertMain
                             .findViewById<ImageView>(R.id.advertClose)
                             .setOnClickListener {
+                                val json = JSONObject()
+                                json.put("campaign", advertisement.campaign)
+                                json.put("screen", "Detail news")
+                                (activity as MainActivity).mixpanelAPI!!
+                                    .track("AdBannerCloseClick", json)
                                 binding.advertMain.isVisible = false
                             }
                         binding.advertMain
@@ -172,7 +190,7 @@ class FragmentNewsDetails: Fragment() {
                                 json.put("campaign", advertisement.campaign)
                                 json.put("screen", "Detail news")
                                 (activity as MainActivity).mixpanelAPI!!
-                                    .track("Click banner", json)
+                                    .track("AdBannerClick", json)
                                 val link =
                                     if (currentLanguage=="ru")
                                         advertisement.link_ru

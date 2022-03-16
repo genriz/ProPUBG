@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
+import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentPageBroadcastsBinding
 import app.propubg.main.MainActivity
 import app.propubg.main.broadcasts.adapters.BroadcastsAdapter
@@ -107,6 +108,17 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
 
     override fun onWatchClick(broadcast: broadcast) {
         broadcast.link?.let{
+            val stage = if (currentLanguage=="ru") broadcast.stage_ru
+            else broadcast.stage_en
+            val day = "${requireContext().getString(R.string.day)} ${broadcast.dayOfTournament}"
+            val json = JSONObject()
+            json.put("ObjectID", broadcast._id)
+            json.put("Stage", stage)
+            json.put("Title", broadcast.title)
+            json.put("Day of tournament", day)
+            json.put("Status of broadcast", "Live")
+            (activity as MainActivity).mixpanelAPI?.track("WatchBroadcastClick", json)
+
             if (URLUtil.isValidUrl(it)) {
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW
@@ -117,10 +129,32 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
     }
 
     override fun onTeamsClick(broadcast: broadcast) {
+        val stage = if (currentLanguage =="ru") broadcast.stage_ru
+        else broadcast.stage_en
+        val day = "${requireContext().getString(R.string.day)} ${broadcast.dayOfTournament}"
+        val json = JSONObject()
+        json.put("ObjectID", broadcast._id)
+        json.put("Stage", stage)
+        json.put("Title", broadcast.title)
+        json.put("Day of tournament", day)
+        json.put("Status of broadcast", "Live")
+        (activity as MainActivity).mixpanelAPI?.track("“ShowTeamsListClick", json)
+
         (activity as MainActivity).showBottomSheetTeams(broadcast)
     }
 
     override fun onMoreClick(broadcast: broadcast) {
+        val stage = if (currentLanguage =="ru") broadcast.stage_ru
+        else broadcast.stage_en
+        val day = "${requireContext().getString(R.string.day)} ${broadcast.dayOfTournament}"
+        val json = JSONObject()
+        json.put("ObjectID", broadcast._id)
+        json.put("Stage", stage)
+        json.put("Title", broadcast.title)
+        json.put("Day of tournament", day)
+        json.put("Status of broadcast", "Live")
+        (activity as MainActivity).mixpanelAPI?.track("“ShowTournamentDetailsClick", json)
+
         broadcast.objectIDOfTournament?.let{
             if (it.isNotEmpty()&&ObjectId.isValid(broadcast.objectIDOfTournament))
                 (activity as MainActivity).showBottomSheetTournament(ObjectId(it))

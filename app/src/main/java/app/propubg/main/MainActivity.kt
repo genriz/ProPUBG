@@ -43,6 +43,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.database.ktx.database
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
@@ -117,11 +118,6 @@ class MainActivity : AppCompatActivity() {
 
         getDynamicLink(intent)
 
-        intent.extras?.let{extras ->
-            if (extras.containsKey("screen"))
-                processScreen(extras["screen"].toString())
-        }
-
         setupBottomSheetTeams()
         setupBottomSheetTournament()
 
@@ -165,6 +161,22 @@ class MainActivity : AppCompatActivity() {
         mixpanelAPI!!.people!!.identify(currentUser!!.UID)
         currentUser?.user?.nickname?.let{nick->
             mixpanelAPI?.people?.set("nickname", nick)
+        }
+
+        processIntent()
+
+    }
+
+    private fun processIntent(){
+        intent.extras?.let{extras ->
+            if (extras.containsKey("screen")) {
+                processScreen(extras["screen"].toString())
+                val json = JSONObject()
+                json.put("Screen", extras["screen"])
+                json.put("Text", extras["text"])
+                json.put("Title", extras["title"])
+                mixpanelAPI?.track("PushBannerClick", json)
+            }
         }
     }
 
@@ -241,6 +253,14 @@ class MainActivity : AppCompatActivity() {
                         .findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
                         .childFragmentManager.fragments[0] as FragmentNews).setPage(1)
                     openNewsDetails(news)
+                    val title = if (currentLanguage=="ru") news.title_ru
+                    else news.title_en
+                    val json = JSONObject()
+                    json.put("ObjectID", id.toString())
+                    json.put("Type", "News")
+                    json.put("Title", title)
+                    json.put("Regions", news.getRegionList())
+                    mixpanelAPI?.track("DeepLinkOpened", json)
                 }
                 if (news==null) Toast.makeText(this, "wrong ID",
                     Toast.LENGTH_LONG).show()
@@ -254,6 +274,14 @@ class MainActivity : AppCompatActivity() {
                 val reshuffle = newsViewModel.getReshuffleById(id!!)
                 reshuffle?.let {
                     openReshufflesDetails(reshuffle)
+                    val title = if (currentLanguage=="ru") reshuffle.title_ru
+                    else reshuffle.title_en
+                    val json = JSONObject()
+                    json.put("ObjectID", id.toString())
+                    json.put("Type", "Reshuffle")
+                    json.put("Title", title)
+                    json.put("Regions", reshuffle.getRegionList())
+                    mixpanelAPI?.track("DeepLinkOpened", json)
                 }
                 if (reshuffle==null) Toast.makeText(this, "wrong ID",
                     Toast.LENGTH_LONG).show()
@@ -294,7 +322,14 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.fragmentBroadcasts, bundle)
     }
 
-    fun shareLink(link: String){
+    fun shareLink(link: String, id: String, type: String, title:String, regions:String){
+        val json = JSONObject()
+        json.put("ObjectID", id)
+        json.put("Type", type)
+        json.put("Title", title)
+        json.put("Regions", regions)
+        mixpanelAPI?.track("ShareDeepLinkGenerated", json)
+
         val i = Intent(Intent.ACTION_SEND)
         i.type = "text/plain"
         i.putExtra(Intent.EXTRA_TEXT, link)
@@ -418,8 +453,23 @@ class MainActivity : AppCompatActivity() {
         Realm.getInstanceAsync(config, object : Realm.Callback() {
             override fun onSuccess(realm_: Realm) {
                 appConfig = realm_.where(configuration::class.java).findFirstAsync()
+                checkVersion()
             }
         })
+    }
+
+    private fun checkVersion(){
+        val db = Firebase.database.reference
+        db.child("configuration").child("currentVersionAndroid")
+            .get().addOnSuccessListener {
+                if (packageManager.getPackageInfo(packageName, 0).versionName!=
+                    appConfig?.currentVersionAndroid
+                    ||it.value.toString()!=packageManager
+                        .getPackageInfo(packageName, 0).versionName){
+                    startActivity(Intent(this, UpdateActivity::class.java))
+                    finish()
+                }
+            }
     }
 
     fun showBottomSheetTeams(broadcast: broadcast){
@@ -447,6 +497,12 @@ class MainActivity : AppCompatActivity() {
                 id?.let{
                     val tournament = tournamentsViewModel.getTournamentById(id)
                     tournament?.let {
+                        val type = when (it.status){
+                            "Closed" -> "Tournaments[Closed]"
+                            "Open" -> "Tournaments[Open]"
+                            "Upcoming" -> "Tournaments[Upcoming]"
+                            else -> ""
+                        }
                         binding.bottomSheetTournament.headerDetails
                             .headerTitle.text = tournament.title
 
@@ -494,29 +550,53 @@ class MainActivity : AppCompatActivity() {
 
                         binding.bottomSheetTournament.headerDetails.btnOption.setImageResource(R.drawable.ic_share)
                         binding.bottomSheetTournament.headerDetails.btnOption.setOnClickListener {
-                            Firebase.dynamicLinks.createDynamicLink()
-                                .setDomainUriPrefix("https://link.propubg.app")
-                                .setLink(Uri.parse("https://link.propubg.app/Tournament/${tournament._id}"))
-                                .setSocialMetaTagParameters(
-                                    DynamicLink.SocialMetaTagParameters.Builder()
-                                        .setImageUrl(Uri.parse(tournament.imageSrc[0]!!))
-                                        .setTitle(tournament.title!!)
-                                        .build())
-                                .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
-                                .setIosParameters(
-                                    DynamicLink.IosParameters
-                                        .Builder("ProPUBG").build())
-                                .buildShortDynamicLink()
-                                .addOnSuccessListener {
-                                    shareLink(it.shortLink.toString())
-                                }
-                                .addOnFailureListener {
-                                    Log.v("DASD", it.toString())
-                                }
+                            val link = if (currentLanguage=="ru")
+                                tournament.dynamicLink_ru?:""
+                            else tournament.dynamicLink_en?:""
+                            if (link!=""){
+                                shareLink(link,
+                                    tournament._id.toString(),
+                                    "Tournament", tournament.title!!,
+                                    tournament.getRegionList())
+                            } else {
+                                Firebase.dynamicLinks.createDynamicLink()
+                                    .setDomainUriPrefix("https://link.propubg.app")
+                                    .setLink(Uri.parse("https://link.propubg.app/Tournament/${tournament._id}"))
+                                    .setSocialMetaTagParameters(
+                                        DynamicLink.SocialMetaTagParameters.Builder()
+                                            .setImageUrl(Uri.parse(tournament.imageSrc[0]!!))
+                                            .setTitle(tournament.title!!)
+                                            .build()
+                                    )
+                                    .setAndroidParameters(
+                                        DynamicLink.AndroidParameters.Builder().build()
+                                    )
+                                    .setIosParameters(
+                                        DynamicLink.IosParameters
+                                            .Builder("ProPUBG").build()
+                                    )
+                                    .buildShortDynamicLink()
+                                    .addOnSuccessListener {
+                                        shareLink(it.shortLink.toString(),
+                                            tournament._id.toString(),
+                                            "Tournament", tournament.title!!,
+                                            tournament.getRegionList())
+                                    }
+                                    .addOnFailureListener {
+                                        Log.v("DASD", it.toString())
+                                    }
+                            }
                         }
 
                         binding.bottomSheetTournament.btnRegister.setOnClickListener {
                             tournament.link?.let{
+                                val json = JSONObject()
+                                json.put("ObjectID", tournament._id)
+                                json.put("Status of tournament", tournament.status)
+                                json.put("Title", tournament.title)
+                                json.put("Regions", tournament.getRegionList())
+                                mixpanelAPI?.track("Register Tournament Click", json)
+
                                 val intent = Intent()
                                 intent.action = Intent.ACTION_VIEW
                                 intent.data = Uri.parse(it)
@@ -525,6 +605,11 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         binding.bottomSheetTournament.btnInstagram.setOnClickListener {
+                            val json = JSONObject()
+                            json.put("Screen", type)
+                            json.put("Social network", "Instagram")
+                            mixpanelAPI?.track("SocialButtonClick", json)
+
                             appConfig?.socialLink_Instagram?.let{
                                 val intent = Intent()
                                 intent.action = Intent.ACTION_VIEW
@@ -534,6 +619,11 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         binding.bottomSheetTournament.btnTelegram.setOnClickListener {
+                            val json = JSONObject()
+                            json.put("Screen", type)
+                            json.put("Social network", "Telegram")
+                            mixpanelAPI?.track("SocialButtonClick", json)
+
                             appConfig?.socialLink_Telegram?.let {
                                 val intent = Intent()
                                 intent.action = Intent.ACTION_VIEW
@@ -549,6 +639,12 @@ class MainActivity : AppCompatActivity() {
                                     getString(R.string.link_copied), Toast.LENGTH_SHORT)
                                     .show()
                             }
+                            val json = JSONObject()
+                            json.put("ObjectID", tournament._id)
+                            json.put("Status of tournament", tournament.status)
+                            json.put("Title", tournament.title)
+                            json.put("Regions", tournament.getRegionList())
+                            mixpanelAPI?.track("Copy Tournament Link Click", json)
                         }
                     }
                 }

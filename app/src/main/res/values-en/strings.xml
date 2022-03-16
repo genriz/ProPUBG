@@ -60,6 +60,7 @@
     <string name="search_cancel">Cancel</string>
 
     <string name="link_copied">Link copied to clipboard</string>
+    <string name="id_copied">Account ID copied to clipboard</string>
 
     <string name="broadcasts">Streams</string>
     <string name="no_live_broadcasts">Все прямые эфиры закончены</string>
@@ -98,6 +99,8 @@
     <string name="password_changing">Смена пароля</string>
     <string name="password_old">Введите старый пароль</string>
     <string name="password_wrong">Неверный пароль</string>
+    <string name="copyID">Copy account ID</string>
+    <string name="support">Support</string>
 
     <string name="close">Close</string>
     <string name="edit">Change</string>

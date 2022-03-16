@@ -62,12 +62,13 @@ class FragmentTournamentDetails: Fragment() {
 
         binding.advertMain.isVisible = false
 
+        val type = requireArguments().getString("type")?:"none"
+
         viewModel.realmReady.observe(viewLifecycleOwner,{
             if (it==true){
                 tournament = viewModel.getTournamentById(
                     requireArguments()
                         .getSerializable("tournamentId") as ObjectId)
-                val type = requireArguments().getString("type")?:"none"
                 tournament?.let{tournament_ ->
                     binding.headerDetails.headerTitle.text = tournament_.title
 
@@ -126,7 +127,9 @@ class FragmentTournamentDetails: Fragment() {
                     tournament_.dynamicLink_ru?:""
                 else tournament_.dynamicLink_en?:""
                 if (link!=""){
-                    (activity as MainActivity).shareLink(link)
+                    (activity as MainActivity).shareLink(link,
+                        tournament_._id.toString(), "Tournament",
+                        tournament_.title!!, tournament_.getRegionList())
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
@@ -144,7 +147,9 @@ class FragmentTournamentDetails: Fragment() {
                         )
                         .buildShortDynamicLink()
                         .addOnSuccessListener {
-                            (activity as MainActivity).shareLink(it.shortLink.toString())
+                            (activity as MainActivity).shareLink(it.shortLink.toString(),
+                                tournament_._id.toString(), "Tournament",
+                                tournament_.title!!, tournament_.getRegionList())
                         }
                         .addOnFailureListener {
                             Log.v("DASD", it.toString())
@@ -155,6 +160,13 @@ class FragmentTournamentDetails: Fragment() {
 
         binding.btnRegister.setOnClickListener {
             tournament?.link?.let{
+                val json = JSONObject()
+                json.put("ObjectID", tournament!!._id)
+                json.put("Status of tournament", tournament!!.status)
+                json.put("Title", tournament!!.title)
+                json.put("Regions", tournament!!.getRegionList())
+                (activity as MainActivity).mixpanelAPI?.track("Register Tournament Click", json)
+
                 if (URLUtil.isValidUrl(it)) {
                     val intent = Intent()
                     intent.action = Intent.ACTION_VIEW
@@ -165,6 +177,11 @@ class FragmentTournamentDetails: Fragment() {
         }
 
         binding.btnInstagram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", type)
+            json.put("Social network", "Instagram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             appConfig?.socialLink_Instagram?.let{
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW
@@ -174,6 +191,11 @@ class FragmentTournamentDetails: Fragment() {
         }
 
         binding.btnTelegram.setOnClickListener {
+            val json = JSONObject()
+            json.put("Screen", type)
+            json.put("Social network", "Telegram")
+            (activity as MainActivity).mixpanelAPI?.track("SocialButtonClick", json)
+
             appConfig?.socialLink_Telegram?.let {
                 val intent = Intent()
                 intent.action = Intent.ACTION_VIEW
@@ -189,6 +211,12 @@ class FragmentTournamentDetails: Fragment() {
                     .getString(R.string.link_copied), Toast.LENGTH_SHORT)
                     .show()
             }
+            val json = JSONObject()
+            json.put("ObjectID", tournament!!._id)
+            json.put("Status of tournament", tournament!!.status)
+            json.put("Title", tournament!!.title)
+            json.put("Regions", tournament!!.getRegionList())
+            (activity as MainActivity).mixpanelAPI?.track("Copy Tournament Link Click", json)
         }
 
         advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->
@@ -207,6 +235,11 @@ class FragmentTournamentDetails: Fragment() {
                         binding.advertMain
                             .findViewById<ImageView>(R.id.advertClose)
                             .setOnClickListener {
+                                val json = JSONObject()
+                                json.put("campaign", advertisement.campaign)
+                                json.put("screen", "Detail tournaments")
+                                (activity as MainActivity).mixpanelAPI!!
+                                    .track("AdBannerCloseClick", json)
                                 binding.advertMain.isVisible = false
                                 viewModel.advertClosed = true
                             }
@@ -217,7 +250,7 @@ class FragmentTournamentDetails: Fragment() {
                                 json.put("campaign", advertisement.campaign)
                                 json.put("screen", "Detail tournaments")
                                 (activity as MainActivity).mixpanelAPI!!
-                                    .track("Click banner", json)
+                                    .track("AdBannerClick", json)
                                 val link =
                                     if (currentLanguage=="ru")
                                         advertisement.link_ru

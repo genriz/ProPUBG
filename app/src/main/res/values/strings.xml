@@ -62,11 +62,12 @@
     <string name="btn_tournament_more">Детальная информация</string>
     <string name="btn_tournament_know">Ознакомиться с турниром</string>
     <string name="registration_closed">Регистрация закрыта</string>
-    
+
     <string name="search_text">Введите текст</string>
     <string name="search_cancel">Отменить</string>
 
     <string name="link_copied">Ссылка скопирована в буфер обмена</string>
+    <string name="id_copied">ID аккаунта скопирован в буфер обмена</string>
 
     <string name="broadcasts">Трансляции</string>
     <string name="no_live_broadcasts">К сожалению, нет трансляций мероприятий, которые были бы в эфире🥺\n\nРекомендуем посмотреть раздел с запланированными трансляциями👀</string>
@@ -81,7 +82,7 @@
     <string name="tournament_more">Подробнее о турнире</string>
     <string name="tournament_more_na">Подробная информация о данном турнире недоступна</string>
     <string name="day">День</string>
-    
+
     <string name="content">Контент</string>
     <string name="content_learn">Обучающий</string>
     <string name="content_interview">Интервью и Подкасты</string>
@@ -112,6 +113,8 @@
     <string name="password_changing">Смена пароля</string>
     <string name="password_old">Введите старый пароль</string>
     <string name="password_wrong">Неверный пароль</string>
+    <string name="copyID">Скопировать ID аккаунта</string>
+    <string name="support">Связаться с поддержкой</string>
 
     <string name="close">Закрыть</string>
     <string name="edit">Изменить</string>
@@ -134,10 +137,11 @@
     <string name="contact_support">Связаться с поддержкой</string>
     <string name="app_close">Закрыть приложение</string>
 
-    <string name="we_are_better">Мы стали лучше, чем когда - либо</string>
-    <string name="update_app">Пожалуйста, обновите приложение, чтобы продолжить им пользоваться</string>
+    <string name="we_are_better">Мы стали лучше,\nчем когда - либо</string>
+    <string name="update_app">Пожалуйста, обновите приложение, чтобы\nпродолжить им пользоваться</string>
     <string name="update">Обновить</string>
     <string name="error">Ошибка</string>
 
     <string name="search_empty">К сожалению, нам не удалось найти подходящую запись по введенной информации🥺\n\nПопробуйте, пожалуйста, ввести другой текст для поиска⌨</string>
+
 </resources>
