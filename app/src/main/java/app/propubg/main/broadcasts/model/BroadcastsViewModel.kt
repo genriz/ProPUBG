@@ -1,5 +1,6 @@
 package app.propubg.main.broadcasts.model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.propubg.currentLanguage
@@ -20,11 +21,16 @@ class BroadcastsViewModel:ViewModel() {
     var advertClosed = false
 
     init {
-        val user = realmApp.currentUser()
+        val user = realmApp.currentUser()!!
         val config = SyncConfiguration.Builder(user, "news")
             .waitForInitialRemoteData()
             .allowQueriesOnUiThread(true)
             .allowWritesOnUiThread(true)
+            .syncClientResetStrategy { session, error ->
+                Log.v("DASD", error.message?:"")
+                session.stop()
+                session.start()
+            }
             .build()
         Realm.getInstanceAsync(config, object : Realm.Callback() {
             override fun onSuccess(realm_: Realm) {
@@ -56,14 +62,14 @@ class BroadcastsViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Live")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_ru", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Live")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
@@ -74,14 +80,14 @@ class BroadcastsViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Past")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_ru", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Past")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
@@ -92,14 +98,14 @@ class BroadcastsViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Upcoming")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_ru", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Upcoming")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()

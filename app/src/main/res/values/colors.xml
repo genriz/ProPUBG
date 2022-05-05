@@ -28,8 +28,10 @@
     <color name="news_item_back">#148C8C8C</color>
     <color name="item_image_back">#478C8C8C</color>
     <color name="blue">#4E95F1</color>
+    <color name="blue2">#007AFF</color>
     <color name="back_menu_item">#0FEAEAEA</color>
     <color name="menu_notification_back">#0FFFFFFF</color>
     <color name="input_bg">#CC404040</color>
     <color name="loading_bg">#E61D1D1D</color>
+    <color name="place_gray">#344B4B4B</color>
 </resources>

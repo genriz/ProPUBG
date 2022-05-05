@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -20,6 +21,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import app.propubg.*
 import app.propubg.databinding.FragmentMenuProfileEditBinding
+import app.propubg.login.ui.DialogLoading
 import app.propubg.main.MainActivity
 import com.google.gson.Gson
 import io.realm.mongodb.functions.Functions
@@ -32,6 +34,7 @@ import java.util.*
 class FragmentMenuProfileEdit: Fragment() {
 
     private lateinit var binding: FragmentMenuProfileEditBinding
+    private val dialogLoading by lazy { DialogLoading(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,17 +54,21 @@ class FragmentMenuProfileEdit: Fragment() {
         val timeSaved = requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
             .getLong("nickTime", 0)
         if (timeSaved>0) {
-            val messageTime = "${getString(R.string.nick_change_will)}\n" +
-                    SimpleDateFormat("dd-MM-yyyy HH:mm",
-                        Locale.getDefault()).format(timeSaved)
-            binding.errorNickname.text = messageTime
-            binding.inputNickname.isEnabled = timeSaved <= System.currentTimeMillis()
+            if (timeSaved <= System.currentTimeMillis()){
+                binding.errorNickname.text = ""
+                binding.inputNickname.isEnabled = true
+            } else {
+                val messageTime = "${getString(R.string.nick_change_will)}\n" +
+                        SimpleDateFormat("dd-MM-yyyy HH:mm",
+                            Locale.getDefault()).format(timeSaved)
+                binding.errorNickname.text = messageTime
+                binding.inputNickname.isEnabled = false
+                binding.header.btnSave.isEnabled = false
+            }
         }
 
-        binding.inputPhone.isEnabled = false
-
-
         binding.header.btnCancel.setOnClickListener {
+            binding.inputNickname.clearFocus()
             (activity as MainActivity).onBackPressed()
         }
 
@@ -81,6 +88,7 @@ class FragmentMenuProfileEdit: Fragment() {
             text?.let{
                 binding.nickDelete.isVisible =
                     it.isNotEmpty()&&binding.inputNickname.hasFocus()
+                binding.header.btnSave.isEnabled = text.toString()!= currentUser!!.user!!.nickname
             }
         }
 
@@ -132,12 +140,14 @@ class FragmentMenuProfileEdit: Fragment() {
                 binding.errorNickname.text = getString(R.string.nick_long)
             } else {
                 binding.errorNickname.text = ""
-                changeNick(nick)
+                if (nick!= currentUser!!.user!!.nickname)
+                    changeNick(nick)
             }
         }
     }
 
     private fun changeNick(nick: String){
+        dialogLoading.show()
         val functionsManager: Functions = realmApp.getFunctions(currentUserRealm)
         val map = HashMap<String,String>()
         map["nickname"] = nick
@@ -155,13 +165,16 @@ class FragmentMenuProfileEdit: Fragment() {
                         requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
                             .edit().putString("user", Gson().toJson(currentUser)).apply()
                         setNickTime()
+                        binding.header.btnSave.isEnabled = false
                     } else {
                         binding.errorNickname.text = getString(R.string.nick_buzy)
                     }
                 }
             } else {
+                Log.v("DASD", result.error.errorMessage?:"")
                 binding.errorNickname.text = getString(R.string.nick_error)
             }
+            dialogLoading.hide()
         }
     }
 

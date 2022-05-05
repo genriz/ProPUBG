@@ -74,6 +74,11 @@ class FragmentMenuLanguage: Fragment() {
         binding.header.btnBack.setOnClickListener {
             (activity as MainActivity).onBackPressed()
         }
+
+        binding.header.btnOption.setOnClickListener {
+            (activity as MainActivity).showSheetInfo()
+        }
+
     }
 
     override fun onResume() {

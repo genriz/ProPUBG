@@ -28,11 +28,12 @@
                 android:layout_height="match_parent"
                 setImageContent="@{contentItem.content}">
                 <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/contentWait"
                     android:layout_centerInParent="true"
                     tools:ignore="ContentDescription" />
+
                 <ImageView
                     android:id="@+id/contentImage"
                     android:layout_width="match_parent"
@@ -57,27 +58,15 @@
                 android:textSize="14sp"
                 android:includeFontPadding="false"
                 setTitleContent="@{contentItem.content}"/>
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:fontFamily="@font/sfpro_regular"
+                android:textSize="12sp"
                 android:layout_marginTop="4dp"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    setImageAuthor="@{contentItem.content}"
-                    tools:ignore="ContentDescription" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/sfpro_regular"
-                    android:textSize="12sp"
-                    android:layout_marginStart="3dp"
-                    android:textColor="@color/text_gray2"
-                    android:includeFontPadding="false"
-                    android:text="@{contentItem.content.author}"/>
-            </LinearLayout>
+                android:textColor="@color/text_gray2"
+                android:includeFontPadding="false"
+                android:text="@{contentItem.content.author}"/>
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnWatch"
                 android:layout_width="match_parent"

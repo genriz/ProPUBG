@@ -46,10 +46,10 @@
                     app:cardCornerRadius="14dp"
                     app:cardElevation="0dp"
                     setImageTournament="@{tournamentItem.tournament}"
-                    app:cardBackgroundColor="@android:color/transparent">
+                    app:cardBackgroundColor="@color/place_gray">
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:id="@+id/tournamentImageWait"
                         android:layout_gravity="center"
                         tools:ignore="ContentDescription" />
@@ -112,7 +112,8 @@
                     android:visibility="@{tournamentItem.tournament.mode==null?View.GONE:View.VISIBLE}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,7 +134,8 @@
                     android:visibility="@{tournamentItem.tournament.countTeams==null?View.GONE:View.VISIBLE}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

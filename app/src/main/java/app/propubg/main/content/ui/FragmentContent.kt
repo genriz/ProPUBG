@@ -75,7 +75,7 @@ class FragmentContent: Fragment() {
         })
 
         binding.header.btnOption.setOnClickListener {
-
+            (activity as MainActivity).showSheetInfo()
         }
 
         if (!viewModel.advertClosed) {

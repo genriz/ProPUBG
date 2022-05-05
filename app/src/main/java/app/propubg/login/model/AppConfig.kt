@@ -21,5 +21,6 @@ open class configuration(
     var socialLinkCreator_Instagram: String? = null,
     var socialLink_Instagram: String? = null,
     var socialLink_Telegram: String? = null,
+    var donateLink: String? = null,
     var supportLinkTelegram: String? = null
 ): RealmObject() {}

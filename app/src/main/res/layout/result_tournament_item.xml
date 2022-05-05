@@ -46,10 +46,10 @@
                     app:cardCornerRadius="14dp"
                     app:cardElevation="0dp"
                     setImageResults="@{resultsItem.resultsOfTournament}"
-                    app:cardBackgroundColor="@android:color/transparent">
+                    app:cardBackgroundColor="@color/place_gray">
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:id="@+id/resultsImageWait"
                         android:layout_gravity="center"
                         tools:ignore="ContentDescription" />
@@ -82,7 +82,8 @@
                     android:paddingStart="4dp"
                     android:paddingTop="3dp"
                     android:paddingEnd="4dp"
-                    android:paddingBottom="3dp">
+                    android:paddingBottom="3dp"
+                    tools:ignore="RelativeOverlap">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -143,8 +144,8 @@
                 android:id="@+id/resultsAuthor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/countsLayout"
-                app:layout_constraintTop_toTopOf="@id/countsLayout"
+                app:layout_constraintBottom_toBottomOf="@id/resultsDate"
+                app:layout_constraintTop_toTopOf="@id/resultsDate"
                 app:layout_constraintStart_toStartOf="@id/titleLayout"
                 android:textSize="10sp"
                 android:textColor="@color/text_gray2"
@@ -159,10 +160,10 @@
                 android:id="@+id/resultsDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/countsLayout"
-                app:layout_constraintTop_toTopOf="@id/countsLayout"
-                app:layout_constraintStart_toEndOf="@id/resultsAuthor"
-                android:layout_marginStart="27dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="12dp"
                 android:textSize="10sp"
                 android:textColor="@color/text_gray2"
                 android:gravity="start"
@@ -172,7 +173,7 @@
                 setSimpleDate="@{resultsItem.resultsOfTournament.date}"/>
 
             <LinearLayout
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:id="@+id/countsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

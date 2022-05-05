@@ -2,6 +2,7 @@ package app.propubg.utils
 
 import android.content.Context
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import app.propubg.R
 import app.propubg.currentLanguage
@@ -34,7 +35,19 @@ class AppUtils {
             if (context.getSharedPreferences("prefs", AppCompatActivity.MODE_PRIVATE)
                     .getBoolean(topic, true)){
                 fcm.unsubscribeFromTopic("$topic$prevLang")
+                    .addOnSuccessListener {
+                        Log.v("DASD", "unsubscribed $topic$prevLang")
+                    }
+                    .addOnFailureListener {
+                        Log.v("DASD", "unsubscribe failed $topic$prevLang")
+                    }
                 fcm.subscribeToTopic("$topic$newLang")
+                    .addOnSuccessListener {
+                        Log.v("DASD", "subscribed $topic$newLang")
+                    }
+                    .addOnFailureListener {
+                        Log.v("DASD", "subscribe failed $topic$newLang")
+                    }
             }
         }
     }

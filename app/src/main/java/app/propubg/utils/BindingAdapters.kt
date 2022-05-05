@@ -3,6 +3,7 @@ package app.propubg.utils
 import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import android.text.util.Linkify
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -43,16 +44,41 @@ fun setImageNews (view: CardView, news: news?){
         if (currentLanguage == "ru"&&news.imageSrc_ru.isNotEmpty()) {
             news.imageSrc_ru[0]?.let {
                 if (news.imageSrc_ru[0]!="") {
+                    waitImage.isVisible = true
                     waitImage.post {
                         Glide.with(view).asGif().load(R.drawable.wait)
                             .into(waitImage)
                     }
                     Glide.with(view).load(it)
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                waitImage.visibility = View.GONE
+                                return false
+                            }
+                        })
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .signature(ObjectKey(it))
                         .into(image)
-                } else Glide.with(view).load(R.drawable.item_holder)
-                    .into(image)
+                } else {
+                    waitImage.isVisible = false
+                    Glide.with(view).load(R.drawable.item_holder)
+                        .into(image)
+                }
             }
         }
         if (currentLanguage == "en"&&news.imageSrc_en.isNotEmpty()) {
@@ -63,6 +89,27 @@ fun setImageNews (view: CardView, news: news?){
                             .into(waitImage)
                     }
                     Glide.with(view).load(it)
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                waitImage.visibility = View.GONE
+                                return false
+                            }
+                        })
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .signature(ObjectKey(it))
                         .into(image)
@@ -128,31 +175,81 @@ fun setImageReshuffles (view: CardView, reshuffle: reshuffle?){
         if (currentLanguage == "ru" && reshuffle.imageSrc_ru.isNotEmpty()) {
             reshuffle.imageSrc_ru[0]?.let {
                 if (reshuffle.imageSrc_ru[0]!="") {
+                    waitImage.isVisible = true
                     waitImage.post {
                         Glide.with(view).asGif().load(R.drawable.wait)
                             .into(waitImage)
                     }
                     Glide.with(view).load(it)
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                waitImage.visibility = View.GONE
+                                return false
+                            }
+                        })
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .signature(ObjectKey(it))
                         .into(image)
-                } else Glide.with(view).load(R.drawable.item_holder)
-                    .into(image)
+                } else {
+                    waitImage.isVisible = false
+                    Glide.with(view).load(R.drawable.item_holder)
+                        .into(image)
+                }
             }
         }
         if (currentLanguage == "en" && reshuffle.imageSrc_en.isNotEmpty()) {
             reshuffle.imageSrc_en[0]?.let {
                 if (reshuffle.imageSrc_en[0]!="") {
+                    waitImage.isVisible = true
                     waitImage.post {
                         Glide.with(view).asGif().load(R.drawable.wait)
                             .into(waitImage)
                     }
                     Glide.with(view).load(it)
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                waitImage.visibility = View.GONE
+                                return false
+                            }
+                        })
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .signature(ObjectKey(it))
                         .into(image)
-                } else Glide.with(view).load(R.drawable.item_holder)
-                    .into(image)
+                } else {
+                    waitImage.isVisible = false
+                    Glide.with(view).load(R.drawable.item_holder)
+                        .into(image)
+                }
             }
         }
     }
@@ -194,15 +291,40 @@ fun setImageTournament (view: CardView, tournament: tournament?){
         val image = view.findViewById<ImageView>(R.id.tournamentImage)
         tournament.imageSrc[0]?.let {
             if (tournament.imageSrc[0]!=""){
+                waitImage.isVisible = true
                 waitImage.post {
                     Glide.with(view).asGif().load(R.drawable.wait)
                         .into(view.findViewById(R.id.tournamentImageWait))
                 }
                 Glide.with(view).load(it)
+                    .addListener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            waitImage.visibility = View.GONE
+                            return false
+                        }
+                    })
                     .signature(ObjectKey(it))
                     .into(image)
-            } else Glide.with(view).load(R.drawable.item_holder)
-                .into(image)
+            } else {
+                waitImage.isVisible = false
+                Glide.with(view).load(R.drawable.item_holder)
+                    .into(image)
+            }
         }
     }
 }
@@ -267,7 +389,7 @@ fun setTextPrize (view: TextView, prizePool: Long?, currency: String?){
         prizeString = Currency.getInstance(currency_).symbol
     }
     prizePool?.let{prize->
-        prizeString += " ${String.format("%,d", prize)}"
+        prizeString += String.format("%,d", prize)
 //        if (prizeString.contains(","))
 //            prizeString.replace(",",".")
     }
@@ -284,11 +406,12 @@ fun setBroadcastStage (view: TextView, broadcast: broadcast){
 fun setImageBroadcast (view: RelativeLayout, broadcast: broadcast){
     val waitImage = view.findViewById<ImageView>(R.id.broadcastWait)
     val image = view.findViewById<ImageView>(R.id.broadcastImage)
-    waitImage.post {
-        Glide.with(view).asGif().load(R.drawable.wait)
-            .into(waitImage)
-    }
     if (broadcast.imageSrc!=null&&broadcast.imageSrc!="") {
+        waitImage.isVisible = true
+        waitImage.post {
+            Glide.with(view).asGif().load(R.drawable.wait)
+                .into(waitImage)
+        }
         Glide.with(view).load(broadcast.imageSrc)
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -313,6 +436,7 @@ fun setImageBroadcast (view: RelativeLayout, broadcast: broadcast){
             })
             .into(image)
     } else {
+        waitImage.isVisible = false
         Glide.with(view).load(R.drawable.app_logo)
             .into(image)
     }
@@ -322,11 +446,12 @@ fun setImageBroadcast (view: RelativeLayout, broadcast: broadcast){
 fun setImageContent (view: RelativeLayout, content: content){
     val waitImage = view.findViewById<ImageView>(R.id.contentWait)
     val image = view.findViewById<ImageView>(R.id.contentImage)
-    waitImage.post {
-        Glide.with(view).asGif().load(R.drawable.wait)
-            .into(waitImage)
-    }
     if (content.imageSrc!=null&&content.imageSrc!=""){
+        waitImage.isVisible = true
+        waitImage.post {
+            Glide.with(view).asGif().load(R.drawable.wait)
+                .into(waitImage)
+        }
         Glide.with(view).load(content.imageSrc)
             .addListener(object: RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -349,6 +474,7 @@ fun setImageContent (view: RelativeLayout, content: content){
             })
             .into(image)
     } else {
+        waitImage.isVisible = false
         Glide.with(view).load(R.drawable.app_logo)
             .into(image)
     }
@@ -395,10 +521,43 @@ fun setTxtMoreBroadcast(view:TextView, broadcast: broadcast){
 }
 
 @BindingAdapter("setAvatar")
-fun setAvatar(view: ImageView, user: user?){
+fun setAvatar(view: RelativeLayout, user: user?){
+    val waitImage = view.findViewById<ImageView>(R.id.avatarWait)
+    val image = view.findViewById<ImageView>(R.id.avatarImage)
     user?.let{
         if (it.avatarUrl!=null){
-            Glide.with(view).load(it.avatarUrl).into(view)
+            waitImage.isVisible = true
+            waitImage.post {
+                Glide.with(view).asGif().load(R.drawable.wait)
+                    .into(waitImage)
+            }
+            Glide.with(view).load(it.avatarUrl)
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        waitImage.visibility = View.GONE
+                        return false
+                    }
+                })
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(ObjectKey(it._id!!))
+                .into(image)
+        } else {
+            waitImage.isVisible = true
         }
     }
 }
@@ -420,33 +579,81 @@ fun setImageResults (view: CardView, resultsOfTournament: resultsOfTournament?){
         if (currentLanguage == "ru" && resultsOfTournament.imageSrc_ru.isNotEmpty()) {
             resultsOfTournament.imageSrc_ru[0]?.let {
                 if (resultsOfTournament.imageSrc_ru[0]!="") {
+                    waitImage.isVisible = true
                     waitImage.post {
                         Glide.with(view).asGif().load(R.drawable.wait)
                             .into(waitImage)
                     }
                     Glide.with(view).load(it)
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                waitImage.visibility = View.GONE
+                                return false
+                            }
+                        })
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .signature(ObjectKey(it))
                         .into(image)
                 } else
                     Glide.with(view).load(R.drawable.item_holder)
                         .into(image)
+                waitImage.isVisible = false
             }
         }
         if (currentLanguage == "en" && resultsOfTournament.imageSrc_en.isNotEmpty()) {
             resultsOfTournament.imageSrc_en[0]?.let {
+                Log.v("DASD", resultsOfTournament.title?:"")
+                Log.v("DASD", it)
                 if (resultsOfTournament.imageSrc_en[0]!="") {
+                    waitImage.isVisible = true
                     waitImage.post {
                         Glide.with(view).asGif().load(R.drawable.wait)
                             .into(waitImage)
                     }
                     Glide.with(view).load(it)
+                        .addListener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                waitImage.visibility = View.GONE
+                                return false
+                            }
+                        })
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .signature(ObjectKey(it))
                         .into(image)
                 } else {
                     Glide.with(view).load(R.drawable.item_holder)
                         .into(image)
+                    waitImage.isVisible = false
                 }
             }
         }
@@ -499,15 +706,38 @@ fun setImagePartners (view: CardView, partner: partner?){
         } else partner.imageSrc_en
         img?.let {
             if (img!="") {
+                waitImage.isVisible = true
                 waitImage.post {
                     Glide.with(view).asGif().load(R.drawable.wait)
                         .into(waitImage)
                 }
                 Glide.with(view).load(img)
+                    .addListener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            waitImage.visibility = View.GONE
+                            return false
+                        }
+                    })
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .signature(ObjectKey(img))
                     .into(image)
             } else {
+                waitImage.isVisible = false
                 Glide.with(view).load(R.drawable.item_holder)
                     .into(image)
             }

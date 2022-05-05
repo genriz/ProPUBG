@@ -52,6 +52,10 @@ class FragmentMenuNotifications: Fragment(), NotificationsAdapter.OnClickListene
             }
         }
 
+        binding.header.btnOption.setOnClickListener {
+            (activity as MainActivity).showSheetInfo()
+        }
+
     }
 
     override fun onTitleClick(notificationTitle: NotificationTitle) {
@@ -69,9 +73,18 @@ class FragmentMenuNotifications: Fragment(), NotificationsAdapter.OnClickListene
         requireContext().getSharedPreferences("prefs", AppCompatActivity.MODE_PRIVATE).edit()
             .putBoolean(topic,
                 notificationItem.isChecked).apply()
+        Log.v("DASD", "$topic ${notificationItem.isChecked}")
         if (notificationItem.isChecked)
-            fcm.subscribeToTopic("$topic$currentLanguage")
-        else fcm.unsubscribeFromTopic("$topic$currentLanguage")
+            fcm.subscribeToTopic("$topic$currentLanguage").addOnSuccessListener {
+                Log.v("DASD", "subscribed $topic$currentLanguage")
+            }.addOnFailureListener {
+                Log.v("DASD", "subscribe failed $topic$currentLanguage")
+            }
+        else fcm.unsubscribeFromTopic("$topic$currentLanguage").addOnSuccessListener {
+            Log.v("DASD", "unsubscribed $topic$currentLanguage")
+        }.addOnFailureListener {
+            Log.v("DASD", "unsubscribe failed $topic$currentLanguage")
+        }
     }
 
     override fun onDetach() {

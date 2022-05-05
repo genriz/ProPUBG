@@ -3,22 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="63dp"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:id="@+id/advertImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="6.4:1"
+        app:layout_constraintTop_toTopOf="parent"
+        android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription" />
     <ImageView
-        android:padding="16dp"
+        android:padding="26dp"
         android:id="@+id/advertClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_close_advert"
-        app:layout_constraintTop_toTopOf="@id/advertImage"
         app:layout_constraintBottom_toTopOf="@id/advertImage"
+        app:layout_constraintTop_toTopOf="@id/advertImage"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="9dp"
         tools:ignore="ContentDescription" />

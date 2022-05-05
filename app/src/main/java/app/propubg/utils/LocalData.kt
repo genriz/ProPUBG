@@ -1,6 +1,7 @@
 package app.propubg.utils
 
 import android.content.Context
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import app.propubg.R
 import app.propubg.main.menu.model.NotificationItem
@@ -60,6 +61,8 @@ object LocalData {
     }
 
     private fun getPref(context: Context, index: Int):Boolean{
+        Log.v("DASD", "${topics.elementAt(index)} - ${context.getSharedPreferences("prefs", AppCompatActivity.MODE_PRIVATE)
+            .getBoolean(topics.elementAt(index), true)}")
         return context.getSharedPreferences("prefs", AppCompatActivity.MODE_PRIVATE)
             .getBoolean(topics.elementAt(index), true)
     }

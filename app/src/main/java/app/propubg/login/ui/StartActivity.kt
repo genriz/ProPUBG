@@ -36,12 +36,13 @@ import org.bson.Document
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class StartActivity : AppCompatActivity() {
+class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
 
     lateinit var binding: ActivityStartBinding
     private lateinit var navController: NavController
     private val viewModel: StartViewModel by viewModels()
     private val dialogLoading by lazy {DialogLoading(this)}
+    private var resend = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,6 +142,7 @@ class StartActivity : AppCompatActivity() {
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+            if (dialogLoading.isShowing) dialogLoading.hide()
             val code = credential.smsCode
             code?.let{
                 viewModel.code.postValue(it)
@@ -156,6 +158,9 @@ class StartActivity : AppCompatActivity() {
                 }
                 e.message.toString().lowercase(Locale.getDefault()).contains("sms verification code") -> {
                     viewModel.error.postValue(getString(R.string.wrong_sms))
+                }
+                e.message.toString().lowercase(Locale.getDefault()).contains("error 403") -> {
+                    showErrorDialog()
                 }
                 else -> viewModel.error.postValue(e.message?:"Server error")
             }
@@ -182,13 +187,12 @@ class StartActivity : AppCompatActivity() {
         }
     }
 
-    fun verifyNumber(number: String){
+    fun verifyNumber(){
         dialogLoading.show()
         val auth = FirebaseAuth.getInstance()
-//        auth.firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber("+380501234567",
-//        "123456")
+        auth.useAppLanguage()
         val options = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(number)
+            .setPhoneNumber(viewModel.phone)
             //.setPhoneNumber("+380501234567")
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(this)
@@ -199,35 +203,74 @@ class StartActivity : AppCompatActivity() {
 
     fun openSmsFragment(){
         if (!viewModel.timerStarted&&viewModel.resendEnabled)
-            verifyNumber(viewModel.phone)
+            verifyNumber()
         else navController.navigate(R.id.fragmentSms)
+    }
+
+    private fun openStartFragment(){
+        navController.popBackStack()
+        navController.navigate(R.id.fragmentStart)
     }
 
     fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         dialogLoading.show()
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = task.result.user
-                    user?.let{
-                        loginRealm(it.uid, it.phoneNumber!!)
-                    }
-                    resetValues()
-                } else {
-                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
+        if (resend){
+            viewModel.resendToken?.let {
+                resendSms()
+            }
+        } else {
+            FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val user = task.result.user
+                        user?.let {
+                            loginRealm(it.uid, it.phoneNumber!!)
+                        }
+                        resetValues()
+                    } else {
                         dialogLoading.hide()
-                        viewModel.error.postValue(task.exception!!.message)
+                        viewModel.code.value = ""
+                        if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                            viewModel.error.postValue(task.exception!!.message)
+                        }
                     }
                 }
-            }
-            .addOnFailureListener {
-                dialogLoading.hide()
-                if (it.message.toString().lowercase(Locale.getDefault())
-                        .contains("sms verification code"))
-                    viewModel.error.postValue(getString(R.string.wrong_sms))
-                else viewModel.error.postValue(it.message)
-                viewModel.code.value = ""
-            }
+                .addOnFailureListener {
+                    dialogLoading.hide()
+                    when {
+                        it.message.toString().lowercase(Locale.getDefault())
+                            .contains("sms verification code") ->
+                            viewModel.error.postValue(getString(R.string.wrong_sms))
+                        it.message.toString().lowercase(Locale.getDefault())
+                            .contains("code has expired") -> {
+                            viewModel.resendToken?.let {
+                                resendSms()
+                            }
+                        }
+                        it.message.toString().lowercase(Locale.getDefault())
+                            .contains("network") -> {
+                            viewModel.error.postValue(it.message)
+                        }
+                        else -> viewModel.error.postValue(it.message)
+                    }
+                    viewModel.code.value = ""
+                }
+        }
+    }
+
+    private fun resendSms(){
+        val auth = FirebaseAuth.getInstance()
+        auth.useAppLanguage()
+        val options = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(viewModel.phone)
+            //.setPhoneNumber("+380501234567")
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(this)
+            .setCallbacks(callbacks)
+            .setForceResendingToken(viewModel.resendToken!!)
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+        resend = false
     }
 
     private fun resetValues() {
@@ -278,9 +321,20 @@ class StartActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                viewModel.error.postValue(it.error.message)
+                dialogLoading.hide()
+                viewModel.code.value = ""
+                it.error.message?.let{ message ->
+                    if (message.contains("stream was reset: PROTOCOL_ERROR"))
+                        showErrorDialog()
+                    else viewModel.error.postValue(message)
+                }
             }
         }
+    }
+
+    private fun showErrorDialog() {
+        resend = true
+        DialogError(this, this).show()
     }
 
     override fun onBackPressed() {
@@ -298,6 +352,13 @@ class StartActivity : AppCompatActivity() {
         setResult(RESULT_CANCELED)
         finish()
         super.onDestroy()
+    }
+
+    override fun onSupportClick() {
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        intent.data = Uri.parse("https://t.me/propubg_app_creator")
+        startActivity(intent)
     }
 
 }

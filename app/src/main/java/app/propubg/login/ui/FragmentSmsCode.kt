@@ -56,7 +56,7 @@ class FragmentSmsCode: Fragment() {
                         R.color.orange))
                     binding.smsInfo.setOnClickListener {
                         (activity as StartActivity)
-                            .verifyNumber(viewModel.phone)
+                            .verifyNumber()
                     }
                 }
             }
@@ -263,8 +263,8 @@ class FragmentSmsCode: Fragment() {
         binding.codeEdit3.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 for (i in 1 downTo 0) {
-                    if ((binding.inputPhone.getChildAt(i) as EditText).text.isEmpty()) {
-                        binding.inputPhone.getChildAt(i).requestFocus()
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
                     }
                 }
             }
@@ -272,8 +272,8 @@ class FragmentSmsCode: Fragment() {
         binding.codeEdit4.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 for (i in 2 downTo 0) {
-                    if ((binding.inputPhone.getChildAt(i) as EditText).text.isEmpty()) {
-                        binding.inputPhone.getChildAt(i).requestFocus()
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
                     }
                 }
             }
@@ -281,8 +281,8 @@ class FragmentSmsCode: Fragment() {
         binding.codeEdit5.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 for (i in 3 downTo 0) {
-                    if ((binding.inputPhone.getChildAt(i) as EditText).text.isEmpty()) {
-                        binding.inputPhone.getChildAt(i).requestFocus()
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
                     }
                 }
             }
@@ -290,8 +290,8 @@ class FragmentSmsCode: Fragment() {
         binding.codeEdit6.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 for (i in 4 downTo 0) {
-                    if ((binding.inputPhone.getChildAt(i) as EditText).text.isEmpty()) {
-                        binding.inputPhone.getChildAt(i).requestFocus()
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
                     }
                 }
             }
@@ -308,7 +308,7 @@ class FragmentSmsCode: Fragment() {
     }
 
     private fun clearCode(){
-        binding.inputPhone.children.forEach {
+        binding.inputCode.children.forEach {
             (it as EditText).setText("")
             it.isSelected = false
         }
@@ -316,13 +316,13 @@ class FragmentSmsCode: Fragment() {
 
     private fun setCode(code: String){
         for (i in code.indices){
-            (binding.inputPhone.getChildAt(i) as EditText).setText(code[i].toString())
+            (binding.inputCode.getChildAt(i) as EditText).setText(code[i].toString())
         }
     }
 
     private fun checkCode(){
         val sb = StringBuilder()
-        binding.inputPhone.children.forEach {
+        binding.inputCode.children.forEach {
             sb.append((it as EditText).text.toString())
         }
         viewModel.code.value = sb.toString()

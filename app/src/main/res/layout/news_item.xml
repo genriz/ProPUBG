@@ -75,10 +75,10 @@
                         app:cardCornerRadius="14dp"
                         app:cardElevation="0dp"
                         setImageNews="@{newsItem.news}"
-                        app:cardBackgroundColor="@android:color/transparent">
+                        app:cardBackgroundColor="@color/place_gray">
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:id="@+id/newsImageWait"
                             android:layout_gravity="center"
                             tools:ignore="ContentDescription" />
@@ -106,8 +106,7 @@
                     android:id="@+id/newsDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@id/newsImageLayout"
-                    android:layout_marginTop="18dp"
+                    app:layout_constraintBottom_toTopOf="@id/newsTitle"
                     app:layout_constraintStart_toStartOf="@id/newsTitle"
                     app:layout_constraintEnd_toEndOf="@id/newsTitle"
                     android:textSize="10sp"
@@ -119,8 +118,8 @@
                     android:id="@+id/newsTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/newsDate"
-                    app:layout_constraintBottom_toTopOf="@id/authorLayout"
+                    app:layout_constraintTop_toTopOf="@id/newsImageLayout"
+                    app:layout_constraintBottom_toBottomOf="@id/newsImageLayout"
                     app:layout_constraintStart_toEndOf="@id/newsImageLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="8dp"
@@ -135,8 +134,7 @@
                     android:id="@+id/authorLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/newsImageLayout"
-                    android:layout_marginBottom="18dp"
+                    app:layout_constraintTop_toBottomOf="@id/newsTitle"
                     app:layout_constraintStart_toStartOf="@id/newsTitle"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="12dp"
@@ -153,12 +151,12 @@
                         android:textColor="@color/text_gray2"
                         android:text="@{newsItem.news.author}"
                         tools:ignore="SmallSp" />
-
                     <LinearLayout
                         android:layout_width="6dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:visibility="invisible">
+                        android:visibility="invisible"
+                        tools:ignore="UseCompoundDrawables">
                         <!-- android:visibility="@{newsItem.news.countViews==null?View.GONE:View.VISIBLE}" -->
                         <TextView
                             android:layout_width="wrap_content"
@@ -183,9 +181,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_unique"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/newsDate"
+                app:layout_constraintBottom_toBottomOf="@id/newsDate"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="18dp"
                 android:layout_marginEnd="12dp"
                 tools:ignore="ContentDescription"
                 android:visibility="@{newsItem.news.uniqueness?View.VISIBLE:View.GONE}"/>

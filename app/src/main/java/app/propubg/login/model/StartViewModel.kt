@@ -8,7 +8,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 class StartViewModel: ViewModel() {
     var verificationId = ""
     var phone = ""
-    lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
+    var resendToken: PhoneAuthProvider.ForceResendingToken? = null
     var code = MutableLiveData<String>()
     var error = MutableLiveData<String>().apply { value = "" }
     var isPhoneNew = true

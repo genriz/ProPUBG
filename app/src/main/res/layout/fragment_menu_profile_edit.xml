@@ -23,12 +23,23 @@
             android:layout_marginTop="22dp"
             android:gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/header">
-            <ImageView
+            <RelativeLayout
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/ic_avatar"
-                setAvatar="@{user.user}"
-                tools:ignore="ContentDescription" />
+                setAvatar="@{user.user}">
+                <ImageView
+                    android:layout_centerInParent="true"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/avatarWait"
+                    tools:ignore="ContentDescription" />
+                <ImageView
+                    android:id="@+id/avatarImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_circle_holder"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,6 +55,7 @@
                 android:fontFamily="@font/sfpro_regular"
                 android:includeFontPadding="false"
                 android:textSize="16sp"
+                android:textColor="@color/text_gray2"
                 android:layout_marginTop="2dp"
                 android:text="@{user.user.phoneNumber}"/>
         </LinearLayout>
@@ -104,43 +116,21 @@
                 android:textColor="@color/red"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="17dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/sfpro_regular"
-                android:includeFontPadding="false"
-                android:textSize="12sp"
-                android:textColor="@color/text_gray1"
-                android:layout_marginTop="9dp"
-                android:text="@string/phone"
-                android:layout_marginStart="17dp"/>
-            <EditText
-                android:layout_marginTop="3dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/inputPhone"
-                android:inputType="text"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="12dp"
-                android:text="@{user.user.phoneNumber}"
-                android:background="@drawable/edittext_menu_back"
-                tools:ignore="Autofill,LabelFor,TextFields" />
+
         </LinearLayout>
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="23dp"
-            app:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/orange"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             app:layout_constraintBottom_toTopOf="@id/btnSupport"
             android:layout_marginBottom="10dp"
             app:cornerRadius="30dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/text_gray1"
             android:text="@string/copyID"
-            android:textColor="@color/text_gray3"
             android:textAllCaps="false"
             android:id="@+id/btnCopyId"/>
         <com.google.android.material.button.MaterialButton
@@ -148,14 +138,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="23dp"
-            app:backgroundTint="@color/white"
+            app:backgroundTint="@color/blue2"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             app:layout_constraintBottom_toTopOf="@id/btnLogout"
             android:layout_marginBottom="10dp"
             app:cornerRadius="30dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/text_gray1"
             android:text="@string/contact_support"
-            android:textColor="@color/text_gray3"
+            android:textColor="@color/white"
             android:textAllCaps="false"
             android:id="@+id/btnSupport"/>
         <com.google.android.material.button.MaterialButton
@@ -164,8 +154,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="23dp"
             app:backgroundTint="@color/gray"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="64dp"
+            android:layout_marginBottom="20dp"
             app:cornerRadius="30dp"
             android:text="@string/logout"
             android:textColor="@color/red2"

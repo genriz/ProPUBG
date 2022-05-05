@@ -46,10 +46,10 @@
                     app:cardCornerRadius="14dp"
                     app:cardElevation="0dp"
                     setImagePartners="@{partnersItem.partner}"
-                    app:cardBackgroundColor="@android:color/transparent">
+                    app:cardBackgroundColor="@color/place_gray">
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:id="@+id/partnersImageWait"
                         android:layout_gravity="center"
                         tools:ignore="ContentDescription" />

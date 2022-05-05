@@ -10,8 +10,10 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.util.Linkify
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -21,9 +23,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import app.propubg.*
 import app.propubg.databinding.ActivityMainBinding
+import app.propubg.login.model.AppConfig
 import app.propubg.login.model.UserRealm
 import app.propubg.login.model.configuration
 import app.propubg.login.ui.StartActivity
+import app.propubg.main.advert.advertisement
 import app.propubg.main.broadcasts.adapters.TeamListAdapter
 import app.propubg.main.broadcasts.model.broadcast
 import app.propubg.main.menu.model.partner
@@ -52,6 +56,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import io.realm.Realm
+import io.realm.kotlin.where
 import io.realm.mongodb.sync.SyncConfiguration
 import org.bson.types.ObjectId
 import java.util.*
@@ -64,6 +69,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
     private lateinit var sheetTeamsBehavior: BottomSheetBehavior<*>
     private lateinit var sheetTournamentBehavior: BottomSheetBehavior<*>
+    private lateinit var sheetInfoBehavior: BottomSheetBehavior<*>
     var mixpanelAPI: MixpanelAPI? = null
     private val tournamentsViewModel:TournamentsViewModel by viewModels()
     private val newsViewModel:NewsViewModel by viewModels()
@@ -74,6 +80,8 @@ class MainActivity : AppCompatActivity() {
             currentUserRealm = realmApp.currentUser()
             it.data?.extras?.let{ data ->
                 intent.putExtra("screen", data["screen"].toString())
+                intent.putExtra("title", data["title"].toString())
+                intent.putExtra("text", data["text"].toString())
             }
             initUI()
         } else {
@@ -116,15 +124,21 @@ class MainActivity : AppCompatActivity() {
         val bottomBar = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         NavigationUI.setupWithNavController(bottomBar, navController)
 
-        getDynamicLink(intent)
+        tournamentsViewModel.realmReady.observe(this,{
+            if (it){
+                getDynamicLink(intent)
+            }
+        })
 
         setupBottomSheetTeams()
         setupBottomSheetTournament()
+        setupSheetInfo()
 
         if (firstStart) {
             getSharedPreferences("prefs", Context.MODE_PRIVATE)
                 .edit().putBoolean("firstStart", false).apply()
         }
+
     }
 
     private fun setFCM() {
@@ -141,8 +155,8 @@ class MainActivity : AppCompatActivity() {
             fcm.unsubscribeFromTopic("informativeContent")
             fcm.unsubscribeFromTopic("newsContent")
             fcm.unsubscribeFromTopic("interviewContent")
+            subscribeToTopics(currentLanguage, fcm)
         }
-        subscribeToTopics(currentLanguage, fcm)
     }
 
     private fun subscribeToTopics(lang: String, fcm: FirebaseMessaging){
@@ -169,7 +183,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun processIntent(){
         intent.extras?.let{extras ->
-            if (extras.containsKey("screen")) {
+            if (extras.containsKey("screen")
+                &&extras["screen"].toString()!="none") {
                 processScreen(extras["screen"].toString())
                 val json = JSONObject()
                 json.put("Screen", extras["screen"])
@@ -187,12 +202,7 @@ class MainActivity : AppCompatActivity() {
         sheetTeamsBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             @SuppressLint("ClickableViewAccessibility")
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState==BottomSheetBehavior.STATE_EXPANDED){
-                    binding.dimBack.setOnTouchListener { _, _ ->
-                        sheetTeamsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                        true
-                    }
-                } else {
+                if (newState!=BottomSheetBehavior.STATE_EXPANDED){
                     binding.dimBack.setOnTouchListener { _, _ -> false }
                 }
             }
@@ -209,12 +219,7 @@ class MainActivity : AppCompatActivity() {
         sheetTournamentBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             @SuppressLint("ClickableViewAccessibility")
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState==BottomSheetBehavior.STATE_EXPANDED){
-                    binding.dimBack.setOnTouchListener { _, _ ->
-                        sheetTournamentBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                        true
-                    }
-                } else {
+                if (newState!=BottomSheetBehavior.STATE_EXPANDED){
                     binding.dimBack.setOnTouchListener { _, _ -> false }
                 }
             }
@@ -222,6 +227,37 @@ class MainActivity : AppCompatActivity() {
                 binding.dimBack.alpha = 1+slideOffset
             }
         })
+    }
+
+    private fun setupSheetInfo() {
+        BottomSheetBehavior.from(binding.sheetAboutScroll.root)
+            .state = BottomSheetBehavior.STATE_HIDDEN
+        BottomSheetBehavior.from(binding.sheetAboutScroll.root).skipCollapsed = true
+        BottomSheetBehavior.from(binding.sheetAbout.root)
+            .state = BottomSheetBehavior.STATE_HIDDEN
+        BottomSheetBehavior.from(binding.sheetAbout.root).skipCollapsed = true
+        binding.sheetAbout.root.postDelayed({
+            if (binding.sheetAbout.infoBlock2.y
+                < (binding.sheetAbout.infoBlock1.y +binding.sheetAbout.infoBlock1.height+20)) {
+                sheetInfoBehavior = BottomSheetBehavior.from(binding.sheetAboutScroll.root)
+                binding.sheetAboutScroll.config = AppConfig().apply { config = appConfig }
+                binding.sheetAboutScroll.executePendingBindings()
+            } else {
+                sheetInfoBehavior = BottomSheetBehavior.from(binding.sheetAbout.root)
+                binding.sheetAbout.config = AppConfig().apply { config = appConfig }
+                binding.sheetAbout.executePendingBindings()
+            }
+            sheetInfoBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                @SuppressLint("ClickableViewAccessibility")
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    binding.dimBack.alpha = 1+slideOffset
+                }
+            })
+        },500)
+
     }
 
     fun openNewsDetails(news: news){
@@ -399,8 +435,14 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
                 val deepLink: Uri? = pendingDynamicLinkData?.link
                 deepLink?.let{
+                    Log.v("DASD path", it.path?:"wrong path")
+                    it.queryParameterNames.forEach { name ->
+                        Log.v("DASD", "queryParameterNames: $name")
+                    }
+                    Log.v("DASD query", it.query?:"wrong query")
                     val param = it.queryParameterNames.elementAt(0)
                     val id = it.getQueryParameter(param)
+                    Log.v("DASD", "getting param $param and id $id")
                     when (param){
                         "News" -> {
                             openNewsScreen(ObjectId(id))
@@ -408,7 +450,7 @@ class MainActivity : AppCompatActivity() {
                         "Reshuffle" -> {
                             openReshufflesScreen(ObjectId(id))
                         }
-                        "Tournament" -> {
+                        "Tournaments" -> {
                             val tournament = tournamentsViewModel.getTournamentById(ObjectId(id))
                             tournament?.status?.let{status ->
                                 when (status){
@@ -444,15 +486,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getAppConfig(){
-        val user = realmApp.currentUser()
+        val user = realmApp.currentUser()!!
         val config = SyncConfiguration.Builder(user, "news")
             .waitForInitialRemoteData()
             .allowQueriesOnUiThread(true)
             .allowWritesOnUiThread(true)
+            .syncClientResetStrategy { session, error ->
+                Log.v("DASD", error.message?:"")
+                session.stop()
+                session.start()
+            }
             .build()
         Realm.getInstanceAsync(config, object : Realm.Callback() {
             override fun onSuccess(realm_: Realm) {
-                appConfig = realm_.where(configuration::class.java).findFirstAsync()
+                appConfig = realm_.where(configuration::class.java).findFirst()
                 checkVersion()
             }
         })
@@ -462,6 +509,8 @@ class MainActivity : AppCompatActivity() {
         val db = Firebase.database.reference
         db.child("configuration").child("currentVersionAndroid")
             .get().addOnSuccessListener {
+                Log.v("DASD", "${packageManager.getPackageInfo(packageName, 0).versionName}," +
+                        "${appConfig?.currentVersionAndroid}, ${it.value.toString()}")
                 if (packageManager.getPackageInfo(packageName, 0).versionName!=
                     appConfig?.currentVersionAndroid
                     ||it.value.toString()!=packageManager
@@ -652,6 +701,10 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun showSheetInfo(){
+        sheetInfoBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
     override fun onBackPressed() {
         if (sheetTeamsBehavior.state == BottomSheetBehavior.STATE_EXPANDED){
             sheetTeamsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -662,4 +715,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }

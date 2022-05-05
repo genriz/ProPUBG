@@ -30,7 +30,7 @@
         <item name="textAllCaps">false</item>
     </style>
     <style name="DialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
-        <item name="windowFixedWidthMajor">95%</item>
-        <item name="windowFixedWidthMinor">95%</item>
+        <item name="windowFixedWidthMajor">75%</item>
+        <item name="windowFixedWidthMinor">75%</item>
     </style>
 </resources>

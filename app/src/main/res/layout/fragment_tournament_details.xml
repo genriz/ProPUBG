@@ -29,16 +29,17 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/imagesLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="1:0.56"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="19dp"
                         app:cardElevation="0dp"
-                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardBackgroundColor="@color/item_image_back"
                         app:cardCornerRadius="10dp"
                         app:layout_constraintTop_toTopOf="parent">
                         <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:id="@+id/itemWait"
                             android:layout_gravity="center"
                             tools:ignore="ContentDescription" />
@@ -314,7 +315,7 @@
             <include layout="@layout/advert_item"
                 android:id="@+id/advertMain"
                 android:layout_width="match_parent"
-                android:layout_height="63dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

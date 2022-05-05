@@ -1,6 +1,7 @@
 package app.propubg
 
 import android.app.Application
+import android.util.Log
 import app.propubg.login.model.UserRealm
 import app.propubg.login.model.configuration
 import io.realm.Realm
@@ -12,6 +13,11 @@ import io.realm.mongodb.User
 
 
 val realmApp by lazy {App(AppConfiguration.Builder(BuildConfig.MONGODB_REALM_APP_ID)
+    .defaultSyncClientResetStrategy { session, error ->
+        Log.v("DASD SyncClientReset", error.message?:"")
+        session.stop()
+        session.start()
+    }
     .build())}
 var currentLanguage = ""
 var currentUser: UserRealm? = null
@@ -31,7 +37,6 @@ class AppPubg: Application() {
         super.onCreate()
 
         Realm.init(this)
-
     }
 
 }

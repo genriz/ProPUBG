@@ -38,8 +38,8 @@
                         app:layout_constraintTop_toTopOf="parent"
                         setImagePartners="@{partnerItem.partner}">
                         <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:id="@+id/partnersImageWait"
                             android:layout_gravity="center"
                             tools:ignore="ContentDescription" />

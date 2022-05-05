@@ -78,13 +78,13 @@
                             tools:ignore="SmallSp"
                             android:paddingStart="4dp"
                             android:paddingEnd="4dp"
-                            android:layout_marginEnd="11dp"/>
+                            android:layout_marginEnd="18dp"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
                             android:gravity="start"
-                            android:layout_marginEnd="12dp"
+                            android:layout_marginEnd="18dp"
                             android:fontFamily="@font/sfpro_regular"
                             android:textColor="@color/text_gray2"
                             android:text="@{newsItem.news.author}"
@@ -94,7 +94,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"
-                            android:layout_marginStart="28dp"
                             android:fontFamily="@font/sfpro_regular"
                             android:textColor="@color/text_gray2"
                             setDateItem="@{newsItem.news.date}"
@@ -198,7 +197,7 @@
             <include layout="@layout/advert_item"
                 android:id="@+id/advertMain"
                 android:layout_width="match_parent"
-                android:layout_height="63dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

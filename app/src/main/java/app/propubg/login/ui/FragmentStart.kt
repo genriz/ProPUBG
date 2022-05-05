@@ -46,11 +46,11 @@ class FragmentStart: Fragment() {
                     .edit().putString("phone", prevPhone).apply()
                 if (viewModel.isPhoneNew) {
                     currentTimer = 60
-                    (activity as StartActivity).verifyNumber(viewModel.phone)
+                    (activity as StartActivity).verifyNumber()
                 } else {
                     if (!viewModel.timerStarted&&viewModel.resendEnabled) {
                         currentTimer+=300
-                        (activity as StartActivity).verifyNumber(viewModel.phone)
+                        (activity as StartActivity).verifyNumber()
                     } else (activity as StartActivity).openSmsFragment()
                 }
             } else {

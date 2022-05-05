@@ -39,8 +39,8 @@
     <string name="yesterday_header">YESTERDAY</string>
     <string name="week_header">THIS WEEK</string>
     <string name="earlier_header">EARLIER</string>
-    <string name="no_news">К сожалению, записей в данном разделе еще нет🥺\n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻 \n\nЕсли вы считаете это ошибкой или у вас есть идея для поста, сообщите нам об этом, пожалуйста✍🏻</string>
-    <string name="no_reshuffles">К сожалению, записей в данном разделе еще нет🥺\n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻 \n\nЕсли вы считаете это ошибкой или у вас есть идея для поста, сообщите нам об этом, пожалуйста✍🏻</string>
+    <string name="no_news">Sorry, there are no posts in this section yet🥺\n\nWe will try to fix it soon👉🏻👈🏻\n\nIf you think there is a mistake or you have an idea for a post, please let us know✍🏻</string>
+    <string name="no_reshuffles">Sorry, there are no posts in this section yet🥺\n\nWe will try to fix it soon👉🏻👈🏻\n\nIf you think there is a mistake or you have an idea for a post, please let us know✍🏻</string>
 
     <string name="tournaments">Tournaments</string>
     <string name="tournaments_open">Opened</string>
@@ -48,9 +48,9 @@
     <string name="tournaments_upcoming">Upcoming</string>
     <string name="tournament_text">Editorial note:</string>
     <string name="copy_link">Copy link</string>
-    <string name="no_tournaments_closed">К сожалению, нет доступных записей о турнирах с закрытой регистрацией🥺\n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻</string>
-    <string name="no_tournaments_opened">К сожалению, сейчас нет турниров с открытой регистрацией😥\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новое мероприятие🤗</string>
-    <string name="no_tournaments_upcoming">К сожалению, сейчас нет турниров с запланированной регистрацией😥 \n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новое мероприятие🤗</string>
+    <string name="no_tournaments_closed">Unfortunately there are no records available for closed registration / private tournaments🥺\n\nWe will try to fix it soon👉🏻👈🏻</string>
+    <string name="no_tournaments_opened">Unfortunately there are currently no tournaments with open registration😥\n\nStay tuned and we will send you a notification as soon as there is a new event🤗</string>
+    <string name="no_tournaments_upcoming">Unfortunately there are currently no tournaments with the upcoming registration😥\n\nStay tuned and we will send you a notification as soon as there is a new event🤗</string>
     <string name="btn_tournament_register">Register</string>
     <string name="btn_tournament_more">More information</string>
     <string name="btn_tournament_know">Check out the tournament</string>
@@ -63,9 +63,9 @@
     <string name="id_copied">Account ID copied to clipboard</string>
 
     <string name="broadcasts">Streams</string>
-    <string name="no_live_broadcasts">Все прямые эфиры закончены</string>
-    <string name="no_past_broadcasts">К сожалению, нет доступных записей о завершенных трансляциях🥺 \n\nМы постараемся исправить это в ближайшее время👉🏻👈🏻</string>
-    <string name="no_upcoming_broadcasts">К сожалению, мы еще не подготовили информацию о предстоящих трансляциях🥺\n\nВернитесь сюда чуть – чуть попозже⏳</string>
+    <string name="no_live_broadcasts">Unfortunately there are no broadcasts (streams) of events that would be on air (live)🥺\n\nWe recommend you to look at the section with upcoming broadcasts👀</string>
+    <string name="no_past_broadcasts">Unfortunately there are no records of completed broadcasts (streams) available🥺\n\nWe will try to fix it soon👉🏻👈🏻</string>
+    <string name="no_upcoming_broadcasts">Unfortunately we haven\'t prepared information about upcoming broadcasts yet🥺\n\nCome back please a little bit later⏳</string>
     <string name="broadcasts_live">Live</string>
     <string name="broadcasts_past">Past</string>
     <string name="broadcasts_upcoming">Upcoming</string>
@@ -79,17 +79,17 @@
     <string name="content">Content</string>
     <string name="content_learn">Educational</string>
     <string name="content_interview">Interview and podcasts</string>
-    <string name="no_content_interview">К сожалению, нет доступных записей с интервью или подкастами🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новый видео – ролик🤗</string>
-    <string name="no_content_learn">К сожалению, нет доступных записей с обучающими роликами🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новый видео – ролик🤗</string>
+    <string name="no_content_interview">Sorry, there are no interviews or podcasts available🥺\n\nStay tuned and we will send you a notification as soon as a new video is available🤗</string>
+    <string name="no_content_learn">Sorry, there are no tutorial videos available🥺\n\nStay tuned and we will send you a notification as soon as a new video is available🤗</string>
 
     <string name="menu">Menu</string>
     <string name="password_change">Change password</string>
     <string name="notifications">Notification</string>
     <string name="language">Language</string>
     <string name="results_tournaments">Results of tournaments</string>
-    <string name="no_results">К сожалению, нет доступных записей с результатами турниров🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда здесь появится что - то новое🤗</string>
+    <string name="no_results">"Unfortunately there are no records available with tournament results🥺\n\nStay tuned and we'll send you a notification as soon as something new appears here🤗</string>
     <string name="partners">Discord partners</string>
-    <string name="no_discords">К сожалению, нет доступной информации о наших Discord партнерах🥺\n\nОставайтесь с нами и мы отправим вам уведомление сразу же, когда появится новая запись🤗</string>
+    <string name="no_discords">Unfortunately there is no information available about our Discord partners🥺\n\nStay tuned and we will send you a notification as soon as there is a new post🤗</string>
     <string name="profile">Profile</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -137,6 +137,11 @@
     <string name="update_app">Please update the app\nto continue using it.</string>
     <string name="update">Update</string>
     <string name="error">Error</string>
-    <string name="search_empty">К сожалению, нам не удалось найти подходящую запись по введенной информации🥺\n\nПопробуйте, пожалуйста, ввести другой текст для поиска⌨</string>
+    <string name="search_empty">Sorry, we couldn\'t find the information you need based on what you\'re looking for🥺\n\nPlease try to enter another text to search⌨</string>
+    <string name="follow_us">Follow us:</string>
+    <string name="for_questions">For any questions and suggestions:</string>
+    <string name="support_us">Support our application:</string>
+    <string name="creator">Creator of ProPUBG:</string>
 
+    <string name="error_code">An error occurred while validating the entered code\n\nPlease try turning on the VPN and confirm the code again\n\nIf this doesn’t help, then please contact us via support and we will help you</string>
 </resources>

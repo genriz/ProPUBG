@@ -1,5 +1,6 @@
 package app.propubg.main.content.model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.propubg.currentLanguage
@@ -18,11 +19,16 @@ class ContentViewModel:ViewModel() {
     var advertClosed = false
 
     init {
-        val user = realmApp.currentUser()
+        val user = realmApp.currentUser()!!
         val config = SyncConfiguration.Builder(user, "news")
             .waitForInitialRemoteData()
             .allowQueriesOnUiThread(true)
             .allowWritesOnUiThread(true)
+            .syncClientResetStrategy { session, error ->
+                Log.v("DASD", error.message?:"")
+                session.stop()
+                session.start()
+            }
             .build()
         Realm.getInstanceAsync(config, object : Realm.Callback() {
             override fun onSuccess(realm_: Realm) {
@@ -60,13 +66,13 @@ class ContentViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(content::class.java).isNotNull("title_ru")
                 .equalTo("typeOfContent","Informative")
-                .contains("title_ru", text, Case.SENSITIVE)
+                .contains("title_ru", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(content::class.java).isNotNull("title_en")
                 .equalTo("typeOfContent","Informative")
-                .contains("title_en", text, Case.SENSITIVE)
+                .contains("title_en", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         }
@@ -76,13 +82,13 @@ class ContentViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(content::class.java).isNotNull("title_ru")
                 .equalTo("typeOfContent","Interview")
-                .contains("title_ru", text, Case.SENSITIVE)
+                .contains("title_ru", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(content::class.java).isNotNull("title_en")
                 .equalTo("typeOfContent","Interview")
-                .contains("title_en", text, Case.SENSITIVE)
+                .contains("title_en", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         }

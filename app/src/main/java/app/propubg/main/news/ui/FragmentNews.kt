@@ -3,11 +3,13 @@ package app.propubg.main.news.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -101,7 +103,7 @@ class FragmentNews: Fragment() {
                 })
 
                 binding.header.btnOption.setOnClickListener {
-
+                    (activity as MainActivity).showSheetInfo()
                 }
 
             }
@@ -118,8 +120,13 @@ class FragmentNews: Fragment() {
                             val image = if (currentLanguage =="ru")
                                 advertItem.advert!!.imageSrc_ru
                             else advertItem.advert!!.imageSrc_en
+                            Log.v("DASD", "${advertItem.advert!!.typeOfAd!!} - $image")
+                            if (advertItem.advert!!.typeOfAd=="image")
                             Glide.with(requireContext()).load(image)
                                 .into(binding.advertMain.findViewById(R.id.advertImage))
+                            else if (advertItem.advert!!.typeOfAd=="gif")
+                                Glide.with(requireContext()).asGif().load(image)
+                                    .into(binding.advertMain.findViewById(R.id.advertImage))
                             binding.advertMain.isVisible = true
                             binding.advertMain
                                 .findViewById<ImageView>(R.id.advertClose)
@@ -160,6 +167,10 @@ class FragmentNews: Fragment() {
                 }
             })
         }
+
+        viewModel.reset.observe(viewLifecycleOwner,{
+            if (it) Toast.makeText(requireContext(), "Client reset", Toast.LENGTH_SHORT).show()
+        })
     }
 
     fun setPage(i: Int) {

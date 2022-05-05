@@ -1,5 +1,6 @@
 package app.propubg.main.news.model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.propubg.currentLanguage
@@ -8,6 +9,7 @@ import io.realm.Case
 import io.realm.OrderedRealmCollection
 import io.realm.Realm
 import io.realm.Sort
+import io.realm.kotlin.syncSession
 import io.realm.mongodb.sync.SyncConfiguration
 import org.bson.types.ObjectId
 
@@ -17,13 +19,20 @@ class NewsViewModel:ViewModel() {
     val realmReady = MutableLiveData<Boolean>()
     val searchString = MutableLiveData<String>().apply { value = "" }
     var advertClosed = false
+    val reset = MutableLiveData<Boolean>().apply { value = false }
 
     init {
-        val user = realmApp.currentUser()
+        val user = realmApp.currentUser()!!
         val config = SyncConfiguration.Builder(user, "news")
             .waitForInitialRemoteData()
             .allowQueriesOnUiThread(true)
             .allowWritesOnUiThread(true)
+            .syncClientResetStrategy { session, error ->
+                Log.v("DASD", error.message?:"error")
+                reset.postValue(true)
+                session.stop()
+                session.start()
+            }
             .build()
         Realm.getInstanceAsync(config, object : Realm.Callback() {
             override fun onSuccess(realm_: Realm) {
@@ -96,7 +105,7 @@ class NewsViewModel:ViewModel() {
             realm.where(reshuffle::class.java).isNotNull("title_ru")
                 .and().isNotNull("imageSrc_ru")
                 .and().isNotNull("text_ru")
-                .contains("title_ru", text, Case.SENSITIVE)
+                .contains("title_ru", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
@@ -104,7 +113,7 @@ class NewsViewModel:ViewModel() {
             realm.where(reshuffle::class.java).isNotNull("title_en")
                 .and().isNotNull("imageSrc_en")
                 .and().isNotNull("text_en")
-                .contains("title_en", text, Case.SENSITIVE)
+                .contains("title_en", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()

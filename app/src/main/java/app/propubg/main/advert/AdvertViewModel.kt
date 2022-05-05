@@ -17,11 +17,16 @@ class AdvertViewModel: ViewModel() {
     val _advert = MutableLiveData<advertisement>()
 
     init {
-        val user = realmApp.currentUser()
+        val user = realmApp.currentUser()!!
         val config = SyncConfiguration.Builder(user, "news")
             .waitForInitialRemoteData()
             .allowQueriesOnUiThread(true)
             .allowWritesOnUiThread(true)
+            .syncClientResetStrategy { session, error ->
+                Log.v("DASD", error.message?:"")
+                session.stop()
+                session.start()
+            }
             .build()
         Realm.getInstanceAsync(config, object : Realm.Callback() {
             override fun onSuccess(realm_: Realm) {

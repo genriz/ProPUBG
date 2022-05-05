@@ -13,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import app.propubg.R
 import app.propubg.databinding.FragmentPageNewsBinding
-import app.propubg.firstStart
 import app.propubg.main.MainActivity
 import app.propubg.main.news.adapters.NewsAdapter
 import app.propubg.main.news.model.NewsViewModel

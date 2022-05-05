@@ -35,7 +35,7 @@
             android:layout_centerVertical="true"
             android:fontFamily="@font/sfpro_regular"
             android:text="@string/save"
-            android:textColor="@color/blue"
+            android:textColor="@color/btn_save_color"
             android:textSize="14sp"
             android:gravity="center"
             tools:ignore="ContentDescription" />

@@ -1,5 +1,6 @@
 package app.propubg.main.menu.model
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.propubg.currentLanguage
@@ -27,11 +28,16 @@ class MenuViewModel: ViewModel() {
         isRussian.value = currentLanguage == "ru"
         isEnglish.value = currentLanguage == "en"
 
-        val user = realmApp.currentUser()
+        val user = realmApp.currentUser()!!
         val config = SyncConfiguration.Builder(user, "news")
             .waitForInitialRemoteData()
             .allowQueriesOnUiThread(true)
             .allowWritesOnUiThread(true)
+            .syncClientResetStrategy { session, error ->
+                Log.v("DASD", error.message?:"")
+                session.stop()
+                session.start()
+            }
             .build()
         Realm.getInstanceAsync(config, object : Realm.Callback() {
             override fun onSuccess(realm_: Realm) {
@@ -75,7 +81,7 @@ class MenuViewModel: ViewModel() {
     fun searchResults(text: String): OrderedRealmCollection<resultsOfTournament?>?{
         return if (currentLanguage =="ru"){
             realm.where(resultsOfTournament::class.java).isNotNull("title")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("stage_ru", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .or().contains("text_ru", text, Case.INSENSITIVE)
@@ -83,7 +89,7 @@ class MenuViewModel: ViewModel() {
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(resultsOfTournament::class.java).isNotNull("title")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .or().contains("text_en", text, Case.INSENSITIVE)
@@ -119,7 +125,7 @@ class MenuViewModel: ViewModel() {
                 .and().isNotNull("text_ru")
                 .and().isNotNull("descriptionOfPartner_ru")
                 .and().isNotNull("link")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("text_ru", text, Case.INSENSITIVE)
                 .or().contains("descriptionOfPartner_ru", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
@@ -129,7 +135,7 @@ class MenuViewModel: ViewModel() {
                 .and().isNotNull("text_en")
                 .and().isNotNull("descriptionOfPartner_en")
                 .and().isNotNull("link")
-                .contains("title", text, Case.SENSITIVE)
+                .contains("title", text, Case.INSENSITIVE)
                 .or().contains("text_en", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()

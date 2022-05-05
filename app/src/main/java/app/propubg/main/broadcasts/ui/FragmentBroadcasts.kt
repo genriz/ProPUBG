@@ -3,6 +3,7 @@ package app.propubg.main.broadcasts.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,7 +78,7 @@ class FragmentBroadcasts: Fragment() {
         })
 
         binding.header.btnOption.setOnClickListener {
-
+            (activity as MainActivity).showSheetInfo()
         }
 
         if (!viewModel.advertClosed) {

@@ -133,7 +133,7 @@ class FragmentTournamentDetails: Fragment() {
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
-                        .setLink(Uri.parse("https://link.propubg.app/?Tournament=${tournament_._id}"))
+                        .setLink(Uri.parse("https://link.propubg.app/?Tournaments=${tournament_._id}"))
                         .setSocialMetaTagParameters(
                             DynamicLink.SocialMetaTagParameters.Builder()
                                 .setImageUrl(Uri.parse(tournament_.imageSrc[0]!!))
@@ -148,7 +148,7 @@ class FragmentTournamentDetails: Fragment() {
                         .buildShortDynamicLink()
                         .addOnSuccessListener {
                             (activity as MainActivity).shareLink(it.shortLink.toString(),
-                                tournament_._id.toString(), "Tournament",
+                                tournament_._id.toString(), "Tournaments",
                                 tournament_.title!!, tournament_.getRegionList())
                         }
                         .addOnFailureListener {

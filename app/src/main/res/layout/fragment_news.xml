@@ -36,8 +36,9 @@
             app:constraint_referenced_ids="advertMain"/>
         <include layout="@layout/advert_item"
             android:id="@+id/advertMain"
+            android:background="@android:color/transparent"
             android:layout_width="match_parent"
-            android:layout_height="63dp"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

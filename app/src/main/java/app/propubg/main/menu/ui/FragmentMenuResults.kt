@@ -56,6 +56,9 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick {
         binding.header.btnBack.setOnClickListener {
             (activity as MainActivity).onBackPressed()
         }
+        binding.header.btnOption.setOnClickListener {
+            (activity as MainActivity).showSheetInfo()
+        }
 
         viewModel.realmReady.observe(viewLifecycleOwner,{
             it?.let { ready ->
