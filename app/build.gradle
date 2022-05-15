@@ -22,14 +22,17 @@ android {
 
     buildTypes {
         def appId = "application-0-adpwz"
+        def mixToken = "f82f2052da3cc649282f13fd81728714"
         debug {
             buildConfigField "String", "MONGODB_REALM_APP_ID", "\"${appId}\""
+            buildConfigField "String", "MIX_TOKEN", "\"${mixToken}\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }
         release {
             buildConfigField "String", "MONGODB_REALM_APP_ID", "\"${appId}\""
+            buildConfigField "String", "MIX_TOKEN", "\"${mixToken}\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -78,4 +81,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
 
     implementation 'com.mixpanel.android:mixpanel-android:5.+'
+
 }

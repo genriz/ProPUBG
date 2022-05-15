@@ -54,7 +54,7 @@ class FragmentContent: Fragment() {
         binding.pagerContent.adapter = adapter
         TabLayoutMediator(binding.tabsContent, binding.pagerContent) { tab, position ->
             tab.text = when (position){
-                0 -> getString(R.string.content_learn)
+                1 -> getString(R.string.content_learn)
                 else -> getString(R.string.content_interview)
             }
         }.attach()

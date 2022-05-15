@@ -48,7 +48,7 @@ class TournamentsViewModel:ViewModel() {
     fun searchTournamentsOpen(text: String): OrderedRealmCollection<tournament?>?{
         return if (currentLanguage =="ru"){
             realm.where(tournament::class.java).isNotNull("title")
-                .equalTo("status","Open")
+                .equalTo("status","Open").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("mode", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
@@ -56,7 +56,7 @@ class TournamentsViewModel:ViewModel() {
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(tournament::class.java).isNotNull("title")
-                .equalTo("status","Open")
+                .equalTo("status","Open").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("mode", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
@@ -74,7 +74,7 @@ class TournamentsViewModel:ViewModel() {
     fun searchTournamentsClosed(text: String): OrderedRealmCollection<tournament?>?{
         return if (currentLanguage =="ru"){
             realm.where(tournament::class.java).isNotNull("title")
-                .equalTo("status","Closed")
+                .equalTo("status","Closed").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("mode", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
@@ -82,7 +82,7 @@ class TournamentsViewModel:ViewModel() {
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(tournament::class.java).isNotNull("title")
-                .equalTo("status","Closed")
+                .equalTo("status","Closed").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("mode", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
@@ -94,26 +94,28 @@ class TournamentsViewModel:ViewModel() {
     fun getTournamentsUpcoming(): OrderedRealmCollection<tournament?>?{
         return realm.where(tournament::class.java).isNotNull("title")
             .equalTo("status","Upcoming")
-            .sort("date", Sort.DESCENDING).findAllAsync()
+            .sort("date", Sort.ASCENDING).findAllAsync()
     }
 
     fun searchTournamentsUpcoming(text: String): OrderedRealmCollection<tournament?>?{
         return if (currentLanguage =="ru"){
             realm.where(tournament::class.java).isNotNull("title")
-                .equalTo("status","Upcoming")
+                .equalTo("status","Upcoming").findAllAsync()
+                .where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("mode", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .or().contains("text_ru", text, Case.INSENSITIVE)
-                .sort("date", Sort.DESCENDING).findAllAsync()
+                .sort("date", Sort.ASCENDING).findAllAsync()
         } else {
             realm.where(tournament::class.java).isNotNull("title")
-                .equalTo("status","Upcoming")
+                .equalTo("status","Upcoming").findAllAsync()
+                .where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("mode", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .or().contains("text_en", text, Case.INSENSITIVE)
-                .sort("date", Sort.DESCENDING).findAllAsync()
+                .sort("date", Sort.ASCENDING).findAllAsync()
         }
     }
 

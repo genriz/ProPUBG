@@ -27,6 +27,10 @@ class DialogError(context: Context,
         }
     }
 
+    fun setMessage(message: String){
+        findViewById<TextView>(R.id.message)?.text = message
+    }
+
     interface OnBtnClick {
         fun onSupportClick()
     }

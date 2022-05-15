@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.PhoneAuthProvider
 
 class StartViewModel: ViewModel() {
-    var verificationId = ""
+    var verificationId = "0"
     var phone = ""
     var resendToken: PhoneAuthProvider.ForceResendingToken? = null
     var code = MutableLiveData<String>()
@@ -16,6 +16,7 @@ class StartViewModel: ViewModel() {
     private var countDownTimer: CountDownTimer? = null
     var timerStarted = false
     var resendEnabled = false
+    var accessError = false
 
     fun startTimer(time: Int){
         timer.value = (time)*1000L

@@ -66,12 +66,14 @@ class ContentViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(content::class.java).isNotNull("title_ru")
                 .equalTo("typeOfContent","Informative")
+                .findAllAsync().where()
                 .contains("title_ru", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(content::class.java).isNotNull("title_en")
                 .equalTo("typeOfContent","Informative")
+                .findAllAsync().where()
                 .contains("title_en", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
@@ -82,12 +84,14 @@ class ContentViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(content::class.java).isNotNull("title_ru")
                 .equalTo("typeOfContent","Interview")
+                .findAllAsync().where()
                 .contains("title_ru", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(content::class.java).isNotNull("title_en")
                 .equalTo("typeOfContent","Interview")
+                .findAllAsync().where()
                 .contains("title_en", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()

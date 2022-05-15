@@ -100,7 +100,7 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
             else content.title_en
             val json = JSONObject()
             json.put("ObjectID", content._id)
-            json.put("Type of content", "Educational")
+            json.put("Type of content", "Informative")
             json.put("Title", title)
             (activity as MainActivity).mixpanelAPI?.track("WatchContentClick", json)
 

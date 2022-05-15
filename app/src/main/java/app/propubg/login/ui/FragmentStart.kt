@@ -1,6 +1,7 @@
 package app.propubg.login.ui
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +15,10 @@ import app.propubg.currentUser
 import app.propubg.databinding.FragmentStartBinding
 import app.propubg.login.model.StartViewModel
 import app.propubg.prevPhone
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.*
 import com.google.firebase.ktx.Firebase
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 class FragmentStart: Fragment() {
@@ -51,7 +54,9 @@ class FragmentStart: Fragment() {
                     if (!viewModel.timerStarted&&viewModel.resendEnabled) {
                         currentTimer+=300
                         (activity as StartActivity).verifyNumber()
-                    } else (activity as StartActivity).openSmsFragment()
+                    } else if (viewModel.accessError)
+                        (activity as StartActivity).verifyNumber()
+                    else (activity as StartActivity).openSmsFragment()
                 }
             } else {
                 viewModel.error.value = getString(R.string.phone_empty)

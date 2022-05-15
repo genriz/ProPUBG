@@ -11,7 +11,7 @@ class FragmentContentPageAdapter(fragment: Fragment) : FragmentStateAdapter(frag
 
     override fun createFragment(position: Int): Fragment {
         return when (position){
-            0 -> {
+            1 -> {
                 FragmentContentLearn()
             }
             else -> {

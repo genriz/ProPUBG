@@ -55,20 +55,20 @@ class BroadcastsViewModel:ViewModel() {
     fun getBroadcastsUpcoming(): OrderedRealmCollection<broadcast?>?{
         return realm.where(broadcast::class.java).isNotNull("title")
             .equalTo("status","Upcoming")
-            .sort("date", Sort.DESCENDING).findAllAsync()
+            .sort("date", Sort.ASCENDING).findAllAsync()
     }
 
     fun searchBroadcastsLive(text: String): OrderedRealmCollection<broadcast?>?{
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
-                .equalTo("status","Live")
+                .equalTo("status","Live").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_ru", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(broadcast::class.java).isNotNull("title")
-                .equalTo("status","Live")
+                .equalTo("status","Live").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
@@ -79,14 +79,14 @@ class BroadcastsViewModel:ViewModel() {
     fun searchBroadcastsPast(text: String): OrderedRealmCollection<broadcast?>?{
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
-                .equalTo("status","Past")
+                .equalTo("status","Past").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_ru", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
         } else {
             realm.where(broadcast::class.java).isNotNull("title")
-                .equalTo("status","Past")
+                .equalTo("status","Past").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
@@ -97,18 +97,18 @@ class BroadcastsViewModel:ViewModel() {
     fun searchBroadcastsUpcoming(text: String): OrderedRealmCollection<broadcast?>?{
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
-                .equalTo("status","Upcoming")
+                .equalTo("status","Upcoming").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_ru", text, Case.INSENSITIVE)
-                .sort("date", Sort.DESCENDING).findAllAsync()
+                .sort("date", Sort.ASCENDING).findAllAsync()
         } else {
             realm.where(broadcast::class.java).isNotNull("title")
-                .equalTo("status","Upcoming")
+                .equalTo("status","Upcoming").findAllAsync().where()
                 .contains("title", text, Case.INSENSITIVE)
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
-                .sort("date", Sort.DESCENDING).findAllAsync()
+                .sort("date", Sort.ASCENDING).findAllAsync()
         }
     }
 

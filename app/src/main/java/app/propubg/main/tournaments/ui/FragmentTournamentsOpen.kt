@@ -2,6 +2,7 @@ package app.propubg.main.tournaments.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +81,7 @@ class FragmentTournamentsOpen: Fragment(), TournamentsAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     isSearching = true
+                    adapter.updateData(null)
                     adapter.updateData(viewModel.searchTournamentsOpen(searchString))
                 } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
                     isSearching = false

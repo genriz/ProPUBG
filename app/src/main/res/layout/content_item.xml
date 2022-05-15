@@ -75,7 +75,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="19dp"
                 android:layout_marginBottom="22dp"
-                android:padding="10dp"
                 android:text="@string/watch"
                 android:textAllCaps="false"
                 android:textColor="@color/black"

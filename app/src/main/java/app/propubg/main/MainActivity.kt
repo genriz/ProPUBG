@@ -10,10 +10,8 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.util.Linkify
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -27,7 +25,6 @@ import app.propubg.login.model.AppConfig
 import app.propubg.login.model.UserRealm
 import app.propubg.login.model.configuration
 import app.propubg.login.ui.StartActivity
-import app.propubg.main.advert.advertisement
 import app.propubg.main.broadcasts.adapters.TeamListAdapter
 import app.propubg.main.broadcasts.model.broadcast
 import app.propubg.main.menu.model.partner
@@ -56,7 +53,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import io.realm.Realm
-import io.realm.kotlin.where
 import io.realm.mongodb.sync.SyncConfiguration
 import org.bson.types.ObjectId
 import java.util.*
@@ -168,7 +164,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setMixPanel() {
-        mixpanelAPI = MixpanelAPI.getInstance(this, "f82f2052da3cc649282f13fd81728714")
+        mixpanelAPI = MixpanelAPI.getInstance(this, BuildConfig.MIX_TOKEN)
         val props = JSONObject()
         props.put("UID", currentUser!!.UID)
         mixpanelAPI?.registerSuperProperties(props)
@@ -625,20 +621,20 @@ class MainActivity : AppCompatActivity() {
                                             .Builder("ProPUBG").build()
                                     )
                                     .buildShortDynamicLink()
-                                    .addOnSuccessListener {
-                                        shareLink(it.shortLink.toString(),
+                                    .addOnSuccessListener { dyn_link->
+                                        shareLink(dyn_link.shortLink.toString(),
                                             tournament._id.toString(),
                                             "Tournament", tournament.title!!,
                                             tournament.getRegionList())
                                     }
-                                    .addOnFailureListener {
-                                        Log.v("DASD", it.toString())
+                                    .addOnFailureListener { e->
+                                        Log.v("DASD", e.toString())
                                     }
                             }
                         }
 
                         binding.bottomSheetTournament.btnRegister.setOnClickListener {
-                            tournament.link?.let{
+                            tournament.link?.let{ link->
                                 val json = JSONObject()
                                 json.put("ObjectID", tournament._id)
                                 json.put("Status of tournament", tournament.status)
@@ -648,7 +644,7 @@ class MainActivity : AppCompatActivity() {
 
                                 val intent = Intent()
                                 intent.action = Intent.ACTION_VIEW
-                                intent.data = Uri.parse(it)
+                                intent.data = Uri.parse(link)
                                 startActivity(intent)
                             }
                         }
@@ -659,10 +655,10 @@ class MainActivity : AppCompatActivity() {
                             json.put("Social network", "Instagram")
                             mixpanelAPI?.track("SocialButtonClick", json)
 
-                            appConfig?.socialLink_Instagram?.let{
+                            appConfig?.socialLink_Instagram?.let{ link->
                                 val intent = Intent()
                                 intent.action = Intent.ACTION_VIEW
-                                intent.data = Uri.parse(it)
+                                intent.data = Uri.parse(link)
                                 startActivity(intent)
                             }
                         }
@@ -673,10 +669,10 @@ class MainActivity : AppCompatActivity() {
                             json.put("Social network", "Telegram")
                             mixpanelAPI?.track("SocialButtonClick", json)
 
-                            appConfig?.socialLink_Telegram?.let {
+                            appConfig?.socialLink_Telegram?.let { link->
                                 val intent = Intent()
                                 intent.action = Intent.ACTION_VIEW
-                                intent.data = Uri.parse(it)
+                                intent.data = Uri.parse(link)
                                 startActivity(intent)
                             }
                         }
@@ -715,7 +711,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }

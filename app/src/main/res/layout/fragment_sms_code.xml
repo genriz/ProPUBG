@@ -38,7 +38,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription"
-                    android:src="@drawable/app_logo"/>
+                    android:src="@drawable/applogobig"/>
                 <TextView
                     android:id="@+id/txtSmsInfo"
                     android:layout_width="0dp"

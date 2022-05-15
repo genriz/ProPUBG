@@ -34,7 +34,16 @@ import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.button.MaterialButton
 import java.text.SimpleDateFormat
 import java.util.*
+import android.graphics.BitmapFactory
+import java.io.InputStream
 
+
+@BindingAdapter("setImageSvg")
+fun setImageSvg (view: ImageView, id: String){
+    val imageStream: InputStream = view.resources.openRawResource(id.toInt())
+    val bitmap = BitmapFactory.decodeStream(imageStream)
+    view.setImageBitmap(bitmap)
+}
 
 @BindingAdapter("setImageNews")
 fun setImageNews (view: CardView, news: news?){
@@ -672,6 +681,14 @@ fun setResultsStage (view: TextView, resultsOfTournament: resultsOfTournament?){
 fun setSimpleDate (view: TextView, date: Date?){
     date?.let{
         view.text = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+            .format(date)
+    }
+}
+
+@BindingAdapter("setFullDate")
+fun setFullDate (view: TextView, date: Date?){
+    date?.let{
+        view.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
             .format(date)
     }
 }

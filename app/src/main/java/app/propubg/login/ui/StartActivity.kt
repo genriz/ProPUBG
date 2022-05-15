@@ -142,52 +142,79 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+            Log.v("DASD", "onVerificationCompleted")
+            if (resend) {
+                resend = false
+                signInWithPhoneAuthCredential(credential)
+            }
             if (dialogLoading.isShowing) dialogLoading.hide()
             val code = credential.smsCode
             code?.let{
                 viewModel.code.postValue(it)
             }
-//            signInWithPhoneAuthCredential(credential)
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
+            Log.v("DASD", "onVerificationFailed")
+            Log.v("DASD", e.message.toString())
             dialogLoading.hide()
+            viewModel.accessError = false
             when {
                 e.message.toString().lowercase(Locale.getDefault()).contains("invalid format") -> {
                     viewModel.error.postValue(getString(R.string.phone_wrong))
+                    return
                 }
                 e.message.toString().lowercase(Locale.getDefault()).contains("sms verification code") -> {
                     viewModel.error.postValue(getString(R.string.wrong_sms))
+                    viewModel.code.postValue("")
+                    return
                 }
-                e.message.toString().lowercase(Locale.getDefault()).contains("error 403") -> {
-                    showErrorDialog()
+                e.message.toString().contains("verifyPhoneNumber")
+                        || e.message.toString().lowercase(Locale.getDefault())
+                    .contains("reset by peer")-> {
+                    viewModel.accessError = true
+                    showErrorDialog(getString(R.string.error_phone))
+                    return
                 }
-                else -> viewModel.error.postValue(e.message?:"Server error")
+                e.message.toString().lowercase(Locale.getDefault())
+                    .contains("error 403")
+                        || e.message.toString().lowercase(Locale.getDefault())
+                    .contains("forbidden") -> {
+                    viewModel.accessError = true
+                    showErrorDialog(getString(R.string.error_code))
+                    return
+                }
+                else -> {
+                    viewModel.accessError = true
+                    viewModel.error.postValue(e.message?:"Server error")
+                }
             }
-
-            viewModel.code.postValue("")
 
         }
 
         override fun onCodeSent(
             verificationId: String,
             token: PhoneAuthProvider.ForceResendingToken) {
-            dialogLoading.hide()
-            viewModel.verificationId = verificationId
-            viewModel.resendToken = token
-            viewModel.code.postValue("")
-            if (viewModel.isPhoneNew){
-                viewModel.startTimer(currentTimer)
-            } else {
-                viewModel.startTimer(currentTimer)
+            Log.v("DASD", "onCodeSent")
+            if (!resend) {
+                dialogLoading.hide()
+                viewModel.verificationId = verificationId
+                viewModel.resendToken = token
+                viewModel.code.postValue("")
+                if (viewModel.isPhoneNew){
+                    viewModel.startTimer(currentTimer)
+                } else {
+                    viewModel.startTimer(currentTimer)
+                }
+                getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                    .edit().putString("verificationId", verificationId).apply()
+                openSmsFragment()
             }
-            getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                .edit().putString("verificationId", verificationId).apply()
-            openSmsFragment()
         }
     }
 
     fun verifyNumber(){
+        viewModel.accessError = false
         dialogLoading.show()
         val auth = FirebaseAuth.getInstance()
         auth.useAppLanguage()
@@ -207,58 +234,47 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
         else navController.navigate(R.id.fragmentSms)
     }
 
-    private fun openStartFragment(){
-        navController.popBackStack()
-        navController.navigate(R.id.fragmentStart)
-    }
-
     fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         dialogLoading.show()
-        if (resend){
-            viewModel.resendToken?.let {
-                resendSms()
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnSuccessListener {result ->
+                Log.v("DASD", "signInWithCredential success")
+                val user = result.user
+                user?.let {
+                    loginRealm(it.uid, it.phoneNumber!!)
+                }
+                resetValues()
             }
-        } else {
-            FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        val user = task.result.user
-                        user?.let {
-                            loginRealm(it.uid, it.phoneNumber!!)
-                        }
-                        resetValues()
-                    } else {
-                        dialogLoading.hide()
-                        viewModel.code.value = ""
-                        if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                            viewModel.error.postValue(task.exception!!.message)
-                        }
+            .addOnFailureListener {
+                Log.v("DASD", "signInWithCredential failed")
+                dialogLoading.hide()
+                Log.v("DASD", it.message.toString())
+                when {
+                    it.message.toString().lowercase(Locale.getDefault())
+                        .contains("sms verification code") ->
+                        viewModel.error.postValue(getString(R.string.wrong_sms))
+                    it.message.toString().lowercase(Locale.getDefault())
+                        .contains("code has expired") -> {
+                        //viewModel.error.postValue(getString(R.string.wrong_sms))
+                        resendSms()
                     }
-                }
-                .addOnFailureListener {
-                    dialogLoading.hide()
-                    when {
-                        it.message.toString().lowercase(Locale.getDefault())
-                            .contains("sms verification code") ->
-                            viewModel.error.postValue(getString(R.string.wrong_sms))
-                        it.message.toString().lowercase(Locale.getDefault())
-                            .contains("code has expired") -> {
-                            viewModel.resendToken?.let {
-                                resendSms()
-                            }
-                        }
-                        it.message.toString().lowercase(Locale.getDefault())
-                            .contains("network") -> {
-                            viewModel.error.postValue(it.message)
-                        }
-                        else -> viewModel.error.postValue(it.message)
+                    it.message.toString().lowercase(Locale.getDefault())
+                        .contains("network") -> {
+                        viewModel.error.postValue(it.message)
                     }
-                    viewModel.code.value = ""
+                    it.message.toString()
+                        .contains("verifyPhoneNumber") -> {
+                        showErrorDialog(getString(R.string.error_phone))
+                    }
+                    else -> viewModel.error.postValue(it.message)
                 }
-        }
+                viewModel.code.value = ""
+            }
     }
 
     private fun resendSms(){
+        resend = true
+        dialogLoading.show()
         val auth = FirebaseAuth.getInstance()
         auth.useAppLanguage()
         val options = PhoneAuthOptions.newBuilder(auth)
@@ -270,7 +286,6 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
             .setForceResendingToken(viewModel.resendToken!!)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
-        resend = false
     }
 
     private fun resetValues() {
@@ -292,6 +307,7 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
             .customFunction(Document("UID", uid))
         realmApp.loginAsync(customFunctionCredentials) {
             if (it.isSuccess) {
+                Log.v("DASD", "loginRealm success")
                 currentUserRealm = it.get()
                 val functionsManager: Functions = realmApp.getFunctions(currentUserRealm)
                 val map = HashMap<String,String>()
@@ -321,20 +337,24 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
                     }
                 }
             } else {
+                Log.v("DASD", "loginRealm failed")
                 dialogLoading.hide()
-                viewModel.code.value = ""
                 it.error.message?.let{ message ->
-                    if (message.contains("stream was reset: PROTOCOL_ERROR"))
-                        showErrorDialog()
-                    else viewModel.error.postValue(message)
+                    Log.v("DASD", message)
+                    when {
+                        message.contains("stream was reset: PROTOCOL_ERROR") -> showErrorDialog(getString(R.string.error_code))
+                        message.contains("unexpected end of stream") -> showErrorDialog(getString(R.string.error_code))
+                        else -> viewModel.error.postValue(message)
+                    }
                 }
             }
         }
     }
 
-    private fun showErrorDialog() {
-        resend = true
-        DialogError(this, this).show()
+    private fun showErrorDialog(message: String) {
+        val dialog = DialogError(this, this)
+        dialog.setMessage(message)
+        dialog.show()
     }
 
     override fun onBackPressed() {

@@ -110,12 +110,11 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
         broadcast.link?.let{
             val stage = if (currentLanguage=="ru") broadcast.stage_ru
             else broadcast.stage_en
-            val day = "${requireContext().getString(R.string.day)} ${broadcast.dayOfTournament}"
             val json = JSONObject()
             json.put("ObjectID", broadcast._id)
             json.put("Stage", stage)
             json.put("Title", broadcast.title)
-            json.put("Day of tournament", day)
+            json.put("Day of tournament", broadcast.dayOfTournament)
             json.put("Status of broadcast", "Live")
             (activity as MainActivity).mixpanelAPI?.track("WatchBroadcastClick", json)
 
@@ -131,14 +130,13 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
     override fun onTeamsClick(broadcast: broadcast) {
         val stage = if (currentLanguage =="ru") broadcast.stage_ru
         else broadcast.stage_en
-        val day = "${requireContext().getString(R.string.day)} ${broadcast.dayOfTournament}"
         val json = JSONObject()
         json.put("ObjectID", broadcast._id)
         json.put("Stage", stage)
         json.put("Title", broadcast.title)
-        json.put("Day of tournament", day)
+        json.put("Day of tournament", broadcast.dayOfTournament)
         json.put("Status of broadcast", "Live")
-        (activity as MainActivity).mixpanelAPI?.track("“ShowTeamsListClick", json)
+        (activity as MainActivity).mixpanelAPI?.track("ShowTeamsListClick", json)
 
         (activity as MainActivity).showBottomSheetTeams(broadcast)
     }
@@ -146,14 +144,13 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick {
     override fun onMoreClick(broadcast: broadcast) {
         val stage = if (currentLanguage =="ru") broadcast.stage_ru
         else broadcast.stage_en
-        val day = "${requireContext().getString(R.string.day)} ${broadcast.dayOfTournament}"
         val json = JSONObject()
         json.put("ObjectID", broadcast._id)
         json.put("Stage", stage)
         json.put("Title", broadcast.title)
-        json.put("Day of tournament", day)
+        json.put("Day of tournament", broadcast.dayOfTournament)
         json.put("Status of broadcast", "Live")
-        (activity as MainActivity).mixpanelAPI?.track("“ShowTournamentDetailsClick", json)
+        (activity as MainActivity).mixpanelAPI?.track("ShowTournamentDetailsClick", json)
 
         broadcast.objectIDOfTournament?.let{
             if (it.isNotEmpty()&&ObjectId.isValid(broadcast.objectIDOfTournament))

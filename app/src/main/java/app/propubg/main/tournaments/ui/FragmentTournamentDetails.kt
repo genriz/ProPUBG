@@ -25,6 +25,7 @@ import app.propubg.databinding.FragmentTournamentDetailsBinding
 import app.propubg.main.MainActivity
 import app.propubg.main.advert.Advert
 import app.propubg.main.advert.AdvertViewModel
+import app.propubg.main.news.adapters.DetailsImagesAdapter
 import app.propubg.main.tournaments.model.TournamentItem
 import app.propubg.main.tournaments.model.TournamentsViewModel
 import app.propubg.main.tournaments.model.tournament
@@ -44,6 +45,8 @@ class FragmentTournamentDetails: Fragment() {
 
     private lateinit var binding: FragmentTournamentDetailsBinding
     private var tournament: tournament? = null
+    private val images = ArrayList<String>()
+    private lateinit var adapter: DetailsImagesAdapter
     private val viewModel: TournamentsViewModel by viewModels()
     private val advertViewModel: AdvertViewModel by viewModels()
 
@@ -69,35 +72,18 @@ class FragmentTournamentDetails: Fragment() {
                 tournament = viewModel.getTournamentById(
                     requireArguments()
                         .getSerializable("tournamentId") as ObjectId)
+                images.clear()
                 tournament?.let{tournament_ ->
                     binding.headerDetails.headerTitle.text = tournament_.title
 
-                    binding.itemWait.postDelayed({
-                        Glide.with(binding.itemWait).asGif().load(R.drawable.wait)
-                            .into(binding.itemWait)
-                    }, 200)
+                    images.addAll(tournament_.imageSrc)
+                    adapter = DetailsImagesAdapter(images)
+                    binding.tournamentItemPager.adapter = adapter
 
-                    Glide.with(binding.tournamentImage).load(tournament_.imageSrc[0])
-                        .addListener(object: RequestListener<Drawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean): Boolean {
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean): Boolean {
-                                binding.itemWait.visibility = View.GONE
-                                return false
-                            }
-                        }).signature(ObjectKey(tournament_.imageSrc[0]!!))
-                        .into(binding.tournamentImage)
+                    binding.dots.visibility =
+                        if (images.size>1) View.VISIBLE
+                        else View.GONE
+                    binding.dots.setViewPager2(binding.tournamentItemPager)
 
                     val tournamentItem = TournamentItem()
                     tournamentItem.tournament = tournament_
@@ -165,7 +151,7 @@ class FragmentTournamentDetails: Fragment() {
                 json.put("Status of tournament", tournament!!.status)
                 json.put("Title", tournament!!.title)
                 json.put("Regions", tournament!!.getRegionList())
-                (activity as MainActivity).mixpanelAPI?.track("Register Tournament Click", json)
+                (activity as MainActivity).mixpanelAPI?.track("RegisterTournamentClick", json)
 
                 if (URLUtil.isValidUrl(it)) {
                     val intent = Intent()
@@ -216,7 +202,7 @@ class FragmentTournamentDetails: Fragment() {
             json.put("Status of tournament", tournament!!.status)
             json.put("Title", tournament!!.title)
             json.put("Regions", tournament!!.getRegionList())
-            (activity as MainActivity).mixpanelAPI?.track("Copy Tournament Link Click", json)
+            (activity as MainActivity).mixpanelAPI?.track("CopyTournamentLinkClick", json)
         }
 
         advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->

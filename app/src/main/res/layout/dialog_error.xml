@@ -58,7 +58,7 @@
             android:layout_marginTop="8dp"
             android:background="@color/gray2"/>
         <TextView
-            android:id="@+id/btnSuport"
+            android:id="@+id/btnSupport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

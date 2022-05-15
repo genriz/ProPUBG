@@ -67,6 +67,11 @@ class FragmentReshufflesDetails: Fragment() {
                     adapter = DetailsImagesAdapter(images)
                     binding.newsItemPager.adapter = adapter
 
+                    binding.dots.visibility =
+                        if (images.size>1) View.VISIBLE
+                        else View.GONE
+                    binding.dots.setViewPager2(binding.newsItemPager)
+
                     val reshuffleItem = ReshuffleItem()
                     reshuffleItem.reshuffle = reshuffle_
                     binding.reshuffleItem = reshuffleItem

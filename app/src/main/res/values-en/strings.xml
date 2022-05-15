@@ -114,8 +114,8 @@
     <string name="en">English</string>
     <string name="ru">Russian</string>
 
-    <string name="results_text">Подробная информация в приложении по ссылке</string>
-    <string name="open_server">Перейти на сервер</string>
+    <string name="results_text">More detailed information is in the application via this link</string>
+    <string name="open_server">Go to the server</string>
     <string name="get_code">Get code</string>
     <string name="wrong_sms">Wrong code</string>
     <string name="code_sent">Verification SMS has been sent to the following phone number:</string>
@@ -144,4 +144,6 @@
     <string name="creator">Creator of ProPUBG:</string>
 
     <string name="error_code">An error occurred while validating the entered code\n\nPlease try turning on the VPN and confirm the code again\n\nIf this doesn’t help, then please contact us via support and we will help you</string>
+    <string name="error_phone">There was an error while sending a message to the number you’ve entered\n\nPossible solutions to the problem:\n\n1) Check the correctness of the entered phone number\n2) Turn on VPN and try again\n\nIf none of the points helped, then please contact us via support and we will help you</string>
+
 </resources>

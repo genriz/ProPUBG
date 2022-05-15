@@ -42,6 +42,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/newsItemPager"/>
+                        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                            android:id="@+id/dots"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:dotsColor="@color/gray2"
+                            app:dotsCornerRadius="3dp"
+                            app:dotsSize="6dp"
+                            app:dotsSpacing="4dp"
+                            app:dotsWidthFactor="1"
+                            app:selectedDotColor="@color/red2"
+                            app:progressMode="false"
+                            android:layout_gravity="bottom|center"
+                            android:layout_marginBottom="15dp"/>
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout

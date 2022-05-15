@@ -3,6 +3,7 @@ package app.propubg.login.ui
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -64,8 +65,9 @@ class FragmentSmsCode: Fragment() {
 
         viewModel.code.observe(viewLifecycleOwner,{
             it?.let{
-                viewModel.error.value = ""
-                if (it=="") clearCode()
+                if (it=="") {
+                    clearCode()
+                }
                 else {
                     setCode(it)
                     binding.btnConfirmCode.setOnClickListener {
@@ -325,10 +327,10 @@ class FragmentSmsCode: Fragment() {
         binding.inputCode.children.forEach {
             sb.append((it as EditText).text.toString())
         }
-        viewModel.code.value = sb.toString()
+        if (sb.isEmpty()) sb.append("0")
         viewModel.error.value = ""
         val credential = PhoneAuthProvider
-            .getCredential(viewModel.verificationId, viewModel.code.value?:"")
+            .getCredential(viewModel.verificationId, sb.toString())
         (activity as StartActivity).signInWithPhoneAuthCredential(credential)
     }
 

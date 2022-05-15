@@ -17,14 +17,15 @@
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription" />
     <ImageView
-        android:padding="26dp"
         android:id="@+id/advertClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.05"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
         android:src="@drawable/ic_close_advert"
         app:layout_constraintBottom_toTopOf="@id/advertImage"
         app:layout_constraintTop_toTopOf="@id/advertImage"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="9dp"
+        android:layout_marginEnd="25dp"
         tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>
