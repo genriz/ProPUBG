@@ -165,6 +165,7 @@ class FragmentMenuProfileEdit: Fragment() {
                         requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
                             .edit().putString("user", Gson().toJson(currentUser)).apply()
                         setNickTime()
+                        setNickMixPanel()
                         binding.header.btnSave.isEnabled = false
                     } else {
                         binding.errorNickname.text = getString(R.string.nick_buzy)
@@ -191,6 +192,14 @@ class FragmentMenuProfileEdit: Fragment() {
         binding.errorNickname.text = messageTime
         binding.inputNickname.isEnabled = false
         binding.nickDelete.isVisible = false
+    }
+
+    private fun setNickMixPanel(){
+        val props = JSONObject()
+        props.put("Nickname", currentUser!!.user!!.nickname)
+        (activity as MainActivity).mixpanelAPI?.registerSuperProperties(props)
+        (activity as MainActivity).mixpanelAPI!!.people!!.identify(currentUser!!.UID)
+        (activity as MainActivity).mixpanelAPI?.people?.set("Nickname", currentUser!!.user!!.nickname)
     }
 
     override fun onResume() {

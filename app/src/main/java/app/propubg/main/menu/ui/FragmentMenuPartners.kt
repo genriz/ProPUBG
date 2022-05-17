@@ -23,16 +23,19 @@ import app.propubg.main.MainActivity
 import app.propubg.main.advert.Advert
 import app.propubg.main.advert.AdvertViewModel
 import app.propubg.main.menu.adapters.PartnersAdapter
+import app.propubg.main.menu.adapters.PartnersSearchAdapter
 import app.propubg.main.menu.model.MenuViewModel
 import app.propubg.main.menu.model.partner
 import com.bumptech.glide.Glide
 import org.json.JSONObject
 
-class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
+class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick,
+    PartnersSearchAdapter.OnClickListener {
 
     private lateinit var binding: FragmentMenuPartnersBinding
     private val viewModel: MenuViewModel by activityViewModels()
     private lateinit var adapter: PartnersAdapter
+    private lateinit var adapterSearch: PartnersSearchAdapter
     private val advertViewModel: AdvertViewModel by viewModels()
     private var isSearching = false
 
@@ -64,8 +67,11 @@ class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
             it?.let { ready ->
                 if (ready){
                     adapter = PartnersAdapter(viewModel.getPartners(), this)
+                    adapterSearch = PartnersSearchAdapter(this)
                     binding.recyclerPartners.setHasFixedSize(true)
                     binding.recyclerPartners.adapter = adapter
+                    binding.recyclerPartnersSearch.adapter = adapterSearch
+                    binding.recyclerPartnersSearch.isVisible = false
 
                     adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
                         override fun onChanged() {
@@ -101,9 +107,20 @@ class FragmentMenuPartners:Fragment(), PartnersAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     isSearching = true
-                    adapter.updateData(viewModel.searchPartners(searchString))
-                } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
+                    //adapter.updateData(viewModel.searchPartners(searchString))
+                    binding.recyclerPartners.isVisible = false
+                    binding.recyclerPartnersSearch.isVisible = true
+                    adapterSearch.submitList(viewModel.searchPartnersLocal(searchString))
+                    binding.recyclerPartnersSearch.postDelayed({
+                        if (adapterSearch.currentList.size==0) {
+                            binding.noDiscords.visibility = View.VISIBLE
+                            binding.noDiscords.setText(R.string.search_empty)
+                        } else binding.noDiscords.visibility = View.GONE
+                    },100)
+                } else if (viewModel.realmReady.value == true) {
                     isSearching = false
+                    binding.recyclerPartners.isVisible = true
+                    binding.recyclerPartnersSearch.isVisible = false
                     adapter.updateData(viewModel.getPartners())
                 }
             }

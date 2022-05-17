@@ -77,6 +77,32 @@ class NewsViewModel:ViewModel() {
         }
     }
 
+    fun searchNewsLocal(text: String): List<news> {
+        return if (currentLanguage=="ru"){
+            realm.where(news::class.java).isNotNull("title_ru")
+                .and().isNotNull("imageSrc_ru")
+                .and().isNotNull("text_ru")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.text_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                            || it.regions.toString().lowercase().contains(text.lowercase())
+                }
+        } else {
+            realm.where(news::class.java).isNotNull("title_en")
+                .and().isNotNull("imageSrc_en")
+                .and().isNotNull("text_en")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.text_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                            || it.regions.toString().lowercase().contains(text.lowercase())
+                }
+        }
+    }
+
     fun updateNews(news: news, id: String){
         realm.executeTransaction { r: Realm ->
             news.listViewers.add(id)
@@ -117,6 +143,32 @@ class NewsViewModel:ViewModel() {
                 .or().contains("author", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
+        }
+    }
+
+    fun searchReshufflesLocal(text: String): List<reshuffle> {
+        return if (currentLanguage=="ru"){
+            realm.where(reshuffle::class.java).isNotNull("title_ru")
+                .and().isNotNull("imageSrc_ru")
+                .and().isNotNull("text_ru")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.text_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                            || it.regions.toString().lowercase().contains(text.lowercase())
+                }
+        } else {
+            realm.where(reshuffle::class.java).isNotNull("title_en")
+                .and().isNotNull("imageSrc_en")
+                .and().isNotNull("text_en")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.text_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                            || it.regions.toString().lowercase().contains(text.lowercase())
+                }
         }
     }
 

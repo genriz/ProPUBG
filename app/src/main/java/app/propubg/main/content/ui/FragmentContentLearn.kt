@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
+import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,17 +19,25 @@ import app.propubg.R
 import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentPageContentBinding
 import app.propubg.main.MainActivity
+import app.propubg.main.advert.Advert
+import app.propubg.main.advert.AdvertViewModel
 import app.propubg.main.content.adapters.ContentAdapter
+import app.propubg.main.content.adapters.ContentSearchAdapter
 import app.propubg.main.content.model.ContentViewModel
 import app.propubg.main.content.model.content
+import com.bumptech.glide.Glide
 import org.json.JSONObject
 
-class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
+class FragmentContentLearn: Fragment(), ContentAdapter.OnClick,
+    ContentSearchAdapter.OnClickListener {
 
     private lateinit var binding: FragmentPageContentBinding
     private val viewModel: ContentViewModel by viewModels()
     private lateinit var adapter: ContentAdapter
+    private lateinit var adapterSearch: ContentSearchAdapter
     private var isSearching = false
+    private val advertViewModel: AdvertViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,12 +54,17 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.advertMain.isVisible = false
+
         viewModel.realmReady.observe(viewLifecycleOwner,{
             it?.let{ ready ->
                 if (ready){
                     binding.recyclerContent.setHasFixedSize(true)
                     adapter = ContentAdapter(viewModel.getContentInformative(), this)
+                    adapterSearch = ContentSearchAdapter(this)
                     binding.recyclerContent.adapter = adapter
+                    binding.recyclerContentSearch.adapter = adapterSearch
+                    binding.recyclerContentSearch.isVisible = false
 
                     adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
                         override fun onChanged() {
@@ -84,14 +99,78 @@ class FragmentContentLearn: Fragment(), ContentAdapter.OnClick {
             it?.let{ searchString ->
                 if (searchString.length>1){
                     isSearching = true
-                    adapter.updateData(viewModel.searchContentInformative(searchString))
-                } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
+                    //adapter.updateData(viewModel.searchContentInformative(searchString))
+                    binding.recyclerContent.isVisible = false
+                    binding.recyclerContentSearch.isVisible = true
+                    adapterSearch.submitList(viewModel.searchContentInformativeLocal(searchString))
+                    binding.recyclerContentSearch.postDelayed({
+                        if (adapterSearch.currentList.size==0) {
+                            binding.noContent.visibility = View.VISIBLE
+                            binding.noContent.setText(R.string.search_empty)
+                        } else binding.noContent.visibility = View.GONE
+                    },100)
+                } else if (viewModel.realmReady.value == true) {
                     isSearching = false
+                    binding.recyclerContent.isVisible = true
+                    binding.recyclerContentSearch.isVisible = false
                     adapter.updateData(viewModel.getContentInformative())
                 }
             }
         })
 
+        if (!viewModel.advertClosed) {
+            advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->
+                if (ready){
+                    advertViewModel._advert.observe(viewLifecycleOwner,{ advertisement ->
+                        advertisement?.let {
+                            val advertItem = Advert().apply {
+                                advert = it
+                            }
+                            val image = if (currentLanguage =="ru")
+                                advertItem.advert!!.imageSrc_ru
+                            else advertItem.advert!!.imageSrc_en
+                            Glide.with(requireContext()).load(image)
+                                .into(binding.advertMain.findViewById(R.id.advertImage))
+                            binding.advertMain.isVisible = true
+                            binding.advertMain
+                                .findViewById<ImageView>(R.id.advertClose)
+                                .setOnClickListener {
+                                    val json = JSONObject()
+                                    json.put("campaign", advertisement.campaign)
+                                    json.put("screen", "Content[Informative]")
+                                    (activity as MainActivity).mixpanelAPI!!
+                                        .track("AdBannerCloseClick", json)
+                                    binding.advertMain.isVisible = false
+                                    viewModel.advertClosed = true
+                                }
+                            binding.advertMain
+                                .findViewById<ImageView>(R.id.advertImage)
+                                .setOnClickListener {
+                                    val json = JSONObject()
+                                    json.put("campaign", advertisement.campaign)
+                                    json.put("screen", "Content[Informative]")
+                                    (activity as MainActivity).mixpanelAPI!!
+                                        .track("AdBannerClick", json)
+                                    val link =
+                                        if (currentLanguage=="ru")
+                                            advertisement.link_ru
+                                        else advertisement.link_en
+                                    link?.let{
+                                        if (URLUtil.isValidUrl(link)) {
+                                            val intent = Intent()
+                                            intent.action = Intent.ACTION_VIEW
+                                            intent.data = Uri.parse(link)
+                                            startActivity(intent)
+                                        }
+                                    }
+                                }
+                        }
+                    })
+
+                    advertViewModel.getAdvert()
+                }
+            })
+        }
     }
 
     override fun onWatchClick(content: content) {

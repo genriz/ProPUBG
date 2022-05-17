@@ -17,8 +17,7 @@ class ReshufflesAdapter(data: OrderedRealmCollection<reshuffle?>?,
             ReshufflesAdapter.ReshufflesViewHolder?>(data, true){
 
     class ReshufflesViewHolder(val binding: ReshuffleItemBinding):
-        RecyclerView.ViewHolder(binding.root) {
-    }
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): ReshufflesViewHolder {

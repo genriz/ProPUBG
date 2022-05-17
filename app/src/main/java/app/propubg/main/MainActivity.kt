@@ -167,10 +167,13 @@ class MainActivity : AppCompatActivity() {
         mixpanelAPI = MixpanelAPI.getInstance(this, BuildConfig.MIX_TOKEN)
         val props = JSONObject()
         props.put("UID", currentUser!!.UID)
+        currentUser?.user?.nickname?.let{nick->
+            props.put("Nickname", nick)
+        }
         mixpanelAPI?.registerSuperProperties(props)
         mixpanelAPI!!.people!!.identify(currentUser!!.UID)
         currentUser?.user?.nickname?.let{nick->
-            mixpanelAPI?.people?.set("nickname", nick)
+            mixpanelAPI?.people?.set("Nickname", nick)
         }
 
         processIntent()

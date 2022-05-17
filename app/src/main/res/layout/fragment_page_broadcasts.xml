@@ -6,33 +6,63 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recyclerBroadcasts"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="19dp"
-            tools:listitem="@layout/broadcast_item"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:visibility="gone"
-                android:padding="18dp"
-                android:gravity="center_horizontal"
-                android:id="@+id/noLiveBroadcasts"
-                android:layout_width="wrap_content"
+            android:clipChildren="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/barrier"
+                android:id="@+id/recyclerBroadcasts"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="19dp"
+                tools:listitem="@layout/broadcast_item"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/barrier"
+                android:id="@+id/recyclerBroadcastsSearch"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="19dp"
+                tools:listitem="@layout/broadcast_item"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:visibility="gone"
+                    android:padding="18dp"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/noLiveBroadcasts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/no_live_broadcasts"
+                    android:fontFamily="@font/sfpro_regular"
+                    android:textSize="14sp"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/text_gray2"/>
+            </RelativeLayout>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:barrierDirection="top"
+                app:constraint_referenced_ids="advertMain"/>
+            <include layout="@layout/advert_item"
+                android:id="@+id/advertMain"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/no_live_broadcasts"
-                android:fontFamily="@font/sfpro_regular"
-                android:textSize="14sp"
-                android:includeFontPadding="false"
-                android:textColor="@color/text_gray2"/>
-        </RelativeLayout>
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/expandLayout"

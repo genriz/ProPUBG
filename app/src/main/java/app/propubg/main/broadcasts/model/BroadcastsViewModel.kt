@@ -76,6 +76,29 @@ class BroadcastsViewModel:ViewModel() {
         }
     }
 
+    fun searchBroadcastsLiveLocal(text: String): List<broadcast>{
+        return if (currentLanguage =="ru"){
+            realm.where(broadcast::class.java).isNotNull("title")
+                .equalTo("status","Live").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            || it.stage_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.teamsList.toString().lowercase().contains(text.lowercase())
+                }
+        } else {
+            realm.where(broadcast::class.java).isNotNull("title")
+                .equalTo("status","Live").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            || it.stage_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.teamsList.toString().lowercase().contains(text.lowercase())
+                }
+
+        }
+    }
+
     fun searchBroadcastsPast(text: String): OrderedRealmCollection<broadcast?>?{
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
@@ -94,6 +117,29 @@ class BroadcastsViewModel:ViewModel() {
         }
     }
 
+    fun searchBroadcastsPastLocal(text: String): List<broadcast>{
+        return if (currentLanguage =="ru"){
+            realm.where(broadcast::class.java).isNotNull("title")
+                .equalTo("status","Past").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            || it.stage_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.teamsList.toString().lowercase().contains(text.lowercase())
+                }
+        } else {
+            realm.where(broadcast::class.java).isNotNull("title")
+                .equalTo("status","Past").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            || it.stage_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.teamsList.toString().lowercase().contains(text.lowercase())
+                }
+
+        }
+    }
+
     fun searchBroadcastsUpcoming(text: String): OrderedRealmCollection<broadcast?>?{
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
@@ -109,6 +155,29 @@ class BroadcastsViewModel:ViewModel() {
                 .or().contains("teamsList", text, Case.INSENSITIVE)
                 .or().contains("stage_en", text, Case.INSENSITIVE)
                 .sort("date", Sort.ASCENDING).findAllAsync()
+        }
+    }
+
+    fun searchBroadcastsUpcomingLocal(text: String): List<broadcast>{
+        return if (currentLanguage =="ru"){
+            realm.where(broadcast::class.java).isNotNull("title")
+                .equalTo("status","Upcoming").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            || it.stage_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.teamsList.toString().lowercase().contains(text.lowercase())
+                }
+        } else {
+            realm.where(broadcast::class.java).isNotNull("title")
+                .equalTo("status","Upcoming").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            || it.stage_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.teamsList.toString().lowercase().contains(text.lowercase())
+                }
+
         }
     }
 

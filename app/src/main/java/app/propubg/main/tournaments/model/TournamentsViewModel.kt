@@ -65,6 +65,30 @@ class TournamentsViewModel:ViewModel() {
         }
     }
 
+    fun searchTournamentsOpenLocal(text: String): List<tournament>{
+        return if (currentLanguage =="ru"){
+            realm.where(tournament::class.java).isNotNull("title")
+                .equalTo("status","Open").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.mode?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                            ||it.text_ru?.lowercase()?.contains(text.lowercase())?:false
+                }
+        } else {
+            realm.where(tournament::class.java).isNotNull("title")
+                .equalTo("status","Open").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.mode?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                            ||it.text_en?.lowercase()?.contains(text.lowercase())?:false
+                }
+        }
+    }
+
     fun getTournamentsClosed(): OrderedRealmCollection<tournament?>?{
         return realm.where(tournament::class.java).isNotNull("title")
             .equalTo("status","Closed")
@@ -88,6 +112,30 @@ class TournamentsViewModel:ViewModel() {
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .or().contains("text_en", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
+        }
+    }
+
+    fun searchTournamentsClosedLocal(text: String): List<tournament>{
+        return if (currentLanguage =="ru"){
+            realm.where(tournament::class.java).isNotNull("title")
+                .equalTo("status","Closed").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.mode?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                            ||it.text_ru?.lowercase()?.contains(text.lowercase())?:false
+                }
+        } else {
+            realm.where(tournament::class.java).isNotNull("title")
+                .equalTo("status","Closed").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.mode?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                            ||it.text_en?.lowercase()?.contains(text.lowercase())?:false
+                }
         }
     }
 
@@ -116,6 +164,30 @@ class TournamentsViewModel:ViewModel() {
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .or().contains("text_en", text, Case.INSENSITIVE)
                 .sort("date", Sort.ASCENDING).findAllAsync()
+        }
+    }
+
+    fun searchTournamentsUpcomingLocal(text: String): List<tournament>{
+        return if (currentLanguage =="ru"){
+            realm.where(tournament::class.java).isNotNull("title")
+                .equalTo("status","Upcoming").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.mode?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                            ||it.text_ru?.lowercase()?.contains(text.lowercase())?:false
+                }
+        } else {
+            realm.where(tournament::class.java).isNotNull("title")
+                .equalTo("status","Upcoming").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.mode?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                            ||it.text_en?.lowercase()?.contains(text.lowercase())?:false
+                }
         }
     }
 

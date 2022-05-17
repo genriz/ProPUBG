@@ -66,7 +66,26 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
         setLanguage()
 
         if (currentUser!=null&&realmApp.currentUser()!=null){
-            startMain()
+            Log.v("DASD", currentUser!!.UID?:"no uid")
+            val functionsManager: Functions = realmApp.getFunctions(realmApp.currentUser())
+            val uid = currentUser!!.UID
+            functionsManager.callFunctionAsync("getUserDateByUID",
+                listOf(uid), BsonValue::class.java) { result ->
+                if (result.isSuccess) {
+                    Log.v("DASD", result.get().toString())
+                    currentUser = UserRealm().apply {
+                        user = Gson().fromJson(result.get().toString(),
+                            app.propubg.login.model.user::class.java)
+                        Log.v("DASD", user?.nickname?:"no nick")
+                        UID = uid
+                    }
+                    getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                        .edit().putString("user", Gson().toJson(currentUser)).apply()
+                    startMain()
+                } else {
+                    startMain()
+                }
+            }
         } else {
             binding = DataBindingUtil
                 .setContentView(this, R.layout.activity_start)

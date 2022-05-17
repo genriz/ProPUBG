@@ -98,6 +98,30 @@ class MenuViewModel: ViewModel() {
         }
     }
 
+    fun searchResultsLocal(text: String): List<resultsOfTournament>{
+        return if (currentLanguage =="ru"){
+            realm.where(resultsOfTournament::class.java).isNotNull("title")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.stage_ru?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.text_ru?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.author?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                }
+        } else {
+            realm.where(resultsOfTournament::class.java).isNotNull("title")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.stage_en?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.text_en?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.author?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                }
+        }
+    }
+
     fun getResultsById(id: ObjectId): resultsOfTournament? {
         return realm.where(resultsOfTournament::class.java)
             .equalTo("_id", id).findFirst()
@@ -139,6 +163,34 @@ class MenuViewModel: ViewModel() {
                 .or().contains("text_en", text, Case.INSENSITIVE)
                 .or().contains("regions", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
+        }
+    }
+
+    fun searchPartnersLocal(text: String): List<partner>{
+        return if (currentLanguage =="ru") {
+            realm.where(partner::class.java).isNotNull("title")
+                .and().isNotNull("text_ru")
+                .and().isNotNull("descriptionOfPartner_ru")
+                .and().isNotNull("link").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.text_ru?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.descriptionOfPartner_ru?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                }
+        } else {
+            realm.where(partner::class.java).isNotNull("title")
+                .and().isNotNull("text_en")
+                .and().isNotNull("descriptionOfPartner_en")
+                .and().isNotNull("link").findAllAsync()
+                .sort("date", Sort.DESCENDING)
+                .filter {
+                    it.title?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.text_en?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.descriptionOfPartner_en?.lowercase()?.contains(text.lowercase())?:false
+                            ||it.regions.toString().lowercase().contains(text.lowercase())
+                }
         }
     }
 

@@ -80,6 +80,27 @@ class ContentViewModel:ViewModel() {
         }
     }
 
+    fun searchContentInformativeLocal(text: String): List<content>{
+        return if (currentLanguage =="ru"){
+            realm.where(content::class.java).isNotNull("title_ru")
+                .equalTo("typeOfContent","Informative")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                }
+
+        } else {
+            realm.where(content::class.java).isNotNull("title_en")
+                .equalTo("typeOfContent","Informative")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                }
+        }
+    }
+
     fun searchContentInterview(text: String): OrderedRealmCollection<content?>?{
         return if (currentLanguage =="ru"){
             realm.where(content::class.java).isNotNull("title_ru")
@@ -95,6 +116,27 @@ class ContentViewModel:ViewModel() {
                 .contains("title_en", text, Case.INSENSITIVE)
                 .or().contains("author", text, Case.INSENSITIVE)
                 .sort("date", Sort.DESCENDING).findAllAsync()
+        }
+    }
+
+    fun searchContentInterviewLocal(text: String): List<content>{
+        return if (currentLanguage =="ru"){
+            realm.where(content::class.java).isNotNull("title_ru")
+                .equalTo("typeOfContent","Interview")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_ru?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                }
+
+        } else {
+            realm.where(content::class.java).isNotNull("title_en")
+                .equalTo("typeOfContent","Informative")
+                .sort("date", Sort.DESCENDING).findAllAsync()
+                .filter {
+                    it.title_en?.lowercase()?.contains(text.lowercase())?:false
+                            || it.author?.lowercase()?.contains(text.lowercase())?:false
+                }
         }
     }
 

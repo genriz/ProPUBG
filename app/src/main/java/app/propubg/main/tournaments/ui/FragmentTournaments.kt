@@ -1,29 +1,19 @@
 package app.propubg.main.tournaments.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import app.propubg.R
-import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentTournamentsBinding
 import app.propubg.main.MainActivity
-import app.propubg.main.advert.Advert
-import app.propubg.main.advert.AdvertViewModel
 import app.propubg.main.tournaments.adapters.FragmentTournamentsPageAdapter
 import app.propubg.main.tournaments.model.TournamentsViewModel
-import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import org.bson.types.ObjectId
 import org.json.JSONObject
@@ -33,7 +23,6 @@ class FragmentTournaments: Fragment() {
     private lateinit var binding: FragmentTournamentsBinding
     private lateinit var adapter: FragmentTournamentsPageAdapter
     private val viewModel: TournamentsViewModel by activityViewModels()
-    private val advertViewModel: AdvertViewModel by viewModels()
     private var currentPage = 1
 
     override fun onCreateView(
@@ -48,7 +37,7 @@ class FragmentTournaments: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.advertMain.isVisible = false
+
         binding.header.headerTitle.text = getString(R.string.tournaments)
         binding.header.btnBack.visibility = View.INVISIBLE
 
@@ -108,60 +97,6 @@ class FragmentTournaments: Fragment() {
 
         binding.header.btnOption.setOnClickListener {
             (activity as MainActivity).showSheetInfo()
-        }
-
-        if (!viewModel.advertClosed) {
-            advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->
-                if (ready){
-                    advertViewModel._advert.observe(viewLifecycleOwner,{ advertisement ->
-                        advertisement?.let {
-                            val advertItem = Advert().apply {
-                                advert = it
-                            }
-                            val image = if (currentLanguage =="ru")
-                                advertItem.advert!!.imageSrc_ru
-                            else advertItem.advert!!.imageSrc_en
-                            Glide.with(requireContext()).load(image)
-                                .into(binding.advertMain.findViewById(R.id.advertImage))
-                            binding.advertMain.isVisible = true
-                            binding.advertMain
-                                .findViewById<ImageView>(R.id.advertClose)
-                                .setOnClickListener {
-                                    val json = JSONObject()
-                                    json.put("campaign", advertisement.campaign)
-                                    json.put("screen", "Tournaments")
-                                    (activity as MainActivity).mixpanelAPI!!
-                                        .track("AdBannerCloseClick", json)
-                                    binding.advertMain.isVisible = false
-                                    viewModel.advertClosed = true
-                                }
-                            binding.advertMain
-                                .findViewById<ImageView>(R.id.advertImage)
-                                .setOnClickListener {
-                                    val json = JSONObject()
-                                    json.put("campaign", advertisement.campaign)
-                                    json.put("screen", "Tournaments")
-                                    (activity as MainActivity).mixpanelAPI!!
-                                        .track("AdBannerClick", json)
-                                    val link =
-                                        if (currentLanguage=="ru")
-                                            advertisement.link_ru
-                                        else advertisement.link_en
-                                    link?.let{
-                                        if (URLUtil.isValidUrl(link)) {
-                                            val intent = Intent()
-                                            intent.action = Intent.ACTION_VIEW
-                                            intent.data = Uri.parse(link)
-                                            startActivity(intent)
-                                        }
-                                    }
-                                }
-                        }
-                    })
-
-                    advertViewModel.getAdvert()
-                }
-            })
         }
     }
 }
