@@ -23,11 +23,6 @@ import app.propubg.login.model.UserRealm
 import app.propubg.main.MainActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
-import com.google.firebase.dynamiclinks.ktx.androidParameters
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.dynamiclinks.ktx.iosParameters
-import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
-import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import io.realm.mongodb.Credentials
 import io.realm.mongodb.functions.Functions
@@ -66,17 +61,14 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
         setLanguage()
 
         if (currentUser!=null&&realmApp.currentUser()!=null){
-            Log.v("DASD", currentUser!!.UID?:"no uid")
             val functionsManager: Functions = realmApp.getFunctions(realmApp.currentUser())
             val uid = currentUser!!.UID
             functionsManager.callFunctionAsync("getUserDateByUID",
                 listOf(uid), BsonValue::class.java) { result ->
                 if (result.isSuccess) {
-                    Log.v("DASD", result.get().toString())
                     currentUser = UserRealm().apply {
                         user = Gson().fromJson(result.get().toString(),
                             app.propubg.login.model.user::class.java)
-                        Log.v("DASD", user?.nickname?:"no nick")
                         UID = uid
                     }
                     getSharedPreferences("prefs", Context.MODE_PRIVATE)
@@ -116,7 +108,7 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
         var needAuth = false
         intent.extras?.let{
             it.keySet().forEach { key ->
-                Log.v("DASD", key)
+                Log.v("DASD", "$key - ${it[key].toString()}")
             }
             if (it.containsKey("screen")){
                 mainIntent.putExtra("screen", it["screen"].toString())

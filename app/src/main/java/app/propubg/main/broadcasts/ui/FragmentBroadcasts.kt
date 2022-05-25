@@ -50,6 +50,7 @@ class FragmentBroadcasts: Fragment() {
 
         arguments?.let{
             currentPage = it.get("page") as Int
+            arguments = null
         }
 
         binding.pagerBroadcasts.setCurrentItem(currentPage, false)

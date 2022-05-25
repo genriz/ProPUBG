@@ -688,7 +688,7 @@ fun setSimpleDate (view: TextView, date: Date?){
 @BindingAdapter("setFullDate")
 fun setFullDate (view: TextView, date: Date?){
     date?.let{
-        view.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+        view.text = SimpleDateFormat("dd.MM.yyyy | HH:mm", Locale.getDefault())
             .format(date)
     }
 }

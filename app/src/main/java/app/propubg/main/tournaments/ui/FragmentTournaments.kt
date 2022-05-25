@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import app.propubg.R
+import app.propubg.currentLanguage
 import app.propubg.databinding.FragmentTournamentsBinding
 import app.propubg.main.MainActivity
 import app.propubg.main.tournaments.adapters.FragmentTournamentsPageAdapter
@@ -66,8 +67,8 @@ class FragmentTournaments: Fragment() {
                                 1 -> "OpenDetails"
                                 else -> "UpcomingDetails"
                             }
-                            (activity as MainActivity).openTournamentDetails(it, type)
-                            arguments = null
+                            if (tournament.title!=null)
+                                    (activity as MainActivity).openTournamentDetails(it, type)
                             val json = JSONObject()
                             json.put("ObjectID", id.toString())
                             json.put("Type", "Tournament")
@@ -76,9 +77,8 @@ class FragmentTournaments: Fragment() {
                             (activity as MainActivity)
                                 .mixpanelAPI?.track("DeepLinkOpened", json)
                         }
-                        if (tournament==null) Toast.makeText(requireContext(), "wrong ID",
-                            Toast.LENGTH_LONG).show()
                     }
+                    arguments = null
                 }
 
                 binding.pagerTournaments.setCurrentItem(currentPage, false)

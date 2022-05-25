@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.propubg.R
+import app.propubg.currentLanguage
 import app.propubg.currentUser
 import app.propubg.databinding.FragmentMenuBinding
 import app.propubg.main.MainActivity
@@ -49,7 +49,17 @@ class FragmentMenu: Fragment() {
                                 (activity as MainActivity).openFragmentResults()
                                 val results = viewModel.getResultsById(id)
                                 results?.let {
-                                    (activity as MainActivity).openResultsDetails(results)
+                                    val resultsCorrect = if (currentLanguage=="ru"){
+                                        results.title!=null&&results.stage_ru!=null
+                                                &&results.author!=null
+                                                &&results.dayOfTournament!=null
+                                    } else {
+                                        results.title!=null&&results.stage_en!=null
+                                                &&results.author!=null
+                                                &&results.dayOfTournament!=null
+                                    }
+                                    if (resultsCorrect)
+                                        (activity as MainActivity).openResultsDetails(results)
                                     arguments = null
                                     val json = JSONObject()
                                     json.put("ObjectID", id.toString())
@@ -63,7 +73,17 @@ class FragmentMenu: Fragment() {
                                 (activity as MainActivity).openFragmentPartners()
                                 val partner = viewModel.getPartnerById(id)
                                 partner?.let {
-                                    (activity as MainActivity).openPartnerDetails(partner)
+                                    val partnerCorrect = if (currentLanguage=="ru"){
+                                        partner.title!=null&&partner.text_ru!=null
+                                                &&partner.descriptionOfPartner_ru!=null
+                                                &&partner.link!=null
+                                    } else {
+                                        partner.title!=null&&partner.text_en!=null
+                                                &&partner.descriptionOfPartner_en!=null
+                                                &&partner.link!=null
+                                    }
+                                    if (partnerCorrect)
+                                        (activity as MainActivity).openPartnerDetails(partner)
                                     arguments = null
                                     val json = JSONObject()
                                     json.put("ObjectID", id.toString())
@@ -75,8 +95,13 @@ class FragmentMenu: Fragment() {
                                 }
                             }
                         }
-                        if (id==null) Toast.makeText(requireContext(), "wrong ID",
-                            Toast.LENGTH_LONG).show()
+                        if (id==null) {
+                            if (menu==0)
+                                (activity as MainActivity).openFragmentResults()
+                            else
+                                (activity as MainActivity).openFragmentPartners()
+                        }
+                        arguments = null
                     }
                 }
             }

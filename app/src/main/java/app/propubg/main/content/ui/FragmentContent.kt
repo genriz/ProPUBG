@@ -49,6 +49,7 @@ class FragmentContent: Fragment() {
 
         arguments?.let{
             currentPage = it.get("page") as Int
+            arguments = null
         }
         binding.pagerContent.setCurrentItem(currentPage,false)
 

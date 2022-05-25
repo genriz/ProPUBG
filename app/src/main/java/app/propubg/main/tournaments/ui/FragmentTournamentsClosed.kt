@@ -63,7 +63,7 @@ class FragmentTournamentsClosed: Fragment(), TournamentsAdapter.OnClick,
                     adapterSearch = TournamentsSearchAdapter(this)
                     binding.recyclerTournaments.adapter = adapter
                     binding.recyclerTournamentsSearch.adapter = adapterSearch
-                    binding.recyclerTournaments.isVisible = false
+                    binding.recyclerTournamentsSearch.isVisible = false
 
                     adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
                         override fun onChanged() {
@@ -184,6 +184,7 @@ class FragmentTournamentsClosed: Fragment(), TournamentsAdapter.OnClick,
         json.put("Title", "No value")
         json.put("Regions", "No value")
         (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+        if (isSearching) binding.expandLayout.setExpanded(true)
     }
 
 }

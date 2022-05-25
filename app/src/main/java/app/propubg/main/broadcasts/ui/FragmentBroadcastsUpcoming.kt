@@ -119,7 +119,7 @@ class FragmentBroadcastsUpcoming: Fragment(), BroadcastsAdapter.OnClick,
                     //adapter.updateData(viewModel.searchBroadcastsUpcoming(searchString))
                     binding.recyclerBroadcasts.isVisible = false
                     binding.recyclerBroadcastsSearch.isVisible = true
-                    adapterSearch.submitList(viewModel.searchBroadcastsPastLocal(searchString))
+                    adapterSearch.submitList(viewModel.searchBroadcastsUpcomingLocal(searchString))
                     binding.recyclerBroadcastsSearch.postDelayed({
                         if (adapterSearch.currentList.size==0) {
                             binding.noLiveBroadcasts.visibility = View.VISIBLE
@@ -222,7 +222,7 @@ class FragmentBroadcastsUpcoming: Fragment(), BroadcastsAdapter.OnClick,
         json.put("Title", broadcast.title)
         json.put("Day of tournament", day)
         json.put("Status of broadcast", "Upcoming")
-        (activity as MainActivity).mixpanelAPI?.track("“ShowTeamsListClick", json)
+        (activity as MainActivity).mixpanelAPI?.track("ShowTeamsListClick", json)
 
         (activity as MainActivity).showBottomSheetTeams(broadcast)
     }
@@ -257,6 +257,7 @@ class FragmentBroadcastsUpcoming: Fragment(), BroadcastsAdapter.OnClick,
         json.put("Title", "No value")
         json.put("Regions", "No value")
         (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+        if (isSearching) binding.expandLayout.setExpanded(true)
     }
 
 }

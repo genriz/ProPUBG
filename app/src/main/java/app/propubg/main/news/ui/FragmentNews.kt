@@ -65,6 +65,13 @@ class FragmentNews: Fragment() {
                     }
                 }
 
+                if (arguments==null){
+                    if ((activity as MainActivity).screenNewsOther){
+                        currentPage = 1
+                        (activity as MainActivity).screenNewsOther = false
+                    }
+                }
+
                 adapter = FragmentNewsPageAdapter(this)
                 binding.pagerNews.adapter = adapter
                 TabLayoutMediator(binding.tabsNews, binding.pagerNews) { tab, position ->

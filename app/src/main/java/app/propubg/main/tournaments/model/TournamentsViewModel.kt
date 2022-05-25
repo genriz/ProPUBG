@@ -171,7 +171,7 @@ class TournamentsViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(tournament::class.java).isNotNull("title")
                 .equalTo("status","Upcoming").findAllAsync()
-                .sort("date", Sort.DESCENDING)
+                .sort("date", Sort.ASCENDING)
                 .filter {
                     it.title?.lowercase()?.contains(text.lowercase())?:false
                             ||it.mode?.lowercase()?.contains(text.lowercase())?:false
@@ -181,7 +181,7 @@ class TournamentsViewModel:ViewModel() {
         } else {
             realm.where(tournament::class.java).isNotNull("title")
                 .equalTo("status","Upcoming").findAllAsync()
-                .sort("date", Sort.DESCENDING)
+                .sort("date", Sort.ASCENDING)
                 .filter {
                     it.title?.lowercase()?.contains(text.lowercase())?:false
                             ||it.mode?.lowercase()?.contains(text.lowercase())?:false

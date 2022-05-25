@@ -222,7 +222,7 @@ class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick,
         json.put("Title", broadcast.title)
         json.put("Day of tournament", day)
         json.put("Status of broadcast", "Past")
-        (activity as MainActivity).mixpanelAPI?.track("“ShowTeamsListClick", json)
+        (activity as MainActivity).mixpanelAPI?.track("ShowTeamsListClick", json)
 
         (activity as MainActivity).showBottomSheetTeams(broadcast)
     }
@@ -257,6 +257,7 @@ class FragmentBroadcastsPast: Fragment(), BroadcastsAdapter.OnClick,
         json.put("Title", "No value")
         json.put("Regions", "No value")
         (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+        if (isSearching) binding.expandLayout.setExpanded(true)
     }
 
 }

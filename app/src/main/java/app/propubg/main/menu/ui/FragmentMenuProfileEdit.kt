@@ -198,7 +198,6 @@ class FragmentMenuProfileEdit: Fragment() {
         val props = JSONObject()
         props.put("Nickname", currentUser!!.user!!.nickname)
         (activity as MainActivity).mixpanelAPI?.registerSuperProperties(props)
-        (activity as MainActivity).mixpanelAPI!!.people!!.identify(currentUser!!.UID)
         (activity as MainActivity).mixpanelAPI?.people?.set("Nickname", currentUser!!.user!!.nickname)
     }
 

@@ -162,7 +162,7 @@ class BroadcastsViewModel:ViewModel() {
         return if (currentLanguage =="ru"){
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Upcoming").findAllAsync()
-                .sort("date", Sort.DESCENDING)
+                .sort("date", Sort.ASCENDING)
                 .filter {
                     it.title?.lowercase()?.contains(text.lowercase())?:false
                             || it.stage_ru?.lowercase()?.contains(text.lowercase())?:false
@@ -171,7 +171,7 @@ class BroadcastsViewModel:ViewModel() {
         } else {
             realm.where(broadcast::class.java).isNotNull("title")
                 .equalTo("status","Upcoming").findAllAsync()
-                .sort("date", Sort.DESCENDING)
+                .sort("date", Sort.ASCENDING)
                 .filter {
                     it.title?.lowercase()?.contains(text.lowercase())?:false
                             || it.stage_en?.lowercase()?.contains(text.lowercase())?:false

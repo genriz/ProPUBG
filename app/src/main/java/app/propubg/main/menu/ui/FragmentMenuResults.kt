@@ -193,5 +193,6 @@ class FragmentMenuResults:Fragment(), ResultsAdapter.OnClick, ResultsSearchAdapt
         json.put("Title", "No value")
         json.put("Regions", "No value")
         (activity as MainActivity).mixpanelAPI?.track("ScreenView", json)
+        if (isSearching) binding.expandLayout.setExpanded(true)
     }
 }

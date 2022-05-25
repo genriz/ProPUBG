@@ -6,7 +6,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -29,6 +28,7 @@ import app.propubg.main.broadcasts.adapters.TeamListAdapter
 import app.propubg.main.broadcasts.model.broadcast
 import app.propubg.main.menu.model.partner
 import app.propubg.main.menu.model.resultsOfTournament
+import app.propubg.main.news.adapters.DetailsImagesAdapter
 import app.propubg.main.news.model.NewsViewModel
 import app.propubg.main.news.model.news
 import app.propubg.main.news.model.reshuffle
@@ -37,11 +37,6 @@ import app.propubg.main.tournaments.model.TournamentItem
 import app.propubg.main.tournaments.model.TournamentsViewModel
 import app.propubg.main.tournaments.model.tournament
 import app.propubg.utils.LocalData
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.ktx.database
@@ -69,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     var mixpanelAPI: MixpanelAPI? = null
     private val tournamentsViewModel:TournamentsViewModel by viewModels()
     private val newsViewModel:NewsViewModel by viewModels()
+    var screenNewsOther = false
 
     private val requestForAuth = registerForActivityResult(ActivityResultContracts
         .StartActivityForResult()){
@@ -107,10 +103,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
 
-        setMixPanel()
-        setFCM()
-        getAppConfig()
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
 
@@ -122,7 +114,10 @@ class MainActivity : AppCompatActivity() {
 
         tournamentsViewModel.realmReady.observe(this,{
             if (it){
+                setFCM()
                 getDynamicLink(intent)
+                setMixPanel()
+                getAppConfig()
             }
         })
 
@@ -130,19 +125,11 @@ class MainActivity : AppCompatActivity() {
         setupBottomSheetTournament()
         setupSheetInfo()
 
-        if (firstStart) {
-            getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                .edit().putBoolean("firstStart", false).apply()
-        }
-
     }
 
     private fun setFCM() {
         val fcm = FirebaseMessaging.getInstance()
-        if (getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                .getBoolean("firstStart", true)){
-            getSharedPreferences("prefs", MODE_PRIVATE).edit()
-                .putBoolean("firstStart", false).apply()
+        if (firstStart){
             fcm.unsubscribeFromTopic("news")
             fcm.unsubscribeFromTopic("reshuffle")
             fcm.unsubscribeFromTopic("results")
@@ -151,30 +138,38 @@ class MainActivity : AppCompatActivity() {
             fcm.unsubscribeFromTopic("informativeContent")
             fcm.unsubscribeFromTopic("newsContent")
             fcm.unsubscribeFromTopic("interviewContent")
-            subscribeToTopics(currentLanguage, fcm)
         }
+        subscribeToTopics(currentLanguage, fcm)
     }
 
     private fun subscribeToTopics(lang: String, fcm: FirebaseMessaging){
         LocalData.topics.forEach { topic ->
-            fcm.subscribeToTopic("$topic$lang")
-            getSharedPreferences("prefs", MODE_PRIVATE).edit()
-                .putBoolean(topic, true).apply()
+            if (getSharedPreferences("prefs", MODE_PRIVATE)
+                    .getBoolean(topic, true))
+            fcm.subscribeToTopic("$topic$lang").addOnCompleteListener {
+                if (it.isSuccessful){
+                    Log.v("DASD", "subscribed $topic$lang")
+                } else {
+                    Log.v("DASD", "subscribe failed $topic$lang")
+                }
+            }
         }
     }
 
     private fun setMixPanel() {
         mixpanelAPI = MixpanelAPI.getInstance(this, BuildConfig.MIX_TOKEN)
+        mixpanelAPI!!.alias(currentUser!!.UID, mixpanelAPI!!.distinctId)
+        mixpanelAPI!!.identify(currentUser!!.UID)
+        mixpanelAPI!!.people.identify(currentUser!!.UID)
+        currentUser?.user?.nickname?.let{nick->
+            mixpanelAPI?.people?.set("Nickname", nick)
+        }
         val props = JSONObject()
         props.put("UID", currentUser!!.UID)
         currentUser?.user?.nickname?.let{nick->
             props.put("Nickname", nick)
         }
-        mixpanelAPI?.registerSuperProperties(props)
-        mixpanelAPI!!.people!!.identify(currentUser!!.UID)
-        currentUser?.user?.nickname?.let{nick->
-            mixpanelAPI?.people?.set("Nickname", nick)
-        }
+        mixpanelAPI!!.registerSuperProperties(props)
 
         processIntent()
 
@@ -282,12 +277,17 @@ class MainActivity : AppCompatActivity() {
     private fun openNewsScreen(id: ObjectId?){
         newsViewModel.realmReady.observe(this,{
             if (it) {
+                ((supportFragmentManager
+                    .findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+                    .childFragmentManager.fragments[0] as FragmentNews).setPage(1)
                 val news = newsViewModel.getNewsById(id!!)
                 news?.let {
-                    ((supportFragmentManager
-                        .findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
-                        .childFragmentManager.fragments[0] as FragmentNews).setPage(1)
-                    openNewsDetails(news)
+                    val newsCorrect = if (currentLanguage=="ru") {
+                        news.title_ru!=null&&news.text_ru!=null
+                    } else {
+                        news.title_en!=null&&news.text_en!=null
+                    }
+                    if (newsCorrect) openNewsDetails(news)
                     val title = if (currentLanguage=="ru") news.title_ru
                     else news.title_en
                     val json = JSONObject()
@@ -297,8 +297,6 @@ class MainActivity : AppCompatActivity() {
                     json.put("Regions", news.getRegionList())
                     mixpanelAPI?.track("DeepLinkOpened", json)
                 }
-                if (news==null) Toast.makeText(this, "wrong ID",
-                    Toast.LENGTH_LONG).show()
             }
         })
     }
@@ -308,7 +306,12 @@ class MainActivity : AppCompatActivity() {
             if (it) {
                 val reshuffle = newsViewModel.getReshuffleById(id!!)
                 reshuffle?.let {
-                    openReshufflesDetails(reshuffle)
+                    val reshuffleCorrect = if (currentLanguage=="ru") {
+                        reshuffle.title_ru!=null&&reshuffle.text_ru!=null
+                    } else {
+                        reshuffle.title_en!=null&&reshuffle.text_en!=null
+                    }
+                    if (reshuffleCorrect) openReshufflesDetails(reshuffle)
                     val title = if (currentLanguage=="ru") reshuffle.title_ru
                     else reshuffle.title_en
                     val json = JSONObject()
@@ -318,8 +321,6 @@ class MainActivity : AppCompatActivity() {
                     json.put("Regions", reshuffle.getRegionList())
                     mixpanelAPI?.track("DeepLinkOpened", json)
                 }
-                if (reshuffle==null) Toast.makeText(this, "wrong ID",
-                    Toast.LENGTH_LONG).show()
             }
         })
     }
@@ -419,12 +420,12 @@ class MainActivity : AppCompatActivity() {
             "tournamentsClosed" -> openTournamentScreen(null, 0)
             "tournamentsOpen" -> openTournamentScreen(null, 1)
             "tournamentsUpcoming" -> openTournamentScreen(null, 2)
-            "contentEducational" -> openContentScreen(0)
-            "contentInterview" -> openContentScreen(1)
+            "contentEducational" -> openContentScreen(1)
+            "contentInterview" -> openContentScreen(0)
             "broadcastsLive" -> openBroadcastScreen(1)
             "broadcastsUpcoming" -> openBroadcastScreen(2)
-            "resultsOfTournaments" -> openFragmentResults()
-            "discordPartners" -> openFragmentPartners()
+            "resultsOfTournaments" -> openResultsScreen(null)
+            "discordPartners" -> openPartnerScreen(null)
         }
     }
 
@@ -470,7 +471,6 @@ class MainActivity : AppCompatActivity() {
                             json.put("Company", it.getQueryParameter(param))
                             json.put("First open", firstStart)
                             mixpanelAPI?.track("AppPromoDeepLinkOpen", json)
-                            if (firstStart) firstStart = false
                         }
                     }
                 }
@@ -478,6 +478,11 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener(this) {
                     e -> Log.v("DASD", "getDynamicLink:onFailure", e)
             }
+        if (firstStart) {
+            firstStart = false
+            getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .edit().putBoolean("firstStart", false).apply()
+        }
     }
 
     fun closeFragment(){
@@ -554,37 +559,16 @@ class MainActivity : AppCompatActivity() {
                         binding.bottomSheetTournament.headerDetails
                             .headerTitle.text = tournament.title
 
-                        binding.bottomSheetTournament.itemWait.postDelayed({
-                            binding.bottomSheetTournament.itemWait
-                                .visibility= View.VISIBLE
-                            Glide.with(binding.bottomSheetTournament.itemWait)
-                                .asGif().load(R.drawable.wait)
-                                .into(binding.bottomSheetTournament.itemWait)
-                        }, 200)
+                        val images = ArrayList<String>()
+                        images.addAll(it.imageSrc)
+                        val adapter = DetailsImagesAdapter(images)
+                        binding.bottomSheetTournament.tournamentItemPager.adapter = adapter
 
-                        Glide.with(binding.bottomSheetTournament.tournamentImage)
-                            .load(tournament.imageSrc[0])
-                            .addListener(object: RequestListener<Drawable> {
-                                override fun onLoadFailed(
-                                    e: GlideException?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    isFirstResource: Boolean): Boolean {
-                                    return false
-                                }
-
-                                override fun onResourceReady(
-                                    resource: Drawable?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    dataSource: DataSource?,
-                                    isFirstResource: Boolean): Boolean {
-                                    binding.bottomSheetTournament.itemWait
-                                        .visibility= View.GONE
-                                    return false
-                                }
-                            })
-                            .into(binding.bottomSheetTournament.tournamentImage)
+                        binding.bottomSheetTournament.dots.visibility =
+                            if (images.size>1) View.VISIBLE
+                            else View.GONE
+                        binding.bottomSheetTournament.dots
+                            .setViewPager2(binding.bottomSheetTournament.tournamentItemPager)
 
                         val tournamentItem = TournamentItem()
                         tournamentItem.tournament = tournament
