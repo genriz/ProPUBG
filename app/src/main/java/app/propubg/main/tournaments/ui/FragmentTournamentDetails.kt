@@ -119,7 +119,7 @@ class FragmentTournamentDetails: Fragment() {
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
-                        .setLink(Uri.parse("https://link.propubg.app/?Tournaments=${tournament_._id}"))
+                        .setLink(Uri.parse("https://propubg.app/?Tournaments=${tournament_._id}"))
                         .setSocialMetaTagParameters(
                             DynamicLink.SocialMetaTagParameters.Builder()
                                 .setImageUrl(Uri.parse(tournament_.imageSrc[0]!!))

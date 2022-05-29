@@ -21,9 +21,12 @@ import app.propubg.databinding.ActivityStartBinding
 import app.propubg.login.model.StartViewModel
 import app.propubg.login.model.UserRealm
 import app.propubg.main.MainActivity
+import app.propubg.utils.AppUtils
+import app.propubg.utils.Currency
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.realm.mongodb.Credentials
 import io.realm.mongodb.functions.Functions
 import org.bson.BsonValue
@@ -34,10 +37,11 @@ import java.util.concurrent.TimeUnit
 class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
 
     lateinit var binding: ActivityStartBinding
-    private lateinit var navController: NavController
+    lateinit var navController: NavController
     private val viewModel: StartViewModel by viewModels()
     private val dialogLoading by lazy {DialogLoading(this)}
     private var resend = false
+    private var timer = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +63,14 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
             .getBoolean("firstStart", true)
 
         setLanguage()
+
+        jsonCurrencies = AppUtils().getJsonDataFromAsset(applicationContext, "currencies.json")
+        jsonCurrencies?.let{
+            val gson = Gson()
+            val listPersonType = object : TypeToken<List<Currency>>() {}.type
+            currenciesFromJson.clear()
+            currenciesFromJson.addAll(gson.fromJson(jsonCurrencies, listPersonType))
+        }
 
         if (currentUser!=null&&realmApp.currentUser()!=null){
             val functionsManager: Functions = realmApp.getFunctions(realmApp.currentUser())
@@ -98,9 +110,11 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
                     viewModel.timerStarted = false
                     viewModel.resendEnabled = true
                 }
-            }
-        }
+            }        }
 
+        viewModel.timer.observe(this,{
+            timer = it
+        })
     }
 
     private fun startMain(){
@@ -288,14 +302,16 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
         dialogLoading.show()
         val auth = FirebaseAuth.getInstance()
         auth.useAppLanguage()
-        val options = PhoneAuthOptions.newBuilder(auth)
+        val optionsBuilder = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(viewModel.phone)
             //.setPhoneNumber("+380501234567")
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(callbacks)
-            .setForceResendingToken(viewModel.resendToken!!)
-            .build()
+        viewModel.resendToken?.let{
+            optionsBuilder.setForceResendingToken(it)
+        }
+        val options = optionsBuilder.build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
@@ -373,15 +389,18 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
         super.onBackPressed()
     }
 
-    override fun onDestroy() {
+    override fun onPause() {
         getSharedPreferences("prefs", MODE_PRIVATE).edit()
-            .putInt("timer", (viewModel.timer.value!!/1000).toInt()).apply()
+            .putInt("timer", (timer/1000).toInt()).apply()
         getSharedPreferences("prefs", MODE_PRIVATE).edit()
             .putLong("timeExit", System.currentTimeMillis()).apply()
         getSharedPreferences("prefs", MODE_PRIVATE).edit()
             .putInt("currentTimer", currentTimer).apply()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
         setResult(RESULT_CANCELED)
-        finish()
         super.onDestroy()
     }
 

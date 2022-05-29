@@ -106,14 +106,16 @@
                         android:textColor="@color/text_gray2"
                         android:layout_marginEnd="2dp"
                         android:text="@{String.valueOf(tournamentItem.tournament.countViews)}"
-                        tools:ignore="SmallSp" />
+                        tools:ignore="SmallSp"
+                        android:visibility="gone"/>
                     <ImageView
                         android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/ic_viewers"
-                        tools:ignore="ContentDescription" />
+                        tools:ignore="ContentDescription"
+                        android:visibility="gone"/>
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

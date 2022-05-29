@@ -1,6 +1,7 @@
 package app.propubg.login.model
 
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.PhoneAuthProvider
@@ -12,13 +13,14 @@ class StartViewModel: ViewModel() {
     var code = MutableLiveData<String>()
     var error = MutableLiveData<String>().apply { value = "" }
     var isPhoneNew = true
-    var timer = MutableLiveData<Long>().apply { value = -1 }
+    var timer = MutableLiveData<Long>()
     private var countDownTimer: CountDownTimer? = null
     var timerStarted = false
     var resendEnabled = false
     var accessError = false
 
     fun startTimer(time: Int){
+        Log.v("DASD", "start timer")
         timer.value = (time)*1000L
         if (countDownTimer!=null) countDownTimer!!.cancel()
         countDownTimer = object: CountDownTimer(timer.value!!, 1000){

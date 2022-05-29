@@ -1,7 +1,6 @@
 package app.propubg.login.ui
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,15 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import app.propubg.R
 import app.propubg.currentTimer
-import app.propubg.currentUser
 import app.propubg.databinding.FragmentStartBinding
 import app.propubg.login.model.StartViewModel
 import app.propubg.prevPhone
-import com.bumptech.glide.Glide
-import com.google.firebase.auth.*
-import com.google.firebase.ktx.Firebase
-import java.io.InputStream
-import java.util.concurrent.TimeUnit
 
 class FragmentStart: Fragment() {
 
@@ -38,7 +31,7 @@ class FragmentStart: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnGetCode.setOnClickListener {
-            if (binding.inputPhoneText.text!!.isNotBlank()){
+            if (binding.inputPhoneText.text!!.length>1){
                 viewModel.error.value = ""
                 viewModel.phone = binding.inputPhoneText.text!!.toString()
                 prevPhone?.let{

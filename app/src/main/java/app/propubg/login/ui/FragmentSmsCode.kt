@@ -40,6 +40,7 @@ class FragmentSmsCode: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.txtPhone.text = viewModel.phone
+        binding.btnConfirmCode.isEnabled = false
 
         viewModel.timer.observe(viewLifecycleOwner,{
             it?.let{ time ->
@@ -67,9 +68,11 @@ class FragmentSmsCode: Fragment() {
             it?.let{
                 if (it=="") {
                     clearCode()
+                    binding.btnConfirmCode.isEnabled = false
                 }
                 else {
                     setCode(it)
+                    binding.btnConfirmCode.isEnabled = true
                     binding.btnConfirmCode.setOnClickListener {
                         checkCode()
                     }
@@ -97,6 +100,9 @@ class FragmentSmsCode: Fragment() {
                     binding.codeEdit1.isSelected = true
                     binding.codeEdit2.requestFocus()
                 }
+                if (p0.isEmpty()) {
+                    binding.btnConfirmCode.isEnabled = false
+                }
             }
         })
 
@@ -116,6 +122,7 @@ class FragmentSmsCode: Fragment() {
                 }
                 if (p0.isEmpty()) {
                     binding.codeEdit2.isSelected = false
+                    binding.btnConfirmCode.isEnabled = false
                 }
             }
         })
@@ -136,6 +143,7 @@ class FragmentSmsCode: Fragment() {
                 }
                 if (p0.isEmpty()) {
                     binding.codeEdit3.isSelected = false
+                    binding.btnConfirmCode.isEnabled = false
                 }
             }
         })
@@ -156,6 +164,7 @@ class FragmentSmsCode: Fragment() {
                 }
                 if (p0.isEmpty()) {
                     binding.codeEdit4.isSelected = false
+                    binding.btnConfirmCode.isEnabled = false
                 }
             }
         })
@@ -176,6 +185,7 @@ class FragmentSmsCode: Fragment() {
                 }
                 if (p0.isEmpty()) {
                     binding.codeEdit5.isSelected = false
+                    binding.btnConfirmCode.isEnabled = false
                 }
             }
         })
@@ -197,9 +207,11 @@ class FragmentSmsCode: Fragment() {
                         .getSystemService(requireContext(),
                             InputMethodManager::class.java)!!
                     inputMethodManager.hideSoftInputFromWindow(binding.codeEdit6.windowToken, 0)
+                    binding.btnConfirmCode.isEnabled = true
                 }
                 if (p0.isEmpty()) {
                     binding.codeEdit6.isSelected = false
+                    binding.btnConfirmCode.isEnabled = false
                 }
             }
         })
@@ -256,16 +268,36 @@ class FragmentSmsCode: Fragment() {
         }
 
 
-
+        binding.codeEdit1.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                for (i in 1..5) {
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isNotEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
+                    }
+                }
+            }
+        }
         binding.codeEdit2.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus&&binding.codeEdit1.text.isEmpty()) {
                 binding.codeEdit1.requestFocus()
+            }
+            if (hasFocus) {
+                for (i in 2..5) {
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isNotEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
+                    }
+                }
             }
         }
         binding.codeEdit3.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 for (i in 1 downTo 0) {
                     if ((binding.inputCode.getChildAt(i) as EditText).text.isEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
+                    }
+                }
+                for (i in 3..5) {
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isNotEmpty()) {
                         binding.inputCode.getChildAt(i).requestFocus()
                     }
                 }
@@ -278,6 +310,11 @@ class FragmentSmsCode: Fragment() {
                         binding.inputCode.getChildAt(i).requestFocus()
                     }
                 }
+                for (i in 4..5) {
+                    if ((binding.inputCode.getChildAt(i) as EditText).text.isNotEmpty()) {
+                        binding.inputCode.getChildAt(i).requestFocus()
+                    }
+                }
             }
         }
         binding.codeEdit5.setOnFocusChangeListener { _, hasFocus ->
@@ -286,6 +323,9 @@ class FragmentSmsCode: Fragment() {
                     if ((binding.inputCode.getChildAt(i) as EditText).text.isEmpty()) {
                         binding.inputCode.getChildAt(i).requestFocus()
                     }
+                }
+                if ((binding.inputCode.getChildAt(5) as EditText).text.isNotEmpty()) {
+                    binding.inputCode.getChildAt(5).requestFocus()
                 }
             }
         }

@@ -109,7 +109,7 @@ class FragmentReshufflesDetails: Fragment() {
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
-                        .setLink(Uri.parse("https://link.propubg.app/?Reshuffle=${reshuffle_._id}"))
+                        .setLink(Uri.parse("https://propubg.app/?Reshuffle=${reshuffle_._id}"))
                         .setSocialMetaTagParameters(
                             DynamicLink.SocialMetaTagParameters.Builder()
                                 .setImageUrl(

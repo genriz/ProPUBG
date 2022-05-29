@@ -394,8 +394,8 @@ fun setTextBtnTournament (view: TextView, tournament: tournament?){
 @BindingAdapter(value = ["prizePool", "currency"])
 fun setTextPrize (view: TextView, prizePool: Long?, currency: String?){
     var prizeString = ""
-    currency?.let{ currency_ ->
-        prizeString = Currency.getInstance(currency_).symbol
+    currency?.let{
+        prizeString = AppUtils().getCurrencySymbolFromJson(currency)
     }
     prizePool?.let{prize->
         prizeString += String.format("%,d", prize)

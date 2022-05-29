@@ -5,8 +5,9 @@ import android.text.format.DateUtils
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import app.propubg.R
-import app.propubg.currentLanguage
+import app.propubg.currenciesFromJson
 import com.google.firebase.messaging.FirebaseMessaging
+import java.io.IOException
 import java.util.*
 
 class AppUtils {
@@ -50,5 +51,24 @@ class AppUtils {
                     }
             }
         }
+    }
+
+    fun getJsonDataFromAsset(context: Context, fileName: String): String? {
+        val jsonString: String
+        try {
+            jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
+        } catch (ioException: IOException) {
+            ioException.printStackTrace()
+            return null
+        }
+        return jsonString
+    }
+
+    fun getCurrencySymbolFromJson(code: String): String{
+        var cs = ""
+        currenciesFromJson.forEach {
+            if (it.alpha==code) cs = it.symbol
+        }
+        return cs
     }
 }

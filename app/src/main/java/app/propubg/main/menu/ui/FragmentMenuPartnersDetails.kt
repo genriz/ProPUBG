@@ -136,7 +136,7 @@ class FragmentMenuPartnersDetails: Fragment() {
                     else partner_.descriptionOfPartner_en
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
-                        .setLink(Uri.parse("https://link.propubg.app/?DiscordPartner=${partner_._id}"))
+                        .setLink(Uri.parse("https://propubg.app/?DiscordPartner=${partner_._id}"))
                         .setSocialMetaTagParameters(
                             DynamicLink.SocialMetaTagParameters.Builder()
                                 .setImageUrl(Uri.parse(img ?: ""))

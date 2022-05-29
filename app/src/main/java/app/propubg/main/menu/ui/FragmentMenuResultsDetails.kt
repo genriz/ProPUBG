@@ -109,7 +109,7 @@ class FragmentMenuResultsDetails: Fragment() {
                 } else {
                     Firebase.dynamicLinks.createDynamicLink()
                         .setDomainUriPrefix("https://link.propubg.app")
-                        .setLink(Uri.parse("https://link.propubg.app/?ResultsOfTournament=${results_._id}"))
+                        .setLink(Uri.parse("https://propubg.app/?ResultsOfTournament=${results_._id}"))
                         .setSocialMetaTagParameters(
                             DynamicLink.SocialMetaTagParameters.Builder()
                                 .setImageUrl(
@@ -117,8 +117,8 @@ class FragmentMenuResultsDetails: Fragment() {
                                     else Uri.parse(results_.imageSrc_en[0]!!)
                                 )
                                 .setTitle(
-                                    if (currentLanguage == "ru") "${results_.title} ${results_.stage_ru}"
-                                    else "${results_.title} ${results_.stage_en}"
+                                    if (currentLanguage == "ru") "${results_.title} ${results_.stage_ru}, ${getString(R.string.day)} ${results_.dayOfTournament}"
+                                    else "${results_.title} ${results_.stage_en}, ${getString(R.string.day)} ${results_.dayOfTournament}"
                                 )
                                 .setDescription(getString(R.string.results_text)).build()
                         )
