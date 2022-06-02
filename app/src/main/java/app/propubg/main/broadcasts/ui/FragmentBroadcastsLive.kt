@@ -57,50 +57,52 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick,
 
         binding.advertMain.isVisible = false
 
-        viewModel.realmReady.observe(viewLifecycleOwner,{
-            it?.let{ ready ->
-                if (ready){
+        viewModel.realmReady.observe(viewLifecycleOwner) {
+            it?.let { ready ->
+                if (ready) {
                     binding.recyclerBroadcasts.setHasFixedSize(true)
-                    adapter = BroadcastsAdapter(requireActivity(),
-                        viewModel.getBroadcastsLive(), this)
+                    adapter = BroadcastsAdapter(
+                        requireActivity(),
+                        viewModel.getBroadcastsLive(), this
+                    )
                     adapterSearch = BroadcastSearchAdapter(this)
                     adapter.data?.forEach { broadcast ->
-                        broadcast?.let{
-                            broadcast.tournamentExist = broadcast.objectIDOfTournament!=null
-                                    &&broadcast.objectIDOfTournament!!.isNotEmpty()
-                                    &&ObjectId.isValid(broadcast.objectIDOfTournament)
-                                    &&viewModel.getTournamentById(ObjectId(broadcast.objectIDOfTournament))!=null
+                        broadcast?.let {
+                            broadcast.tournamentExist = broadcast.objectIDOfTournament != null
+                                    && broadcast.objectIDOfTournament!!.isNotEmpty()
+                                    && ObjectId.isValid(broadcast.objectIDOfTournament)
+                                    && viewModel.getTournamentById(ObjectId(broadcast.objectIDOfTournament)) != null
                         }
                     }
                     adapterSearch.currentList.forEach { broadcast ->
-                        broadcast?.let{
-                            broadcast.tournamentExist = broadcast.objectIDOfTournament!=null
-                                    &&broadcast.objectIDOfTournament!!.isNotEmpty()
-                                    &&ObjectId.isValid(broadcast.objectIDOfTournament)
-                                    &&viewModel.getTournamentById(ObjectId(broadcast.objectIDOfTournament))!=null
+                        broadcast?.let {
+                            broadcast.tournamentExist = broadcast.objectIDOfTournament != null
+                                    && broadcast.objectIDOfTournament!!.isNotEmpty()
+                                    && ObjectId.isValid(broadcast.objectIDOfTournament)
+                                    && viewModel.getTournamentById(ObjectId(broadcast.objectIDOfTournament)) != null
                         }
                     }
                     binding.recyclerBroadcasts.adapter = adapter
                     binding.recyclerBroadcastsSearch.adapter = adapterSearch
                     binding.recyclerBroadcastsSearch.isVisible = false
 
-                    adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+                    adapter.registerAdapterDataObserver(object :
+                        RecyclerView.AdapterDataObserver() {
                         override fun onChanged() {
                             super.onChanged()
-                            if (adapter.itemCount==0) {
+                            if (adapter.itemCount == 0) {
                                 binding.noLiveBroadcasts.visibility = View.VISIBLE
                                 if (isSearching)
                                     binding.noLiveBroadcasts.setText(R.string.search_empty)
                                 else
                                     binding.noLiveBroadcasts.setText(R.string.no_live_broadcasts)
-                            }
-                            else binding.noLiveBroadcasts.visibility = View.GONE
+                            } else binding.noLiveBroadcasts.visibility = View.GONE
                         }
                     })
 
                 }
             }
-        })
+        }
 
         binding.searchBroadcasts.searchCancel.setOnClickListener {
             binding.expandLayout.setExpanded(false)
@@ -114,38 +116,38 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick,
             }
         }
 
-        viewModel.searchString.observe(viewLifecycleOwner,{
-            it?.let{ searchString ->
-                if (searchString.length>1){
+        viewModel.searchString.observe(viewLifecycleOwner) {
+            it?.let { searchString ->
+                if (searchString.length > 1) {
                     isSearching = true
                     //adapter.updateData(viewModel.searchBroadcastsLive(searchString))
                     binding.recyclerBroadcasts.isVisible = false
                     binding.recyclerBroadcastsSearch.isVisible = true
                     adapterSearch.submitList(viewModel.searchBroadcastsLiveLocal(searchString))
                     binding.recyclerBroadcastsSearch.postDelayed({
-                        if (adapterSearch.currentList.size==0) {
+                        if (adapterSearch.currentList.size == 0) {
                             binding.noLiveBroadcasts.visibility = View.VISIBLE
                             binding.noLiveBroadcasts.setText(R.string.search_empty)
                         } else binding.noLiveBroadcasts.visibility = View.GONE
-                    },100)
-                } else if (viewModel.realmReady.value == true&&searchString.isEmpty()) {
+                    }, 100)
+                } else if (viewModel.realmReady.value == true && searchString.isEmpty()) {
                     isSearching = false
                     binding.recyclerBroadcasts.isVisible = true
                     binding.recyclerBroadcastsSearch.isVisible = false
                     adapter.updateData(viewModel.getBroadcastsLive())
                 }
             }
-        })
+        }
 
         if (!viewModel.advertClosed) {
-            advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->
-                if (ready){
-                    advertViewModel._advert.observe(viewLifecycleOwner,{ advertisement ->
+            advertViewModel.realmReady.observe(viewLifecycleOwner) { ready ->
+                if (ready) {
+                    advertViewModel._advert.observe(viewLifecycleOwner) { advertisement ->
                         advertisement?.let {
                             val advertItem = Advert().apply {
                                 advert = it
                             }
-                            val image = if (currentLanguage =="ru")
+                            val image = if (currentLanguage == "ru")
                                 advertItem.advert!!.imageSrc_ru
                             else advertItem.advert!!.imageSrc_en
                             Glide.with(requireContext()).load(image)
@@ -171,10 +173,10 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick,
                                     (activity as MainActivity).mixpanelAPI!!
                                         .track("AdBannerClick", json)
                                     val link =
-                                        if (currentLanguage=="ru")
+                                        if (currentLanguage == "ru")
                                             advertisement.link_ru
                                         else advertisement.link_en
-                                    link?.let{
+                                    link?.let {
                                         if (URLUtil.isValidUrl(link)) {
                                             val intent = Intent()
                                             intent.action = Intent.ACTION_VIEW
@@ -184,11 +186,11 @@ class FragmentBroadcastsLive: Fragment(), BroadcastsAdapter.OnClick,
                                     }
                                 }
                         }
-                    })
+                    }
 
                     advertViewModel.getAdvert()
                 }
-            })
+            }
         }
     }
 

@@ -67,13 +67,14 @@ class FragmentTournamentDetails: Fragment() {
 
         val type = requireArguments().getString("type")?:"none"
 
-        viewModel.realmReady.observe(viewLifecycleOwner,{
-            if (it==true){
+        viewModel.realmReady.observe(viewLifecycleOwner) {
+            if (it == true) {
                 tournament = viewModel.getTournamentById(
                     requireArguments()
-                        .getSerializable("tournamentId") as ObjectId)
+                        .getSerializable("tournamentId") as ObjectId
+                )
                 images.clear()
-                tournament?.let{tournament_ ->
+                tournament?.let { tournament_ ->
                     binding.headerDetails.headerTitle.text = tournament_.title
 
                     images.addAll(tournament_.imageSrc)
@@ -81,7 +82,7 @@ class FragmentTournamentDetails: Fragment() {
                     binding.tournamentItemPager.adapter = adapter
 
                     binding.dots.visibility =
-                        if (images.size>1) View.VISIBLE
+                        if (images.size > 1) View.VISIBLE
                         else View.GONE
                     binding.dots.setViewPager2(binding.tournamentItemPager)
 
@@ -100,7 +101,7 @@ class FragmentTournamentDetails: Fragment() {
 
                 }
             }
-        })
+        }
 
         binding.headerDetails.btnBack.setOnClickListener {
             (activity as MainActivity).closeFragment()
@@ -205,14 +206,14 @@ class FragmentTournamentDetails: Fragment() {
             (activity as MainActivity).mixpanelAPI?.track("CopyTournamentLinkClick", json)
         }
 
-        advertViewModel.realmReady.observe(viewLifecycleOwner,{ ready ->
-            if (ready){
-                advertViewModel._advert.observe(viewLifecycleOwner,{ advertisement ->
+        advertViewModel.realmReady.observe(viewLifecycleOwner) { ready ->
+            if (ready) {
+                advertViewModel._advert.observe(viewLifecycleOwner) { advertisement ->
                     advertisement?.let {
                         val advertItem = Advert().apply {
                             advert = it
                         }
-                        val image = if (currentLanguage =="ru")
+                        val image = if (currentLanguage == "ru")
                             advertItem.advert!!.imageSrc_ru
                         else advertItem.advert!!.imageSrc_en
                         Glide.with(requireContext()).load(image)
@@ -238,10 +239,10 @@ class FragmentTournamentDetails: Fragment() {
                                 (activity as MainActivity).mixpanelAPI!!
                                     .track("AdBannerClick", json)
                                 val link =
-                                    if (currentLanguage=="ru")
+                                    if (currentLanguage == "ru")
                                         advertisement.link_ru
                                     else advertisement.link_en
-                                link?.let{
+                                link?.let {
                                     if (URLUtil.isValidUrl(link)) {
                                         val intent = Intent()
                                         intent.action = Intent.ACTION_VIEW
@@ -251,10 +252,10 @@ class FragmentTournamentDetails: Fragment() {
                                 }
                             }
                     }
-                })
+                }
 
                 advertViewModel.getAdvert()
             }
-        })
+        }
     }
 }

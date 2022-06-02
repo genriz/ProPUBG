@@ -1,9 +1,10 @@
 package app.propubg.login.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +16,12 @@ import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import app.propubg.BuildConfig
 import app.propubg.R
 import app.propubg.databinding.FragmentSmsCodeBinding
 import app.propubg.login.model.StartViewModel
 import com.google.firebase.auth.PhoneAuthProvider
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,35 +45,44 @@ class FragmentSmsCode: Fragment() {
         binding.txtPhone.text = viewModel.phone
         binding.btnConfirmCode.isEnabled = false
 
-        viewModel.timer.observe(viewLifecycleOwner,{
-            it?.let{ time ->
-                if (time>1000) {
+        viewModel.timer.observe(viewLifecycleOwner) {
+            it?.let { time ->
+                if (time > 1000) {
                     binding.smsInfo.text = requireContext().getString(R.string.code_repeat)
-                    binding.smsInfo.setTextColor(ContextCompat.getColor(requireContext(),
-                        R.color.text_gray1))
+                    binding.smsInfo.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.text_gray1
+                        )
+                    )
                     binding.smsInfo.setOnClickListener {}
-                    binding.timer.text = SimpleDateFormat("mm:ss",
-                        Locale.getDefault()).format(time)
-                } else if (time>-1) {
+                    binding.timer.text = SimpleDateFormat(
+                        "mm:ss",
+                        Locale.getDefault()
+                    ).format(time)
+                } else if (time > -1) {
                     binding.timer.text = ""
                     binding.smsInfo.text = requireContext().getString(R.string.code_not_received)
-                    binding.smsInfo.setTextColor(ContextCompat.getColor(requireContext(),
-                        R.color.orange))
+                    binding.smsInfo.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.orange
+                        )
+                    )
                     binding.smsInfo.setOnClickListener {
                         (activity as StartActivity)
                             .verifyNumber()
                     }
                 }
             }
-        })
+        }
 
-        viewModel.code.observe(viewLifecycleOwner,{
-            it?.let{
-                if (it=="") {
+        viewModel.code.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it == "") {
                     clearCode()
                     binding.btnConfirmCode.isEnabled = false
-                }
-                else {
+                } else {
                     setCode(it)
                     binding.btnConfirmCode.isEnabled = true
                     binding.btnConfirmCode.setOnClickListener {
@@ -78,13 +90,13 @@ class FragmentSmsCode: Fragment() {
                     }
                 }
             }
-        })
+        }
 
-        viewModel.error.observe(viewLifecycleOwner,{
-            it?.let{
+        viewModel.error.observe(viewLifecycleOwner) {
+            it?.let {
                 binding.error.text = it
             }
-        })
+        }
 
         binding.codeEdit1.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -342,6 +354,15 @@ class FragmentSmsCode: Fragment() {
 
         binding.btnConfirmCode.setOnClickListener {
             checkCode()
+        }
+
+        binding.codeProblemSend.setOnClickListener {
+            MixpanelAPI.getInstance(requireContext(), BuildConfig.MIX_TOKEN)
+                .track("LoginIssueWriteSupport", null)
+            val intent = Intent()
+            intent.action = Intent.ACTION_VIEW
+            intent.data = Uri.parse("https://t.me/propubg_app_creator")
+            startActivity(intent)
         }
 
         binding.btnBack.setOnClickListener {

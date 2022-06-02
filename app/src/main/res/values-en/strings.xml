@@ -146,4 +146,7 @@
     <string name="error_code">An error occurred while validating the entered code\n\nPlease try turning on the VPN and confirm the code again\n\nIf this doesn’t help, then please contact us via support and we will help you</string>
     <string name="error_phone">There was an error while sending a message to the number you’ve entered\n\nPossible solutions to the problem:\n\n1) Check the correctness of the entered phone number\n2) Turn on VPN and try again\n\nIf none of the points helped, then please contact us via support and we will help you</string>
 
+    <string name="code_problem">Problems with login?</string>
+    <string name="code_problem2"><u>Write us a message</u></string>
+
 </resources>
