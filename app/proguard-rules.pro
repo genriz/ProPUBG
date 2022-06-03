@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn com.mixpanel.**
+
+#GSON
+-keepattributes Signature
+-keep class com.google.gson.**
+
+#Models
+-keep class app.propubg.login.model.**{*;}

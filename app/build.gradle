@@ -26,14 +26,13 @@ android {
         debug {
             buildConfigField "String", "MONGODB_REALM_APP_ID", "\"${appId}\""
             buildConfigField "String", "MIX_TOKEN", "\"${mixToken}\""
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
         }
         release {
             buildConfigField "String", "MONGODB_REALM_APP_ID", "\"${appId}\""
             buildConfigField "String", "MIX_TOKEN", "\"${mixToken}\""
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

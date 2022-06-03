@@ -75,6 +75,7 @@ class StartActivity : AppCompatActivity(), DialogError.OnBtnClick {
         if (currentUser!=null&&realmApp.currentUser()!=null){
             val functionsManager: Functions = realmApp.getFunctions(realmApp.currentUser())
             val uid = currentUser!!.UID
+            Log.v("DASD", "${currentUser!!.UID}")
             functionsManager.callFunctionAsync("getUserDateByUID",
                 listOf(uid), BsonValue::class.java) { result ->
                 if (result.isSuccess) {
